@@ -1,0 +1,6 @@
+{
+  "db": {
+    "migrations-dir": "./src/Infrastructure/Migrations"
+  }
+}
+
