@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as logger from 'winston'
+import ApiError from '../Application/Shared/Errors/ApiError'
 import constants from '../Configuration/constants'
 
 const shouldLogOnFile = constants.ENV !== 'local'
@@ -36,8 +38,16 @@ export class Logger {
     Logger.console.warn(Logger.formatArgs(args))
   }
 
-  public static error(...args: any[]): void {
-    Logger.console.error(Logger.formatArgs(args))
+  public static error(error: Error): void {
+    if (error instanceof ApiError) {
+      Logger.console.error(`
+      ${error.message}: ${error.stack}\n\n 
+      Inner Error: \n${error.innerError}\n\n
+      Inner Error Stack: ${error.innerError.stack}`)
+    } else {
+      Logger.console.error(`
+      ${error.message}: ${error.stack}\n\n`)
+    }
   }
 
   public static info(...args: any[]): void {

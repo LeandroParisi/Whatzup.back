@@ -1,37 +1,37 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
 } from 'routing-controllers'
 import { Service } from 'typedi'
-import {
-  BaseEntity, DeepPartial, Repository,
-} from 'typeorm'
+import { BaseEntity } from '../../../../Domain/Entities/BaseClasses/BaseEntity'
+import ApiError from '../../Errors/ApiError'
+import { IBaseRepository } from '../../Repositories/IRepository'
+import { StatusCode } from '../Enums/Status'
 
 @Service()
 @Controller('BASE_CRUD')
 export default abstract class BaseCrudController<Entity extends BaseEntity> {
-  private Repository : Repository<Entity>;
+  protected Repository : IBaseRepository<Entity>
 
   /**
    *
    */
   constructor(
-    protected repository : Repository<Entity>,
+    repository : IBaseRepository<Entity>,
   ) {
     this.Repository = repository
   }
 
   @Post('/BASE_CRUD')
-  public async Create(@Body() body : DeepPartial<Entity>) {
-    console.log({ tete: this.repository })
-    console.log({ tete2: this.Repository })
-
-    const repository = await this.Repository.find()
-    // await this.repository.save(body)
-    // const entity = AppDataSource.manager.create<Entity>(this.EntityType, body)
-    // await AppDataSource.manager.save(entity)
-    return body
+  public async Create(@Body() body : Partial<Entity>) {
+    try {
+      const insertedEntity = await this.Repository.Create({ ...body, created_at: Date.now() })
+      return insertedEntity
+    } catch (e) {
+      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, 'Unable to insert entity', e)
+    }
   }
 
   // @Get()

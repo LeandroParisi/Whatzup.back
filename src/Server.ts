@@ -10,13 +10,11 @@ import constants from './Configuration/constants'
 import { Logger } from './Commons/Logger'
 import HealthCheck from './Application/Shared/Middlewares/HealthCheck/HealthCheck'
 import { createExpressServer, getMetadataArgsStorage, useContainer } from 'routing-controllers'
-import UserController from './Application/Contexts/OnBoarding/Controllers/UserController/UserController'
+import UserController from './Application/Contexts/AccountManagement/Controllers/UserController/UserController'
 import { routingControllersToSpec } from 'routing-controllers-openapi'
 import * as swaggerUiExpress from 'swagger-ui-express'
 import ErrorHandler from './Application/Shared/Middlewares/ErrorHandler/ErrorHandler'
 import Container from 'typedi'
-import { useContainer as OrmUseContainer, createConnection } from 'typeorm'
-import { AppDataSource } from './Infrastructure/TypeOrm/data-source'
 
 const { defaultMetadataStorage } = require('class-transformer/cjs/storage')
 
@@ -37,7 +35,6 @@ export class Server {
   public Start() {
     this.App = createExpressServer(Server.RoutingControllersOptions)
     this.SetupDI()
-    this.SetupTypeOrm()
     this.ConfigureGlobalMiddlewares()
 
     this.GenerateApiDocumentation()
@@ -49,17 +46,8 @@ export class Server {
     return listen
   }
 
-  private SetupTypeOrm() {
-    createConnection(AppDataSource.options).catch((error) => {
-      Logger.error('Couldn\'t connect to the database!')
-      console.log(error)
-      Logger.error(error)
-    })
-  }
-
   private SetupDI() {
     useContainer(Container)
-    OrmUseContainer(Container)
   }
 
   private GenerateApiDocumentation() {

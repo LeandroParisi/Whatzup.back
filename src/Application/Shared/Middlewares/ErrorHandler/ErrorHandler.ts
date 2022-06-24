@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { ValidationError } from 'class-validator'
 import { Response } from 'express'
 import {
   BadRequestError,
@@ -17,11 +18,9 @@ import { ApiValidationError, IValidationError } from '../../Errors/ApiValidation
 @Middleware({ type: 'after' })
 export default class ErrorHandler implements ExpressErrorMiddlewareInterface {
   public error(error: Error, _request: any, response: Response, next: (err?: any) => any) : void {
-    const { message, name, stack } = error
-
-    Logger.error({ message, name, stack })
-
     let errorToBeSent = error as ApiError
+
+    Logger.error(errorToBeSent)
 
     if (error instanceof ApiError) {
       errorToBeSent = error
@@ -47,22 +46,52 @@ export default class ErrorHandler implements ExpressErrorMiddlewareInterface {
 
   private FormatError(error: HttpError) : ApiError {
     if (error instanceof BadRequestError) {
-      const validationErrors = this.FormatValidationErrors(error as unknown)
-      return new ApiValidationError(validationErrors, error)
+      const { errors } = error as any
+      const validationErrors = this.FormatValidationErrors(errors as ValidationError[])
+      return new ApiValidationError(validationErrors as unknown as IValidationError[], error)
     }
     return new ApiError(error.httpCode, error.message)
   }
 
-  private FormatValidationErrors(error: any) {
-    const validationErrors : IValidationError[] = error.errors.map(({ property, constraints }) => {
-      const validationError : IValidationError = {
+  private FormatValidationErrors(validationErrors: ValidationError[]) : IValidationError[] | IValidationError {
+    const output : IValidationError[] = validationErrors.flatMap((error) => {
+      const {
+        children, constraints, property,
+      } = error
+
+      if (children.length) {
+        const newChildren = children.map((c) => ({
+          ...c,
+          property: `${property}.${c.property}`,
+        }))
+        return this.FormatValidationErrors(newChildren)
+      }
+      if (constraints) {
+        return [{
+          field: property,
+          errors: Object.values(constraints).join(', '),
+        }]
+      }
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, `Unable to map error ${error}`)
+    })
+
+    return output
+  }
+
+  FormatValidationError(error : ValidationError) : IValidationError[] | IValidationError {
+    const { children, constraints, property } = error
+    let validationError : IValidationError[] | IValidationError
+
+    if (children) {
+      validationError = this.FormatValidationErrors(children)
+    } else if (constraints) {
+      validationError = {
         field: property,
         errors: Object.values(constraints).join(', '),
       }
+    }
 
-      return validationError
-    })
-
-    return validationErrors
+    return validationError
   }
 }

@@ -1,8 +1,14 @@
+import { Type } from 'class-transformer'
 import {
   IsEmail,
-  IsNotEmpty, IsNumber, IsString,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
 } from 'class-validator'
 import User from '../../../../../../Domain/Entities/User'
+import { CityDTO } from '../../../../../Shared/DTOs/Locations/CityDTO'
+import { CountryDTO } from '../../../../../Shared/DTOs/Locations/CountryDTO'
+import { StateDTO } from '../../../../../Shared/DTOs/Locations/StateDTO'
 
 export default class CreateUserRequest implements Partial<User> {
   @IsNotEmpty()
@@ -32,20 +38,20 @@ export default class CreateUserRequest implements Partial<User> {
   @IsString()
   lastName?: string
 
-  @IsNotEmpty()
-  @IsNumber()
-  countryId?: number
+  @ValidateNested()
+  @Type(() => StateDTO)
+  state : StateDTO
+
+  @ValidateNested()
+  @Type(() => CityDTO)
+  city : CityDTO
+
+  @ValidateNested()
+  @Type(() => CountryDTO)
+  country : CountryDTO
 
   @IsNotEmpty()
-  @IsNumber()
-  stateId?: number
-
-  @IsNotEmpty()
-  @IsNumber()
-  cityId?: number
-
-  @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   neighbourhood?: string
 
   @IsNotEmpty()

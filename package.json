@@ -18,6 +18,8 @@
       "migrate": "node-pg-migrate",
       "migrate:up": "npm run migrate up",
       "migrate:down": "npm run migrate down",
+      "generate-schema": "npx @databases/pg-schema-cli --database postgres://leandro_parisi:123deolivera4@localhost:5432/whatzup --directory src/Infrastructure/PgTyped/Schemas/__generated__",
+      "db:reset": "npm run migrate:down && npm run migrate:up && npm run generate-schema",
       "db:up": ""
    },
    "repository": {
@@ -62,8 +64,6 @@
       "sinon": "^13.0.2",
       "swagger-ui-express": "^4.3.0",
       "typedi": "^0.10.0",
-      "typeorm": "0.3.6",
-      "typeorm-typedi-extensions": "^0.4.1",
       "uuid": "^8.3.2",
       "winston": "^3.0.0-rc4"
    },

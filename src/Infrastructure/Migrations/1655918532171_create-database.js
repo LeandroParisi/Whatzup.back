@@ -21,8 +21,8 @@ exports.up = pgm => {
       "address_number" varchar,
       "address_complement" varchar,
       "postal_code" varchar,
-      "was_activated" bool,
-      "is_active" bool,
+      "was_activated" bool DEFAULT false,
+      "is_active" bool DEFAULT false,
       "created_at" date NOT NULL DEFAULT 'now()',
       "updated_at" date NOT NULL DEFAULT 'now()'
     );
@@ -110,24 +110,29 @@ exports.up = pgm => {
     );
     
     CREATE TABLE "countries" (
-      "id" SERIAL PRIMARY KEY,
-      "country_name" varchar UNIQUE NOT NULL
+      id SERIAL PRIMARY KEY,
+      name varchar NOT NULL,
+      iso2 char(2) NOT NULL
     );
     
     CREATE TABLE "states" (
       "id" SERIAL PRIMARY KEY,
-      "state_name" varchar UNIQUE NOT NULL,
-      "state_code" varchar UNIQUE NOT NULL
+      country_id int NOT NULL,
+      "name" varchar UNIQUE NOT NULL,
+      "state_code" varchar UNIQUE NOT NULL,
+      iso2 char(2) NOT NULL
     );
     
     CREATE TABLE "cities" (
       "id" SERIAL PRIMARY KEY,
-      "city_name" varchar NOT NULL
+      "name" varchar NOT NULL
     );
     
     CREATE INDEX "whatsapp_number" ON "users" ("whatsapp_number");
     
     ALTER TABLE "users" ADD FOREIGN KEY ("country_id") REFERENCES "countries" ("id");
+
+    ALTER TABLE "states" ADD FOREIGN KEY ("country_id") REFERENCES "countries" ("id");
     
     ALTER TABLE "users" ADD FOREIGN KEY ("state_id") REFERENCES "states" ("id");
     
@@ -161,19 +166,19 @@ exports.up = pgm => {
 
 exports.down = pgm => {
   pgm.sql(`
-    DROP TABLE cities;
-    DROP TABLE countries;
-    DROP TABLE states;
-    DROP TABLE bots;
-    DROP TABLE users_bots;
-    DROP TABLE plan_feature_type;
-    DROP TABLE features;
     DROP TABLE default_plan_feature;
     DROP TABLE custom_plan_feature;
-    DROP TABLE custom_plans;
-    DROP TABLE default_plans;
+    DROP TABLE plan_feature_type;
+    DROP TABLE users_bots;
+    DROP TABLE features;
     DROP TABLE payments;
-    DROP TABLE users;
     DROP TABLE user_plan;
+    DROP TABLE default_plans;
+    DROP TABLE custom_plans;
+    DROP TABLE users;
+    DROP TABLE bots;
+    DROP TABLE cities;
+    DROP TABLE states;
+    DROP TABLE countries;
   `)
 };

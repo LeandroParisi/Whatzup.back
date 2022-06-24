@@ -1,71 +1,45 @@
 import { Service } from 'typedi'
-import {
-  Entity, Column, PrimaryGeneratedColumn, BaseEntity,
-} from 'typeorm'
+import { BaseEntity } from './BaseClasses/BaseEntity'
 
-@Entity({
-  name: 'user',
-})
 @Service()
 export default class User extends BaseEntity {
-  @Column()
-  @PrimaryGeneratedColumn()
-  id: number
+  readonly id: number
 
-  @Column()
-  whatsappNumber: string
+  readonly whatsappNumber: string
 
-  @Column()
-  whatsappId: string
+  readonly whatsappId: string
 
-  @Column()
-  email: string
+  readonly email: string
 
-  @Column()
-  documentNumber: string
+  readonly documentNumber: string
 
-  @Column()
-  firstName: string
+  readonly firstName: string
 
-  @Column()
-  middleName: string
+  readonly middleName: string
 
-  @Column()
-  lastName: string
+  readonly lastName: string
 
-  @Column()
-  countryId: number
+  readonly countryId: number
 
-  @Column()
-  stateId: number
+  readonly stateId: number
 
-  @Column()
-  cityId: number
+  readonly cityId: number
 
-  @Column()
-  neighbourhood: string
+  readonly neighbourhood: string
 
-  @Column()
-  addressStreet: string
+  readonly addressStreet: string
 
-  @Column()
-  addressNumber: string
+  readonly addressNumber: string
 
-  @Column()
-  addressComplement: string
+  readonly addressComplement: string
 
-  @Column()
-  postalCode: string
+  readonly postalCode: string
 
-  @Column()
-  wasActivated: boolean
+  readonly wasActivated: boolean
 
-  @Column()
-  isActivated: boolean
+  readonly isActivated: boolean
 
-  @Column()
-  createdAt: Date
+  readonly createdAt: Date
 
-  @Column()
-  updatedAt: Date
+  readonly updatedAt: Date
 }

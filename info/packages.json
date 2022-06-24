@@ -8,5 +8,6 @@
     "connection-options": "https://orkhan.gitbook.io/typeorm/docs/connection-options#postgres--cockroachdb-connection-options"
   },
   "env-on-package-json": "https://medium.com/@arrayknight/how-to-use-env-variables-in-package-json-509b9b663867",
-  "pg-migrate": "https://salsita.github.io/node-pg-migrate/"
+  "pg-migrate": "https://salsita.github.io/node-pg-migrate/",
+  "country_state_cities": "https://countrystatecity.in/docs/api/all-states/"
 }
