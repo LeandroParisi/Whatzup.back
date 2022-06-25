@@ -15,6 +15,8 @@ import { routingControllersToSpec } from 'routing-controllers-openapi'
 import * as swaggerUiExpress from 'swagger-ui-express'
 import ErrorHandler from './Application/Shared/Middlewares/ErrorHandler/ErrorHandler'
 import Container from 'typedi'
+import BotController from './Application/Contexts/AccountManagement/Controllers/BotController/BotController'
+import { PostDefaultInterceptor } from './Application/Shared/APIs/Interceptors/PostDefaultInterceptor'
 
 const { defaultMetadataStorage } = require('class-transformer/cjs/storage')
 
@@ -24,8 +26,9 @@ export class Server {
   private readonly Port: number = constants.PORT;
 
   static readonly RoutingControllersOptions = {
-    controllers: [HealthCheck, UserController],
+    controllers: [HealthCheck, UserController, BotController],
     middlewares: [ErrorHandler],
+    interceptors: [PostDefaultInterceptor],
     routePrefix: '/api',
     classTransformer: true,
     defaultErrorHandler: false,

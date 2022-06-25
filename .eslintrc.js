@@ -81,6 +81,7 @@ module.exports = {
       rules: {
         'import/no-unresolved': 0,
         'import/extensions': 0,
+        '@typescript-eslint/no-this-alias': 0,
         semi: ['error', 'never'],
         // temp allowing during TS migration
         '@typescript-eslint/no-unsafe-argument': 0,

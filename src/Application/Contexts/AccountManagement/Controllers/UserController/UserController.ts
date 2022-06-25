@@ -77,7 +77,7 @@ export default class UserController extends BaseCrudController<User> {
     try {
       await transaction()
     } catch (e) {
-      throw new ApiError(StatusCode.BAD_GATEWAY, 'Invalid country, state or city.', e)
+      throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid country, state or city.', e)
     }
   }
 }

@@ -1,5 +1,6 @@
 enum StepTypes {
-  Options = 'options'
+  Options = 'options',
+  Simple = 'simple'
 }
 
 export default StepTypes

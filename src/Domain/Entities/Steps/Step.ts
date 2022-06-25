@@ -1,5 +1,5 @@
 import StepTypes from './Enums/StepTypes'
-import OptionsStepInfo from './OptionsStep/OptionsStepInfo'
+import { OptionsStepInfo } from './OptionsStep/OptionsStepInfo'
 
 export class StepInfo {
   readonly id : number
@@ -9,10 +9,6 @@ export class StepInfo {
   readonly type : StepTypes
 
   readonly introMessage : string[]
-
-  public GetType() : StepTypes {
-    return this.type
-  }
 }
 
-export type Step = StepInfo | OptionsStepInfo
+export type Step = StepInfo & OptionsStepInfo

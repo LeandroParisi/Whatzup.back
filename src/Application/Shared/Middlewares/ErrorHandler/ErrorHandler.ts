@@ -56,7 +56,7 @@ export default class ErrorHandler implements ExpressErrorMiddlewareInterface {
   private FormatValidationErrors(validationErrors: ValidationError[]) : IValidationError[] | IValidationError {
     const output : IValidationError[] = validationErrors.flatMap((error) => {
       const {
-        children, constraints, property,
+        children, constraints, property, target,
       } = error
 
       if (children.length) {

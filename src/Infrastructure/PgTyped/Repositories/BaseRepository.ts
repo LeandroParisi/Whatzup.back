@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-import { ConnectionPool, Transaction } from '@databases/pg'
 import { TableHelper, WhereCondition } from '@databases/pg-typed'
 import { Service } from 'typedi'
-import { IBaseRepository } from '../../../Application/Shared/Repositories/IRepository'
+import { Connections, IBaseRepository } from '../../../Application/Shared/Repositories/IRepository'
 import { CaseSerializer } from '../../../Commons/Globals/Serializers/CaseSerializer'
 import { Logger } from '../../../Commons/Logger'
 import { PgTypedDbConnection } from '../PostgresTypedDbConnection'
@@ -15,7 +14,7 @@ export abstract class BaseRepository<
   > implements IBaseRepository<Entity> {
   abstract table : TableHelper<DbEntity, DbInsertableEntity, 'defaultConnection'>
 
-  async Create(model: Partial<Entity>, connection?: ConnectionPool | Transaction): Promise<Entity> {
+  async Create(model: Partial<Entity>, connection?: Connections): Promise<Entity> {
     const dbConnection = connection || PgTypedDbConnection.db
 
     const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, DbInsertableEntity>(model)
@@ -31,7 +30,7 @@ export abstract class BaseRepository<
     return deserializedEntity
   }
 
-  async FindOne(query: Partial<Entity>, connection?: ConnectionPool | Transaction): Promise<Entity> {
+  async FindOne(query: Partial<Entity>, connection?: Connections): Promise<Entity> {
     const dbConnection = connection || PgTypedDbConnection.db
 
     const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(query)
@@ -46,7 +45,7 @@ export abstract class BaseRepository<
   }
 
   // async UpdateOne(
-  //   query: WhereCondition<DbEntity>, model: Partial<DbEntity>, connection?: ConnectionPool | Transaction,
+  //   query: WhereCondition<DbEntity>, model: Partial<DbEntity>, connection?: Connections,
   // ): Promise<boolean> {
   //   const dbConnection = connection || PgTypedDbConnection.db
 
@@ -58,13 +57,13 @@ export abstract class BaseRepository<
   //   return !!updatedEntities
   // }
 
-  // async Delete(query: WhereCondition<DbEntity>, connection?: ConnectionPool | Transaction): Promise<void> {
+  // async Delete(query: WhereCondition<DbEntity>, connection?: Connections): Promise<void> {
   //   const dbConnection = connection || PgTypedDbConnection.db
 
   //   const del = await this.table(dbConnection).delete(query)
   // }
 
-  // async FindAll(query: WhereCondition<DbEntity>, connection?: ConnectionPool | Transaction): Promise<DbEntity[]> {
+  // async FindAll(query: WhereCondition<DbEntity>, connection?: Connections): Promise<DbEntity[]> {
   //   const dbConnection = connection || PgTypedDbConnection.db
 
   //   const entities = await this.table(dbConnection).find(query).all()

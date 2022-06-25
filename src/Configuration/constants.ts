@@ -4,7 +4,6 @@ require('dotenv/config')
 
 const { env } = process
 
-
 export default {
   ENV: env.NODE_ENV,
   PORT: Number(env.PORT),
@@ -12,6 +11,6 @@ export default {
   ENVS: {
     LOCAL: 'local',
     DSV: 'dsv',
-    PROD: 'prd'
-  }
+    PROD: 'prd',
+  },
 }

@@ -15,5 +15,5 @@ export enum ValidationErrors {
 }
 
 export enum ResponseMessages {
-
+  CreatedSuccessfully = 'Successfully created resource.'
 }
