@@ -17,4 +17,6 @@ export default class CONSTANTS {
   static PORT = Number(env.PORT)
 
   static CONNECTION_STRING : string = env.DATABASE_URL
+
+  static ROUTE_IGNORE_PATTERN = '__IGNORE__'
 }

@@ -3,12 +3,9 @@
 /* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import bodyParser from 'body-parser'
-import { validationMetadatasToSchemas } from 'class-validator-jsonschema'
 import express from 'express'
 import morgan from 'morgan'
-import { createExpressServer, getMetadataArgsStorage, useContainer } from 'routing-controllers'
-import { routingControllersToSpec } from 'routing-controllers-openapi'
-import * as swaggerUiExpress from 'swagger-ui-express'
+import { createExpressServer, useContainer } from 'routing-controllers'
 import Container from 'typedi'
 import BotController from './Application/Contexts/AccountManagement/Controllers/BotController/BotController'
 import UserController from './Application/Contexts/AccountManagement/Controllers/UserController/UserController'
@@ -17,8 +14,7 @@ import ErrorHandler from './Application/Shared/Middlewares/ErrorHandler/ErrorHan
 import HealthCheck from './Application/Shared/Middlewares/HealthCheck/HealthCheck'
 import { Logger } from './Commons/Logger'
 import constants from './Configuration/constants'
-
-const { defaultMetadataStorage } = require('class-transformer/cjs/storage')
+import GenerateApiDocumentation from './Setup/GenerateApiDocumentation'
 
 export class Server {
   public App : express.Express
@@ -42,7 +38,7 @@ export class Server {
 
     this.ConfigureGlobalMiddlewares()
 
-    this.GenerateApiDocumentation()
+    GenerateApiDocumentation.Generate(this.App, Server.RoutingControllersOptions)
 
     const listen = this.App.listen(this.Port)
 
@@ -53,33 +49,6 @@ export class Server {
 
   private SetupDI() {
     useContainer(Container)
-  }
-
-  private GenerateApiDocumentation() {
-    const schemas = validationMetadatasToSchemas({
-      classTransformerMetadataStorage: defaultMetadataStorage,
-      refPointerPrefix: '#/components/schemas/',
-    })
-
-    const storage = getMetadataArgsStorage()
-
-    const spec = routingControllersToSpec(storage, Server.RoutingControllersOptions, {
-      components: {
-        schemas,
-      },
-      info: {
-        description: 'Generated with `routing-controllers-openapi`',
-        title: 'A sample API',
-        version: '1.0.0',
-      },
-    })
-
-    this.App.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(spec))
-
-    // Render spec on root:
-    this.App.get('/', (_req, res) => {
-      res.json(spec)
-    })
   }
 
   private ConfigureGlobalMiddlewares() {

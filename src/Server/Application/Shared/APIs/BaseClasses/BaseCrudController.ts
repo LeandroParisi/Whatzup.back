@@ -1,8 +1,5 @@
 import {
   Body,
-  Controller,
-  Get,
-  Post,
 } from 'routing-controllers'
 import { Service } from 'typedi'
 import { BaseEntity } from '../../../../Domain/Entities/BaseClasses/BaseEntity'
@@ -15,7 +12,6 @@ export interface ControllerActionOptions {
 }
 
 @Service()
-@Controller('BASE_CRUD')
 export default abstract class BaseCrudController<Entity extends BaseEntity> {
   protected Repository : IBaseRepository<Entity>
 
@@ -28,7 +24,6 @@ export default abstract class BaseCrudController<Entity extends BaseEntity> {
     this.Repository = repository
   }
 
-  @Post('/BASE_CRUD')
   public async Create(@Body() body : Partial<Entity>, actionOptions? : ControllerActionOptions) {
     try {
       const insertedEntity = await this.Repository.Create({ ...body, created_at: Date.now() }, actionOptions.connection)
@@ -38,10 +33,9 @@ export default abstract class BaseCrudController<Entity extends BaseEntity> {
     }
   }
 
-  // @Get()
-  // public Read() {
-
-  // }
+  public Read() {
+    return 'tete'
+  }
 
   // @Put()
   // public Update() {
