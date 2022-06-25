@@ -12,6 +12,7 @@
    "scripts": {
       "dev": "concurrently \"nodemon\"",
       "teste": "npm run ts-jest --config=jest.config.js",
+      "test": "jest -c ./jest.config.json",
       "build": "tsc",
       "start": "ts-node src/App/index.ts",
       "lint": "tsc && eslint",
@@ -99,7 +100,6 @@
       "mocha": "^5.0.5",
       "nodemon": "^2.0.15",
       "open": "^8.4.0",
-      "pgtools": "^0.3.2",
       "pre-commit": "^1.2.2",
       "randomstring": "^1.1.5",
       "supertest": "^6.2.3",

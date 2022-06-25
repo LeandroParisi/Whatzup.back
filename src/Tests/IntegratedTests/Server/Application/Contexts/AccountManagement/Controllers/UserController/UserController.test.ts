@@ -2,6 +2,6 @@
 
 // describe('User Controller Integrated Tests', () => {
 //   it('Teste', () => {
-//     true.should.true()
+//     true.should.be(true)
 //   })
 // })

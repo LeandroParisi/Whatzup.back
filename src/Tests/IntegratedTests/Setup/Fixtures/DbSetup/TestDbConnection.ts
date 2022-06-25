@@ -18,7 +18,7 @@ types.setTypeParser(types.builtins.NUMERIC, (value: string) => parseInt(value, 1
 @StaticImplements<IDbConnection<ConnectionPool>>()
 export class TestDbConnection {
   static db = createConnectionPool({
-    database: IntegratedTestsConfig.TEST_DATABASE_NAME,
+    connectionString: IntegratedTestsConfig.TEST_DATABASE_URL,
     bigIntMode: 'bigint',
   })
 

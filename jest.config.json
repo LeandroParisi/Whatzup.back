@@ -1,0 +1,8 @@
+{
+  "preset": "ts-jest",
+  "coverageDirectory": "./coverage",
+  "resetMocks": true,
+  "clearMocks": true,
+  "globalSetup": "./src/Tests/IntegratedTests/Setup/global-setup.ts",
+  "globalTeardown": "./src/Tests/IntegratedTests/Setup/global-teardown.ts"
+}
