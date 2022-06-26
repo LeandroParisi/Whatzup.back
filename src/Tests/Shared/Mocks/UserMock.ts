@@ -1,13 +1,16 @@
 import { faker } from '@faker-js/faker'
-import User from '../../../../../Server/Domain/Entities/User'
+import User from '../../../Server/Domain/Entities/User'
 
 export type UserMockOptionals = Partial<User>
 
 export default class UserMock {
-  static GetRandomUser(countryId : number, stateId : number, cityId : number, optionals? : UserMockOptionals) : User {
+  static GetRandomUser(
+    countryId : number, stateId : number, cityId : number, optionals? : UserMockOptionals,
+  ) : Partial<User> {
     const phone = faker.phone.number()
+
     return new User(
-      Number(faker.random.numeric(Number.MAX_SAFE_INTEGER, { allowLeadingZeros: true })),
+      null,
       phone,
       `55@${phone}`,
       faker.internet.email(),
@@ -18,8 +21,8 @@ export default class UserMock {
       countryId,
       stateId,
       cityId,
-      faker.address.streetName(),
-      faker.address.streetName(),
+      faker.name.findName(),
+      faker.name.findName(),
       faker.random.numeric(5),
       faker.random.numeric(3),
       faker.address.zipCode(),

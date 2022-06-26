@@ -16,6 +16,7 @@ import { CountryRepository } from '../../../../../Infrastructure/PgTyped/Reposit
 import { StateRepository } from '../../../../../Infrastructure/PgTyped/Repositories/StateRepository'
 import { UserRepository } from '../../../../../Infrastructure/PgTyped/Repositories/UserRepository'
 import BaseCrudController from '../../../../Shared/APIs/BaseClasses/BaseCrudController'
+import { ErrorMessages } from '../../../../Shared/APIs/Enums/Messages'
 import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
 import { CityDTO } from '../../../../Shared/DTOs/Locations/CityDTO'
 import { CountryDTO } from '../../../../Shared/DTOs/Locations/CountryDTO'
@@ -77,7 +78,7 @@ export default class UserController extends BaseCrudController<User> {
     try {
       await transaction()
     } catch (e) {
-      throw new ApiError(StatusCode.BAD_REQUEST, 'Invalid country, state or city.', e)
+      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, e)
     }
   }
 }

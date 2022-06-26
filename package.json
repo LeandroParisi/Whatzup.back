@@ -7,14 +7,15 @@
       "node": "v14.10.0"
    },
    "pre-commit": [
-      "lint"
+      "lint",
+      "test"
    ],
    "scripts": {
       "dev": "concurrently \"nodemon\"",
       "teste": "npm run ts-jest --config=jest.config.js",
       "test": "jest -c ./jest.config.json",
       "build": "tsc",
-      "start": "ts-node src/App/index.ts",
+      "start": "ts-node src/index.ts",
       "lint": "tsc && eslint",
       "typeorm": "typeorm-ts-node-commonjs",
       "migrate": "ts-node node_modules/.bin/node-pg-migrate -j ts",
@@ -53,7 +54,6 @@
       "dotenv": "^10.0.0",
       "dotenv-cli": "3.0.0",
       "express": "^4.17.1",
-      "joi": "^17.6.0",
       "jsonwebtoken": "^8.5.1",
       "morgan": "^1.9.0",
       "multer": "^1.3.0",
@@ -97,13 +97,17 @@
       "eslint-plugin-import": "^2.25.4",
       "jest": "^28.1.1",
       "jest-extended": "^2.0.0",
+      "jest-theories": "^1.5.1",
       "mocha": "^5.0.5",
       "nodemon": "^2.0.15",
       "open": "^8.4.0",
+      "pgtools": "^0.3.2",
       "pre-commit": "^1.2.2",
+      "random-object-generator": "^1.0.2",
       "randomstring": "^1.1.5",
       "supertest": "^6.2.3",
       "ts-jest": "^28.0.5",
+      "ts-mockito": "^2.6.1",
       "ts-node": "10.7.0",
       "typescript": "4.5.2"
    }

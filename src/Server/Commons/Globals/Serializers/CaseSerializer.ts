@@ -6,6 +6,7 @@
 import { StatusCode } from '../../../Application/Shared/APIs/Enums/Status'
 import ApiError from '../../../Application/Shared/Errors/ApiError'
 import StaticImplements from '../../Anotations/StaticImplements'
+import TypeUtils from '../../Utils/TypeUtils'
 
 @StaticImplements()
 export class CaseSerializer {
@@ -27,10 +28,7 @@ export class CaseSerializer {
 
   private static KeysToCamel(o : any) {
     try {
-      if (CaseSerializer.IsDate(o)) {
-        return o
-      }
-      if (CaseSerializer.IsObject(o)) {
+      if (TypeUtils.IsObject(o)) {
         const n = {}
 
         Object.keys(o)
@@ -39,7 +37,7 @@ export class CaseSerializer {
           })
 
         return n
-      } if (CaseSerializer.IsArray(o)) {
+      } if (TypeUtils.IsArray(o)) {
         return o.map((i) => CaseSerializer.KeysToCamel(i))
       }
       return o
@@ -54,10 +52,7 @@ export class CaseSerializer {
 
   private static KeysToSnake(o : any) {
     try {
-      if (CaseSerializer.IsDate(o)) {
-        return o
-      }
-      if (CaseSerializer.IsObject(o)) {
+      if (TypeUtils.IsObject(o)) {
         const n = {}
 
         Object.keys(o)
@@ -66,7 +61,7 @@ export class CaseSerializer {
           })
 
         return n
-      } if (CaseSerializer.IsArray(o)) {
+      } if (TypeUtils.IsArray(o)) {
         return o.map((i) => CaseSerializer.KeysToSnake(i))
       }
       return o
@@ -84,16 +79,4 @@ export class CaseSerializer {
   private static ToCamel = (s : any) => s.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase()
     .replace('-', '')
     .replace('_', ''));
-
-  private static IsArray(t : any) {
-    return Array.isArray(t)
-  }
-
-  private static IsDate(t : any) {
-    return t instanceof Date
-  }
-
-  private static IsObject(o : any) {
-    return o === Object(o) && !CaseSerializer.IsArray(o) && typeof o !== 'function'
-  }
 }
