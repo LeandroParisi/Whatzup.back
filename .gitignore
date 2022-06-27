@@ -16,6 +16,8 @@ setup
 .env
 build
 build/
+coverage
+coverage/
 
 .env
 .env.local

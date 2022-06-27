@@ -1,5 +1,7 @@
 /* eslint-disable max-classes-per-file */
-import { Server } from './Server'
 import 'reflect-metadata'
+import { Server } from './Server/Server'
 
-new Server().Start()
+const app = new Server()
+app.Start()
+app.Run()
