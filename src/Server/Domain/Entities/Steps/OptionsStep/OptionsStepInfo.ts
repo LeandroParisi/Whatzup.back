@@ -9,5 +9,5 @@ export interface IStepOption {
 }
 
 export class OptionsStepInfo extends StepInfo {
-  readonly options : Array<IStepOption>
+  readonly options? : Array<IStepOption>
 }

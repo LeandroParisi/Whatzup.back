@@ -14,8 +14,8 @@ export class UserRepository extends BaseRepository<User, UserDbModel, Users_Inse
   /**
    *
    */
-  constructor() {
+  constructor(table? : TableHelper<UserDbModel, Users_InsertParameters, 'defaultConnection'>) {
     super()
-    this.table = PgTypedDbConnection.tables.users
+    this.table = table || PgTypedDbConnection.tables.users
   }
 }

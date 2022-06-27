@@ -22,7 +22,7 @@ export default abstract class BaseCrudController<Entity extends BaseEntity> {
 
   public async Create(@Body() body : Partial<Entity>) {
     try {
-      const insertedEntity = await this.Repository.Create({ ...body, created_at: Date.now() })
+      const insertedEntity = await this.Repository.Create(body)
       return insertedEntity
     } catch (e) {
       throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, 'Unable to insert entity', e)
@@ -33,10 +33,9 @@ export default abstract class BaseCrudController<Entity extends BaseEntity> {
     return 'tete'
   }
 
-  // @Put()
-  // public Update() {
+  public Update() {
 
-  // }
+  }
 
   // @Delete()
   // public Delete() {

@@ -9,27 +9,33 @@ export default class UserMock {
   ) : Partial<User> {
     const phone = faker.phone.number()
 
-    return new User(
-      null,
-      phone,
-      `55@${phone}`,
-      faker.internet.email(),
-      faker.random.numeric(9),
-      faker.name.firstName(),
-      faker.name.middleName(),
-      faker.name.lastName(),
+    let user : Partial<User> = {
+      whatsappNumber: phone,
+      whatsappId: `55@${phone}`,
+      email: faker.internet.email(),
+      documentNumber: faker.random.numeric(9),
+      firstName: faker.name.firstName(),
+      middleName: faker.name.middleName(),
+      lastName: faker.name.lastName(),
       countryId,
       stateId,
       cityId,
-      faker.name.findName(),
-      faker.name.findName(),
-      faker.random.numeric(5),
-      faker.random.numeric(3),
-      faker.address.zipCode(),
-      optionals?.wasActivated || faker.datatype.boolean(),
-      optionals?.isActivated || faker.datatype.boolean(),
-      faker.date.recent(),
-      faker.date.recent(),
-    )
+      neighbourhood: faker.name.findName(),
+      addressStreet: faker.name.findName(),
+      addressNumber: faker.random.numeric(5),
+      addressComplement: faker.random.numeric(3),
+      postalCode: faker.address.zipCode(),
+      wasActivated: optionals?.wasActivated || faker.datatype.boolean(),
+      isActive: optionals?.isActive || faker.datatype.boolean(),
+    }
+
+    if (optionals) {
+      user = {
+        ...user,
+        ...optionals,
+      }
+    }
+
+    return user
   }
 }

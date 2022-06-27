@@ -6,6 +6,7 @@ require('dotenv/config')
 const { env } = process
 
 export enum Envs {
+  TEST = 'test',
   LOCAL = 'local',
   DSV = 'dsv',
   PROD = 'prd',

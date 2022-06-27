@@ -15,6 +15,7 @@ import { UserRepository } from '../../../../../../../../Server/Infrastructure/Pg
 import CityMock from '../../../../../../../Shared/Mocks/CityMock'
 import CountryMock from '../../../../../../../Shared/Mocks/CountryMock'
 import StateMock from '../../../../../../../Shared/Mocks/StateMock'
+import UserControllerStubsShared from '../../../../../../../Shared/Stubs/UserControllerStubs.shared'
 import UserControllerStubs from './UserControllerStubs'
 
 chai.should()
@@ -31,12 +32,12 @@ describe('User Controller: Unit Tests', () => {
   })
 
   theoretically(
-    'Should create user and related locations if necessary',
+    '1. Should create user and related locations if necessary',
     UserControllerStubs.GetSucessTheory(),
     async (theory) => {
       // Arrange
       const { cityExists, countryExists, stateExists } = theory
-      const payload = UserControllerStubs.GetCorrectRequestPayload()
+      const payload = UserControllerStubsShared.GetCorrectRequestPayload()
       SetUpLocationRepositoryMock(cityExists, cityRepository, CityMock.GetRandom())
       SetUpLocationRepositoryMock(countryExists, countryRepository, CountryMock.GetRandom())
       SetUpLocationRepositoryMock(stateExists, stateRepository, StateMock.GetRandom())
@@ -56,9 +57,9 @@ describe('User Controller: Unit Tests', () => {
     },
   )
 
-  it('Should throw an error if theres an error on database during localities check', async () => {
+  it('2. Should throw an error if theres an error on database during localities check', async () => {
     // Arrange
-    const payload = UserControllerStubs.GetCorrectRequestPayload()
+    const payload = UserControllerStubsShared.GetCorrectRequestPayload()
     when(countryRepository.FindOne(anything(), anything())).thenReject()
 
     // Act

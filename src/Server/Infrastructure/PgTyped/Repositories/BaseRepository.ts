@@ -25,8 +25,6 @@ export abstract class BaseRepository<
 
     const deserializedEntity = CaseSerializer.CastToCamel<DbEntity, Entity>(inserted)
 
-    console.log({ deserializedEntity })
-
     return deserializedEntity
   }
 
@@ -39,23 +37,25 @@ export abstract class BaseRepository<
 
     const entity = await this.table(dbConnection).findOne(serializedQuery)
 
-    console.log({ entity })
-
     return CaseSerializer.CastToCamel<DbEntity, Entity>(entity)
   }
 
-  // async UpdateOne(
-  //   query: WhereCondition<DbEntity>, model: Partial<DbEntity>, connection?: Connections,
-  // ): Promise<boolean> {
-  //   const dbConnection = connection || PgTypedDbConnection.db
+  async UpdateOne(
+    updateQuery: Partial<Entity>, entity: Partial<Entity>, connection?: Connections,
+  ): Promise<boolean> {
+    const dbConnection = connection || PgTypedDbConnection.db
 
-  //   const [updatedEntities] = await this.table(dbConnection).update(
-  //     query,
-  //     model,
-  //   )
+    const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(updateQuery)
 
-  //   return !!updatedEntities
-  // }
+    const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, Partial<DbEntity>>(entity)
+
+    const [updatedEntities] = await this.table(dbConnection).update(
+      serializedQuery,
+      serializedEntity,
+    )
+
+    return !!updatedEntities
+  }
 
   // async Delete(query: WhereCondition<DbEntity>, connection?: Connections): Promise<void> {
   //   const dbConnection = connection || PgTypedDbConnection.db

@@ -2,4 +2,6 @@
 import 'reflect-metadata'
 import { Server } from './Server/Server'
 
-new Server().Start()
+const app = new Server()
+app.Start()
+app.Run()

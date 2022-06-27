@@ -7,9 +7,9 @@ import Bot from '../../../../../../../Domain/Entities/Bot'
 import StepTypes from '../../../../../../../Domain/Entities/Steps/Enums/StepTypes'
 import { IStepOption } from '../../../../../../../Domain/Entities/Steps/OptionsStep/OptionsStepInfo'
 import { Step } from '../../../../../../../Domain/Entities/Steps/Step'
-import { BotDTO } from '../../../../UseCases/CreateBot/DTOs/BotDTO'
-import { IsValidStep } from '../../../../../../Shared/CustomValidations/StepsValidation'
 import { IsExistentUser } from '../../../../../../Shared/CustomValidations/IsExistentUser'
+import { IsValidStep } from '../../../../../../Shared/CustomValidations/StepsValidation'
+import { BotDTO } from '../../../../UseCases/CreateBot/DTOs/BotDTO'
 
 export class StepOptionRequest implements Partial<IStepOption> {
   @IsNumber()
@@ -56,7 +56,7 @@ export class StepRequest implements Partial<Step> {
   @IsValidStep({ message: `Options are only valid for steps of type ${StepTypes.Options}` })
   @IsArray()
   @ValidateNested({ each: true })
-  options: IStepOption[];
+  options?: IStepOption[];
 }
 
 export default class CreateBotRequest implements Partial<Bot> {
@@ -64,17 +64,17 @@ export default class CreateBotRequest implements Partial<Bot> {
   @IsNotEmpty()
   @IsDefined()
   @IsExistentUser()
-  readonly userId : number
+   userId : number
 
   @IsString()
   @IsNotEmpty()
   @IsDefined()
-  readonly botName : string
+   botName : string
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => StepRequest)
-  readonly steps : StepRequest[]
+   steps : StepRequest[]
 
   public MapToDTO() : BotDTO {
     return new BotDTO(this.botName, this.steps)

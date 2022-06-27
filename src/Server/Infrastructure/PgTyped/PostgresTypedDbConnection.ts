@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import createConnectionPool, { ConnectionPool, sql } from '@databases/pg'
 import tables from '@databases/pg-typed'
 import StaticImplements from '../../Commons/Anotations/StaticImplements'
@@ -7,6 +9,8 @@ import DatabaseSchema from './Schemas/__generated__'
 import databaseSchema from './Schemas/__generated__/schema.json'
 
 import { types } from 'pg'
+import IntegratedTestsConfig from '../../../Tests/IntegratedTests/Setup/IntegratedTestsConfig'
+import CONSTANTS, { Envs } from '../../Configuration/constants'
 
 types.setTypeParser(types.builtins.INT8, (value: string) => parseInt(value, 10))
 
@@ -17,6 +21,7 @@ types.setTypeParser(types.builtins.NUMERIC, (value: string) => parseInt(value, 1
 @StaticImplements<IDbConnection<ConnectionPool>>()
 export class PgTypedDbConnection {
   static db = createConnectionPool({
+    connectionString: CONSTANTS.ENV === Envs.TEST ? IntegratedTestsConfig.TEST_DATABASE_URL : CONSTANTS.CONNECTION_STRING,
     bigIntMode: 'bigint',
     onQueryStart: (_query, { text, values }) => {
       Logger.info(

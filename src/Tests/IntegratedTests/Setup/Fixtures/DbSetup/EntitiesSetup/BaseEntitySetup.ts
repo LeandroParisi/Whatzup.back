@@ -1,17 +1,22 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { TableHelper, WhereCondition } from '@databases/pg-typed'
 import { Service } from 'typedi'
 import { Connections } from '../../../../../../Server/Application/Shared/Repositories/IRepository'
 import { CaseSerializer } from '../../../../../../Server/Commons/Globals/Serializers/CaseSerializer'
+import { BaseEntity } from '../../../../../../Server/Domain/Entities/BaseClasses/BaseEntity'
 import { TestDbConnection } from '../TestDbConnection'
 
 @Service()
 export abstract class BaseEntitySetup<
-    Entity,
+    Entity extends BaseEntity,
     DbEntity,
     DbInsertableEntity
   > {
   abstract table : TableHelper<DbEntity, DbInsertableEntity, 'defaultConnection'>
+
+  public EntitiesToDispose : Array<Entity> = []
 
   async Create(model: Partial<Entity>, connection?: Connections): Promise<Entity> {
     const dbConnection = connection || TestDbConnection.db
@@ -22,7 +27,7 @@ export abstract class BaseEntitySetup<
 
     const deserializedEntity = CaseSerializer.CastToCamel<DbEntity, Entity>(inserted)
 
-    console.log({ deserializedEntity })
+    this.EntitiesToDispose.push(deserializedEntity)
 
     return deserializedEntity
   }
@@ -34,35 +39,31 @@ export abstract class BaseEntitySetup<
 
     const entity = await this.table(dbConnection).findOne(serializedQuery)
 
-    console.log({ entity })
-
     return CaseSerializer.CastToCamel<DbEntity, Entity>(entity)
   }
 
-  // async UpdateOne(
-  //   query: WhereCondition<DbEntity>, model: Partial<DbEntity>, connection?: Connections,
-  // ): Promise<boolean> {
-  //   const dbConnection = connection || TestDbConnection.db
+  async Delete(query: Partial<Entity>, connection?: Connections): Promise<void> {
+    const dbConnection = connection || TestDbConnection.db
 
-  //   const [updatedEntities] = await this.table(dbConnection).update(
-  //     query,
-  //     model,
-  //   )
+    const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(query)
 
-  //   return !!updatedEntities
-  // }
+    await this.table(dbConnection).delete(serializedQuery)
+  }
 
-  // async Delete(query: WhereCondition<DbEntity>, connection?: Connections): Promise<void> {
-  //   const dbConnection = connection || TestDbConnection.db
+  async DeleteById(id : number, connection?: Connections): Promise<void> {
+    const dbConnection = connection || TestDbConnection.db
 
-  //   const del = await this.table(dbConnection).delete(query)
-  // }
+    await this.table(dbConnection).delete({ id } as unknown as WhereCondition<DbEntity>)
+  }
 
-  // async FindAll(query: WhereCondition<DbEntity>, connection?: Connections): Promise<DbEntity[]> {
-  //   const dbConnection = connection || TestDbConnection.db
+  async CleanUp() : Promise<void> {
+    for (const entity of this.EntitiesToDispose) {
+      await this.PreCleanUp(entity)
+      await this.DeleteById(entity.id)
+    }
+  }
 
-  //   const entities = await this.table(dbConnection).find(query).all()
-
-  //   return entities
-  // }
+  async PreCleanUp(_entity : Entity) {
+    // If necessary to make a pre clean up for an entity, ex.: when it has related data on pivot tables
+  }
 }

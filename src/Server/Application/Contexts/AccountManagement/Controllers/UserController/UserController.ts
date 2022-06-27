@@ -4,8 +4,9 @@
 /* eslint-disable no-return-await */
 import {
   Body,
+  HttpCode,
   JsonController,
-  Post,
+  Post
 } from 'routing-controllers'
 import { Service } from 'typedi'
 import { Logger } from '../../../../../Commons/Logger'
@@ -40,6 +41,7 @@ export default class UserController extends BaseCrudController<User> {
     super(repository)
   }
 
+  @HttpCode(StatusCode.CREATED)
   @Post()
   public async Create(@Body() body : CreateUserRequest) : Promise<User> {
     const { country, state, city } = body

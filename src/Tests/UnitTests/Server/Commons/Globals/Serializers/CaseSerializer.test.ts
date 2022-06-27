@@ -17,21 +17,21 @@ const random = require('random-object-generator')
 chai.should()
 
 describe('Case Serializer tests', () => {
-  it('Should properlly map from snake to camel case', () => {
+  it('1. Should properlly map from snake to camel case', () => {
     const object = random.randomObject(new RandomSnakeCaseObject())
     const camelCased = CaseSerializer.CastToCamel(object)
 
     IsObjectProperllySerialized(camelCased, new RegExp('[A-Z]'))
   })
 
-  it('Should properlly map from camel to snake case', () => {
+  it('2. Should properlly map from camel to snake case', () => {
     const object = random.randomObject(new RandomCamelCaseObject())
     const snakeCase = CaseSerializer.CastToSnake(object)
 
     IsObjectProperllySerialized(snakeCase, new RegExp('_'))
   })
 
-  it('Should properlly map array from snake to camel case', () => {
+  it('3. Should properlly map array from snake to camel case', () => {
     const object = random.randomObject(new RandomSnakeCaseObject())
     const object2 = random.randomObject(new RandomSnakeCaseObject())
     const camelCased = CaseSerializer.CastArrayToCamel([object, object2])
@@ -39,7 +39,7 @@ describe('Case Serializer tests', () => {
     camelCased.forEach((c) => IsObjectProperllySerialized(c, new RegExp('[A-Z]')))
   })
 
-  it('Should properlly map array from camel to snake case', () => {
+  it('4. Should properlly map array from camel to snake case', () => {
     const object = random.randomObject(new RandomCamelCaseObject())
     const object2 = random.randomObject(new RandomCamelCaseObject())
     const snakeCase = CaseSerializer.CastArrayToSnake([object, object2])

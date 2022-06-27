@@ -41,6 +41,7 @@ export default class ErrorHandler implements ExpressErrorMiddlewareInterface {
       delete errorToBeSent.innerError
     }
 
+    response.status(errorToBeSent.statusCode)
     response.json(errorToBeSent)
   }
 

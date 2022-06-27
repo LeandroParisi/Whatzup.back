@@ -33,9 +33,9 @@ class GlobalSetup {
       await client2.query(`CREATE DATABASE ${IntegratedTestsConfig.TEST_DATABASE_NAME}`)
       await client.connect()
       await client.query(upScript)
+      await client.end()
     }
     await client2.end()
-    await client.end()
   }
 }
 

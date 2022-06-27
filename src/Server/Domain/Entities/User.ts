@@ -37,7 +37,7 @@ export default class User extends BaseEntity {
 
   readonly wasActivated: boolean
 
-  readonly isActivated: boolean
+  readonly isActive: boolean
 
   readonly createdAt: Date
 
@@ -64,7 +64,7 @@ export default class User extends BaseEntity {
     addressComplement: string,
     postalCode: string,
     wasActivated: boolean,
-    isActivated: boolean,
+    isActive: boolean,
     createdAt: Date,
     updatedAt: Date,
   ) {
@@ -86,8 +86,12 @@ export default class User extends BaseEntity {
     this.addressComplement = addressComplement
     this.postalCode = postalCode
     this.wasActivated = wasActivated
-    this.isActivated = isActivated
+    this.isActive = isActive
     this.createdAt = createdAt
     this.updatedAt = updatedAt
+  }
+
+  public GetFullName() : string {
+    return `${this.firstName}${this.middleName ?? ` ${this.middleName}`}${this.lastName}`
   }
 }

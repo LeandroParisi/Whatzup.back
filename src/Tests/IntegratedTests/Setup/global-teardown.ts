@@ -4,7 +4,6 @@
 import { Client } from 'pg'
 import * as PostgressConnectionStringParser from 'pg-connection-string'
 import pgtools from 'pgtools'
-import { downScript } from '../../../Server/Infrastructure/Migrations/1655918532171_create-database'
 import IntegratedTestsConfig from './IntegratedTestsConfig'
 
 const {
@@ -17,10 +16,6 @@ const client = new Client({
 
 class GlobalTearDown {
   static async Setup() {
-    await client.connect()
-    await client.query(downScript)
-    await client.end()
-
     await this.DropDatabase()
   }
 

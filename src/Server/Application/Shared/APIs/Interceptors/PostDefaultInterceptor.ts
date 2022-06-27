@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Interceptor, InterceptorInterface, Action } from 'routing-controllers'
+/* istanbul ignore file */
+
+import { Action, Interceptor, InterceptorInterface } from 'routing-controllers'
 import { Service } from 'typedi'
 import PostReponse from '../BaseClasses/Responses/PostResponse'
 import { ResponseMessages } from '../Enums/Messages'

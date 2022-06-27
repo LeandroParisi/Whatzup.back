@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Response } from 'express'
 import { Controller, Get, Res } from 'routing-controllers'
 import { Service } from 'typedi'

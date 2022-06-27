@@ -39,7 +39,9 @@ export class Server {
     this.ConfigureGlobalMiddlewares()
 
     GenerateApiDocumentation.Generate(this.App, Server.RoutingControllersOptions)
+  }
 
+  public Run() {
     const listen = this.App.listen(this.Port)
 
     Logger.info(`${constants.ENV} server running on port: ${this.Port}`)
