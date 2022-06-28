@@ -12,16 +12,14 @@
    ],
    "scripts": {
       "dev": "concurrently \"nodemon\"",
-      "teste": "npm run ts-jest --config=jest.config.js",
-      "test": "jest -c ./jest.config.json",
-      "build": "tsc",
-      "start": "ts-node src/index.ts",
-      "lint": "tsc && eslint",
-      "typeorm": "typeorm-ts-node-commonjs",
-      "migrate": "ts-node node_modules/.bin/node-pg-migrate -j ts",
+      "test": "npm run build && jest -c ./jest.config.json",
+      "build": "ttsc",
+      "start": "ts-node -C ttypescript src/index.ts",
+      "lint": "ttsc && eslint",
+      "migrate": "ts-node -C ttypescript node_modules/.bin/node-pg-migrate -j ts",
       "migrate:up": "npm run migrate up",
       "migrate:down": "npm run migrate down",
-      "generate-schema": "npx @databases/pg-schema-cli --database postgres://leandro_parisi:123deolivera4@localhost:5432/whatzup --directory src/Infrastructure/PgTyped/Schemas/__generated__",
+      "generate-schema": "npx @databases/pg-schema-cli --database postgres://leandro_parisi:123deolivera4@localhost:5432/whatzup --directory src/Server/Infrastructure/PgTyped/Schemas/__generated__",
       "db:reset": "npm run migrate:down && npm run migrate:up && npm run generate-schema",
       "db:up": ""
    },
@@ -37,6 +35,8 @@
    },
    "homepage": "TEMPLATE",
    "dependencies": {
+      "@automapper/classes": "^8.3.7",
+      "@automapper/core": "^8.3.7",
       "@databases/pg": "^5.4.1",
       "@databases/pg-schema-cli": "^4.3.0",
       "@databases/pg-typed": "^4.3.0",
@@ -71,6 +71,7 @@
    },
    "devDependencies": {
       "@faker-js/faker": "^7.3.0",
+      "@jest-mock/express": "^2.0.0",
       "@types/bcrypt": "^5.0.0",
       "@types/chai": "^4.1.2",
       "@types/cookie-parser": "^1.4.2",
@@ -112,6 +113,7 @@
       "ts-jest": "^28.0.5",
       "ts-mockito": "^2.6.1",
       "ts-node": "10.7.0",
+      "ttypescript": "^1.5.13",
       "typescript": "4.5.2"
    }
 }

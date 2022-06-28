@@ -5,7 +5,7 @@ export enum ErrorMessages {
   NotFound = 'We could not find requested information, please check request parameters.',
   ValidationErrors = 'Some validation errors ocurred during your request',
   ExpiredSession = 'Your session has expired, please login again.',
-  Unauthorized = 'Invalid password or email'
+  Unauthorized = 'Invalid password or email.'
 
 }
 

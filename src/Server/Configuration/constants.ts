@@ -20,4 +20,6 @@ export default class CONSTANTS {
   static CONNECTION_STRING : string = env.DATABASE_URL
 
   static ROUTE_IGNORE_PATTERN = '__IGNORE__'
+
+  static SALT_SECRET = env.MY_SECRET
 }

@@ -37,6 +37,7 @@ describe('Bot controller: Integrated Tests', () => {
 
     // Assert
     assert.equal(response.status, StatusCode.CREATED)
+    // TODO: Assert inserted x expected
   })
 
   it('2. Should not create bot if user does not exist', async () => {

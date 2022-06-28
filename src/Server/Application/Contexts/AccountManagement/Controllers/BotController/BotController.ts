@@ -1,9 +1,10 @@
 /* eslint-disable no-return-await */
 import { sql } from '@databases/pg'
 import {
-  Body, HttpCode, JsonController, Post,
+  Body, HttpCode, JsonController, Post
 } from 'routing-controllers'
 import { Service } from 'typedi'
+import { Mapper } from '../../../../../Commons/Mapper/Mapper'
 import Bot from '../../../../../Domain/Entities/Bot'
 import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
 import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
@@ -37,7 +38,8 @@ export default class BotController extends BaseCrudController<Bot> {
 
     async function transaction() : Promise<Promise<Bot>> {
       return await PgTypedDbConnection.db.tx(async (db) => {
-        const insertedBot = await self.repository.Create(body.MapToDTO(), db)
+        const bot = Mapper.map(body, CreateBotRequest, Bot)
+        const insertedBot = await self.repository.Create(bot, db)
 
         await db.query(sql`
           INSERT INTO users_bots VALUES (${body.userId}, ${insertedBot.id})

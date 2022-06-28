@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* istanbul ignore file */
+
 import bodyParser from 'body-parser'
 import express from 'express'
 import morgan from 'morgan'
@@ -34,6 +36,7 @@ export class Server {
   public Start() {
     this.App = createExpressServer(Server.RoutingControllersOptions)
 
+    this.InstallServices()
     this.SetupDI()
 
     this.ConfigureGlobalMiddlewares()
@@ -47,6 +50,9 @@ export class Server {
     Logger.info(`${constants.ENV} server running on port: ${this.Port}`)
 
     return listen
+  }
+
+  private InstallServices() {
   }
 
   private SetupDI() {

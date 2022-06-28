@@ -1,11 +1,10 @@
 import { JwtPayload, sign, verify } from 'jsonwebtoken'
+import CONSTANTS from '../../../../Configuration/constants'
 import IUserToken from '../Interfaces/IUserToken'
 
 require('dotenv/config')
 
 export default class JwtConfig {
-  static SECRET = process.env.SECRET;
-
   static BaseConfig = {
     expiresIn: '1d',
     algorithm: 'HS256',
@@ -26,11 +25,11 @@ export default class JwtConfig {
 
   static GenerateToken(user : IUserToken, jwtConfig : object) : string {
     const payload = JwtConfig.CreateJWTPayload(user)
-    const token = sign(payload, JwtConfig.SECRET, jwtConfig)
+    const token = sign(payload, CONSTANTS.SALT_SECRET, jwtConfig)
     return token
   }
 
   static Decode(token : string) : JwtPayload {
-    return verify(token, JwtConfig.SECRET) as JwtPayload
+    return verify(token, CONSTANTS.SALT_SECRET) as JwtPayload
   }
 }

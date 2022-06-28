@@ -17,7 +17,9 @@ export abstract class BaseRepository<
   async Create(model: Partial<Entity>, connection?: Connections): Promise<Entity> {
     const dbConnection = connection || PgTypedDbConnection.db
 
-    const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, DbInsertableEntity>(model)
+    const cleanedEntity = this.CleanEntity(model)
+
+    const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, DbInsertableEntity>(cleanedEntity)
 
     Logger.info(`Executing query: Create with the following parameters\n${serializedEntity}`)
 
@@ -55,6 +57,18 @@ export abstract class BaseRepository<
     )
 
     return !!updatedEntities
+  }
+
+  private CleanEntity(model: Partial<Entity>) : Partial<Entity> {
+    const entity = { ...model }
+
+    Object.entries(entity).forEach(([key, value]) => {
+      if (!value && value !== 0) {
+        delete entity[key]
+      }
+    })
+
+    return entity
   }
 
   // async Delete(query: WhereCondition<DbEntity>, connection?: Connections): Promise<void> {

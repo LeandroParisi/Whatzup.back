@@ -7,20 +7,12 @@ export default class UserControllerStubsShared {
     const cityId = faker.datatype.number()
     const stateId = faker.datatype.number()
     const countryId = faker.datatype.number()
-    const {
-      addressComplement,
-      addressNumber,
-      addressStreet,
-      documentNumber,
-      email,
-      lastName,
-      neighbourhood,
-      middleName,
-      whatsappId,
-      whatsappNumber,
-      firstName,
-      postalCode,
-    } = UserMock.GetRandomUser(countryId, stateId, cityId)
+
+    const user = UserMock.GetRandomPartialUser(countryId, stateId, cityId)
+
+    const userPayload = { ...user }
+    delete userPayload.isActive
+    delete userPayload.wasActivated
 
     const payload : CreateUserRequest = {
       city: {
@@ -39,18 +31,7 @@ export default class UserControllerStubsShared {
         iso2: faker.datatype.string(2),
         stateCode: faker.datatype.string(2),
       },
-      addressComplement,
-      addressNumber,
-      addressStreet,
-      documentNumber,
-      email,
-      lastName,
-      neighbourhood,
-      middleName,
-      whatsappId,
-      whatsappNumber,
-      firstName,
-      postalCode,
+      ...userPayload,
     }
 
     return payload

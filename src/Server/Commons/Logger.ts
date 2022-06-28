@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* istanbul ignore file */
+
 import * as logger from 'winston'
 import ApiError from '../Application/Shared/Errors/ApiError'
 import CONSTANTS, { Envs } from '../Configuration/constants'

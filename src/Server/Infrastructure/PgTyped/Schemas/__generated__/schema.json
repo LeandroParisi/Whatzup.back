@@ -92,7 +92,7 @@
     ]
   },
   {
-    "name": "custom_plan_feature",
+    "name": "custom_plan_features",
     "columns": [
       {
         "name": "created_at",
@@ -130,13 +130,6 @@
         "typeName": "INTEGER"
       },
       {
-        "name": "type_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
         "name": "updated_at",
         "isNullable": false,
         "hasDefault": true,
@@ -165,15 +158,8 @@
     ]
   },
   {
-    "name": "default_plan_feature",
+    "name": "default_plan_features",
     "columns": [
-      {
-        "name": "created_at",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 1082,
-        "typeName": "DATE"
-      },
       {
         "name": "default_plan_id",
         "isNullable": true,
@@ -201,20 +187,6 @@
         "hasDefault": false,
         "typeId": 23,
         "typeName": "INTEGER"
-      },
-      {
-        "name": "type_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "updated_at",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 1082,
-        "typeName": "DATE"
       }
     ]
   },
@@ -241,6 +213,25 @@
         "hasDefault": false,
         "typeId": 1700,
         "typeName": "NUMERIC"
+      }
+    ]
+  },
+  {
+    "name": "feature_types",
+    "columns": [
+      {
+        "name": "id",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "name",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
       }
     ]
   },
@@ -274,6 +265,13 @@
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
+      },
+      {
+        "name": "type_id",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
       },
       {
         "name": "updated_at",
@@ -382,25 +380,6 @@
         "hasDefault": false,
         "typeId": 1114,
         "typeName": "TIMESTAMP"
-      }
-    ]
-  },
-  {
-    "name": "plan_feature_type",
-    "columns": [
-      {
-        "name": "id",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "name",
-        "isNullable": false,
-        "hasDefault": false,
-        "typeId": 1043,
-        "typeName": "VARCHAR"
       }
     ]
   },
@@ -581,7 +560,7 @@
       {
         "name": "is_active",
         "isNullable": true,
-        "hasDefault": false,
+        "hasDefault": true,
         "typeId": 16,
         "typeName": "BOOL"
       },
@@ -630,7 +609,7 @@
       {
         "name": "was_activated",
         "isNullable": true,
-        "hasDefault": false,
+        "hasDefault": true,
         "typeId": 16,
         "typeName": "BOOL"
       },

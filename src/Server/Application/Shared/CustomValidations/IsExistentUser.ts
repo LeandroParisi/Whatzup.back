@@ -3,7 +3,6 @@ import {
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-  ValidationArguments,
 } from 'class-validator'
 import Container, { Service } from 'typedi'
 import { UserRepository } from '../../../Infrastructure/PgTyped/Repositories/UserRepository'
@@ -11,7 +10,7 @@ import { UserRepository } from '../../../Infrastructure/PgTyped/Repositories/Use
 @ValidatorConstraint({ async: true })
 @Service()
 export class IsExistentUserConstraint implements ValidatorConstraintInterface {
-  validate(userId: number, _args: ValidationArguments) {
+  validate(userId: number) {
     const userRepository = Container.get(UserRepository)
 
     return userRepository.FindOne({ id: userId }).then((user) => {

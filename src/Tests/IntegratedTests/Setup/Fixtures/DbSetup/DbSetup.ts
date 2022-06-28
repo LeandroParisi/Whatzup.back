@@ -56,7 +56,7 @@ export default class DbSetup {
 
   public async BasicUserSetup(params? : BasicUserSetupParams) : Promise<BasicUserSetupReturn> {
     const { state, city, country } = await this.BasicLocationsSetup(params)
-    const user = UserMock.GetRandomUser(country.id, state.id, city.id)
+    const user = UserMock.GetRandomPartialUser(country.id, state.id, city.id)
     const userToInsert = params?.user ? {
       ...user, ...params.user, stateId: state.id, countryId: country.id, cityId: city.id,
     } : user

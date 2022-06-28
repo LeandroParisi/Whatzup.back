@@ -6,6 +6,7 @@ export const upScript : string = `
     "whatsapp_number" varchar UNIQUE NOT NULL,
     "whatsapp_id" varchar UNIQUE NOT NULL,
     "email" varchar UNIQUE NOT NULL,
+    "password" varchar UNIQUE NOT NULL,
     "document_number" varchar UNIQUE NOT NULL,
     "first_name" varchar NOT NULL,
     "middle_name" varchar,
@@ -54,10 +55,9 @@ export const upScript : string = `
     "price" decimal NOT NULL
   );
 
-  CREATE TABLE "custom_plan_feature" (
+  CREATE TABLE "custom_plan_features" (
     "custom_plan_id" int,
     "feature_id" int,
-    "type_id" int,
     "max_limit" int,
     "is_active" bool,
     "created_at" date NOT NULL DEFAULT 'now()',
@@ -70,23 +70,21 @@ export const upScript : string = `
     "price" decimal NOT NULL
   );
 
-  CREATE TABLE "default_plan_feature" (
+  CREATE TABLE "default_plan_features" (
     "default_plan_id" int,
     "feature_id" int,
-    "type_id" int,
     "max_limit" int,
-    "is_active" bool,
-    "created_at" date NOT NULL DEFAULT 'now()',
-    "updated_at" date NOT NULL DEFAULT 'now()'
+    "is_active" bool
   );
 
-  CREATE TABLE "plan_feature_type" (
+  CREATE TABLE "feature_types" (
     "id" SERIAL PRIMARY KEY,
     "name" varchar NOT NULL
   );
 
   CREATE TABLE "features" (
     "id" SERIAL PRIMARY KEY,
+    "type_id" int,
     "name" varchar NOT NULL,
     "is_active" bool,
     "created_at" date NOT NULL DEFAULT 'now()',
@@ -145,27 +143,26 @@ export const upScript : string = `
 
   ALTER TABLE "user_plan" ADD FOREIGN KEY ("custom_plan_id") REFERENCES "custom_plans" ("id");
 
-  ALTER TABLE "custom_plan_feature" ADD FOREIGN KEY ("custom_plan_id") REFERENCES "custom_plans" ("id");
+  ALTER TABLE "custom_plan_features" ADD FOREIGN KEY ("custom_plan_id") REFERENCES "custom_plans" ("id");
 
-  ALTER TABLE "custom_plan_feature" ADD FOREIGN KEY ("feature_id") REFERENCES "features" ("id");
+  ALTER TABLE "custom_plan_features" ADD FOREIGN KEY ("feature_id") REFERENCES "features" ("id");
 
-  ALTER TABLE "custom_plan_feature" ADD FOREIGN KEY ("type_id") REFERENCES "plan_feature_type" ("id");
+  ALTER TABLE "features" ADD FOREIGN KEY ("type_id") REFERENCES "feature_types" ("id");
 
-  ALTER TABLE "default_plan_feature" ADD FOREIGN KEY ("default_plan_id") REFERENCES "default_plans" ("id");
+  ALTER TABLE "default_plan_features" ADD FOREIGN KEY ("default_plan_id") REFERENCES "default_plans" ("id");
 
-  ALTER TABLE "default_plan_feature" ADD FOREIGN KEY ("feature_id") REFERENCES "features" ("id");
+  ALTER TABLE "default_plan_features" ADD FOREIGN KEY ("feature_id") REFERENCES "features" ("id");
 
-  ALTER TABLE "default_plan_feature" ADD FOREIGN KEY ("type_id") REFERENCES "plan_feature_type" ("id");
 
   ALTER TABLE "payments" ADD FOREIGN KEY ("user_plan_id") REFERENCES "user_plan" ("id");
 `
 
 export const downScript : string = `
-  DROP TABLE default_plan_feature;
-  DROP TABLE custom_plan_feature;
-  DROP TABLE plan_feature_type;
-  DROP TABLE users_bots;
+  DROP TABLE default_plan_features;
+  DROP TABLE custom_plan_features;
   DROP TABLE features;
+  DROP TABLE feature_types;
+  DROP TABLE users_bots;
   DROP TABLE payments;
   DROP TABLE user_plan;
   DROP TABLE default_plans;

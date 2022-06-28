@@ -45,7 +45,7 @@ describe('Base repository tests', () => {
   it('3. Should create entity properlly', async () => {
     // Arrange
     const { state, city, country } = await dbSetup.BasicLocationsSetup()
-    const user = UserMock.GetRandomUser(country.id, state.id, city.id)
+    const user = UserMock.GetRandomPartialUser(country.id, state.id, city.id)
 
     // Act
     const insertedUser = await new UserRepository(TestDbConnection.tables.users)

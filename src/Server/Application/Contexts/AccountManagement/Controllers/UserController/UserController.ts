@@ -6,10 +6,11 @@ import {
   Body,
   HttpCode,
   JsonController,
-  Post
+  Post,
 } from 'routing-controllers'
 import { Service } from 'typedi'
 import { Logger } from '../../../../../Commons/Logger'
+import { Mapper } from '../../../../../Commons/Mapper/Mapper'
 import User from '../../../../../Domain/Entities/User'
 import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
 import { CityRepository } from '../../../../../Infrastructure/PgTyped/Repositories/CityRepository'
@@ -23,7 +24,6 @@ import { CityDTO } from '../../../../Shared/DTOs/Locations/CityDTO'
 import { CountryDTO } from '../../../../Shared/DTOs/Locations/CountryDTO'
 import { StateDTO } from '../../../../Shared/DTOs/Locations/StateDTO'
 import ApiError from '../../../../Shared/Errors/ApiError'
-import { CreateUserDTO } from '../../UseCases/CreateUser/DTOs/CreateUserDTO'
 import CreateUserRequest from './Requests/CreateUserRequest'
 
 @Service()
@@ -48,9 +48,9 @@ export default class UserController extends BaseCrudController<User> {
 
     await this.CheckLocalities(country, state, city)
 
-    const userDto = CreateUserDTO.MapFromCreateRequest(body)
+    const user = Mapper.map(body, CreateUserRequest, User)
 
-    return await super.Create(userDto)
+    return await super.Create(user)
   }
 
   private async CheckLocalities(country: CountryDTO, state: StateDTO, city: CityDTO) {

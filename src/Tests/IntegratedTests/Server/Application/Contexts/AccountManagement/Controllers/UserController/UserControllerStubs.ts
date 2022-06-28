@@ -15,7 +15,7 @@ export default class UserControllerStubs {
     const country = CountryMock.GetDTO({ id: countryId })
     const city = CityMock.GetDTO({ id: cityId })
 
-    const user = UserMock.GetRandomUser(countryId, stateId, cityId)
+    const user = UserMock.GetRandomPartialUser(countryId, stateId, cityId)
     const userObj = { ...user }
     delete userObj.stateId
     delete userObj.countryId
@@ -98,6 +98,13 @@ export default class UserControllerStubs {
         city,
         ...userObj,
         postalCode: null,
+      },
+      {
+        state,
+        country,
+        city,
+        ...userObj,
+        password: null,
       },
     ]
   }

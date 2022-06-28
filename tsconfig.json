@@ -17,6 +17,12 @@
     "rootDirs": [
       "./src",
     ],
+    "plugins": [
+      {
+        "transform": "@automapper/classes/transformer-plugin",
+        "modelFileNameSuffix": [".dto.ts"]
+      }
+    ],
    },
    "exclude": [
     "node_modules"
