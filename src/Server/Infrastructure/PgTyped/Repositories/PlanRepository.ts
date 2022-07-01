@@ -46,11 +46,10 @@ export class PlanRepository extends BaseRepository<Plan, PlanDbModel, Plans_Inse
       SELECT
         f.id,
         f.name AS name,
-        ft.name AS type,
+        f.type AS type,
         pf.max_limit
       FROM plans_features AS pf
         INNER JOIN features AS f ON f.id = pf.feature_id
-        INNER JOIN feature_types AS ft ON f.type_id = ft.id
       WHERE pf.plan_id = ${planId}
     `)
 

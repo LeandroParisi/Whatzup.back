@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable no-use-before-define */
 import { faker } from '@faker-js/faker'
 import { getMockReq, getMockRes } from '@jest-mock/express'
@@ -14,6 +15,7 @@ import JwtConfig from '../../../../../../../Server/Application/Contexts/Authenti
 import IUserToken from '../../../../../../../Server/Application/Contexts/Authentication/Interfaces/IUserToken'
 import TokenAuthentication from '../../../../../../../Server/Application/Contexts/Authentication/Middlewares/TokenAuthentication'
 import { StatusCode } from '../../../../../../../Server/Application/Shared/APIs/Enums/Status'
+import IAuthenticatedRequest from '../../../../../../../Server/Application/Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import ApiError from '../../../../../../../Server/Application/Shared/Errors/ApiError'
 import { InexistentUserError } from '../../../../../../../Server/Application/Shared/Errors/SpecificErrors/InexistentUserError'
 import { UserRepository } from '../../../../../../../Server/Infrastructure/PgTyped/Repositories/UserRepository'
@@ -50,7 +52,7 @@ describe('Token authentication middleware tests', () => {
   theoretically('1. Should throw error when:', theories, async (theory) => {
     // Arrange
     const headers = MocksSetup(theory)
-    const req = getMockReq({ headers })
+    const req = getMockReq({ headers }) as unknown as IAuthenticatedRequest
 
     // Act
     try {
@@ -63,7 +65,7 @@ describe('Token authentication middleware tests', () => {
   it('2. Accept request if all information is valid', async () => {
     // Arrange
     const headers = MocksSetup({ hasHeaders: true, decodeError: false, invalidUser: false })
-    const req = getMockReq({ headers })
+    const req = getMockReq({ headers }) as unknown as IAuthenticatedRequest
 
     // Act
     await new TokenAuthentication(instance(mockedUserRepository)).use(req, res, next)

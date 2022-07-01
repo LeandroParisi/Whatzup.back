@@ -1,7 +1,11 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable max-len */
 import Container from 'typedi'
+import DetailedCustomPlanDTO from '../../../../../Domain/DTOs/DetailedCustomPlanDTO'
 import User from '../../../../../Domain/Entities/User'
+import { FeatureNames } from '../../../../../Domain/Enums/FeatureNames'
+import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
+import { PlanRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PlanRepository'
 import { UserRepository } from '../../../../../Infrastructure/PgTyped/Repositories/UserRepository'
 import { ErrorMessages } from '../../../../Shared/APIs/Enums/Messages'
 import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
@@ -13,8 +17,8 @@ export interface IValidateUserPlanParams {
   newBot? : boolean
 }
 
-function ValidateUserPlan(params : IValidateUserPlanParams) {
-  return async (request: IAuthenticatedRequest, response: any, next: (err?: any) => any) => {
+export default function ValidateUserPlan(params : IValidateUserPlanParams) {
+  return async (request: IAuthenticatedRequest, _response: any, next: (err?: any) => any) => {
     ValidateRequestPayload(request)
 
     const { user: { id } } = request
@@ -22,6 +26,8 @@ function ValidateUserPlan(params : IValidateUserPlanParams) {
     const user = await CheckIsValidUser(id)
 
     await CheckUserPlan(user, params)
+
+    next()
   }
 }
 
@@ -46,8 +52,36 @@ function ValidateRequestPayload(request: IAuthenticatedRequest) {
   }
 }
 
-function CheckUserPlan(user: User, rules: IValidateUserPlanParams) {
-  throw new Error('Function not implemented.')
+async function CheckUserPlan(user: User, rules: IValidateUserPlanParams) {
+  const planRepository = Container.get(PlanRepository)
+
+  const detailedPlan = await planRepository.GetDetailedPlan(user.planId)
+
+  if (!detailedPlan) throw new ApiError(StatusCode.FORBIDDEN, 'You need to be adherent to a plan before trying this operation.')
+
+  await ValidatePlan(user.id, detailedPlan, rules)
 }
 
-export default ValidateUserPlan
+async function ValidatePlan(userId : number, detailedPlan: DetailedCustomPlanDTO, rules: IValidateUserPlanParams) {
+  const { newBot } = rules
+
+  if (newBot) {
+    await ValidateNewBot(userId, detailedPlan)
+  }
+}
+
+async function ValidateNewBot(userId: number, detailedPlan: DetailedCustomPlanDTO) {
+  const botRepository = Container.get(BotRepository)
+  const planAllowedBots = detailedPlan.features.find((f) => f.name === FeatureNames.NumberOfBots)
+  const planMaxFeatures = detailedPlan.features.find((f) => f.name === FeatureNames.NumberOfSteps)
+
+  if (!planAllowedBots) return
+
+  const numberOfBots = await botRepository.Count({ userId, isActive: true })
+
+  if (numberOfBots + 1 > planAllowedBots.maxLimit) {
+    throw new ApiError(StatusCode.FORBIDDEN, 'Your plan does not allow you to have another bot.')
+  }
+
+  if (!planMaxFeatures) return
+}

@@ -1,15 +1,18 @@
 import { faker } from '@faker-js/faker'
 import DateUtils from '../../../Server/Commons/Utils/DateUtils'
 import Feature from '../../../Server/Domain/Entities/Feature'
+import { FeatureNames } from '../../../Server/Domain/Enums/FeatureNames'
+import { FeatureTypes } from '../../../Server/Domain/Enums/FeatureTypes'
+import RandomEnumValue from './Randoms/RandomEnumValue'
 
 type MockOptionals = Partial<Feature>
 
 export default class FeatureMock {
-  static GetRandom(typeId : number, optionals? : MockOptionals) : Feature {
+  static GetRandom(optionals? : MockOptionals) : Feature {
     const entity : Feature = {
       id: optionals?.id || faker.datatype.number(),
-      name: optionals?.name || faker.name.findName(),
-      typeId,
+      name: optionals?.name || RandomEnumValue(FeatureNames),
+      type: optionals?.type || RandomEnumValue(FeatureTypes),
       createdAt: DateUtils.DateNow(),
       updatedAt: DateUtils.DateNow(),
       isActive: faker.datatype.boolean(),

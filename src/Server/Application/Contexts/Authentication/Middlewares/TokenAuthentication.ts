@@ -1,10 +1,10 @@
-import { Request } from 'express'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { ExpressMiddlewareInterface } from 'routing-controllers'
 import { Service } from 'typedi'
 import { UserRepository } from '../../../../Infrastructure/PgTyped/Repositories/UserRepository'
 import { ErrorMessages } from '../../../Shared/APIs/Enums/Messages'
 import { StatusCode } from '../../../Shared/APIs/Enums/Status'
+import IAuthenticatedRequest from '../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import ApiError from '../../../Shared/Errors/ApiError'
 import { InexistentUserError } from '../../../Shared/Errors/SpecificErrors/InexistentUserError'
 import JwtConfig from '../Hashing/JwtConfig'
@@ -19,7 +19,7 @@ export default class TokenAuthentication implements ExpressMiddlewareInterface {
    */
   constructor(private userRepository : UserRepository) {}
 
-  async use(request: Request, response: any, next: (err?: any) => any) {
+  async use(request: IAuthenticatedRequest, response: any, next: (err?: any) => any) {
     if (!request.headers?.authorization?.length || request.headers == null) {
       throw new ApiError(StatusCode.UNAUTHORIZED, 'Missing token, unable to authenticate user.')
     }

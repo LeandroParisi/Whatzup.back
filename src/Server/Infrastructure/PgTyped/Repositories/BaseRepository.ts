@@ -42,6 +42,18 @@ export abstract class BaseRepository<
     return CaseSerializer.CastToCamel<DbEntity, Entity>(entity)
   }
 
+  async Count(query: Partial<Entity>, connection?: Connections) : Promise<number> {
+    const dbConnection = connection || PgTypedDbConnection.db
+
+    const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(query)
+
+    Logger.info(`Executing query: FindOne with the following parameters\n${serializedQuery}`)
+
+    const count = await this.table(dbConnection).count(serializedQuery)
+
+    return count
+  }
+
   async UpdateOne(
     updateQuery: Partial<Entity>, entity: Partial<Entity>, connection?: Connections,
   ): Promise<boolean> {

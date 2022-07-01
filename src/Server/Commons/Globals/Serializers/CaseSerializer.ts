@@ -28,6 +28,9 @@ export class CaseSerializer {
 
   private static KeysToCamel(o : any) {
     try {
+      if (TypeUtils.IsDate(o)) {
+        return o
+      }
       if (TypeUtils.IsObject(o)) {
         const n = {}
 
@@ -52,6 +55,9 @@ export class CaseSerializer {
 
   private static KeysToSnake(o : any) {
     try {
+      if (TypeUtils.IsDate(o)) {
+        return o
+      }
       if (TypeUtils.IsObject(o)) {
         const n = {}
 

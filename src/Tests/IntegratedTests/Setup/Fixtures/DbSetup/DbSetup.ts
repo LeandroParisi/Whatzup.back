@@ -6,14 +6,12 @@ import 'reflect-metadata'
 import City from '../../../../../Server/Domain/Entities/City'
 import Country from '../../../../../Server/Domain/Entities/Country'
 import Feature from '../../../../../Server/Domain/Entities/Feature'
-import FeatureType from '../../../../../Server/Domain/Entities/FeatureType'
 import Plan from '../../../../../Server/Domain/Entities/Plan'
 import State from '../../../../../Server/Domain/Entities/State'
 import User from '../../../../../Server/Domain/Entities/User'
 import CityMock from '../../../../Shared/Mocks/CityMock'
 import CountryMock from '../../../../Shared/Mocks/CountryMock'
 import FeatureMock from '../../../../Shared/Mocks/FeatureMock'
-import FeatureTypeMock from '../../../../Shared/Mocks/FeatureTypeMock'
 import PlanMock from '../../../../Shared/Mocks/PlanMock'
 import StateMock from '../../../../Shared/Mocks/StateMock'
 import UserMock from '../../../../Shared/Mocks/UserMock'
@@ -21,7 +19,6 @@ import { BotSetup } from './EntitiesSetup/BotSetup'
 import { CitySetup } from './EntitiesSetup/CitySetup'
 import { CountrySetup } from './EntitiesSetup/CountrySetup'
 import { FeatureSetup } from './EntitiesSetup/FeatureSetup'
-import { FeatureTypeSetup } from './EntitiesSetup/FeatureTypeSetup'
 import { PlanSetup } from './EntitiesSetup/PlanSetup'
 import { PlansFeaturesSetup } from './EntitiesSetup/PlansFeaturesSetup'
 import { StateSetup } from './EntitiesSetup/StateSetup'
@@ -56,12 +53,10 @@ export interface BasicLocationsSetupReturn {
 
 export interface BasicFeatureSetupParams {
   feature? : Partial<Feature>
-  featureType? : Partial<FeatureType>
 }
 
 export interface BasicFeatureSetupReturn {
   feature : Feature
-  featureType : FeatureType
 }
 
 export interface BasicPlanSetupParams {
@@ -70,6 +65,11 @@ export interface BasicPlanSetupParams {
 
 export interface BasicPlanSetupReturn {
   plan : Plan
+}
+
+export interface FullPlanSetupReturn {
+  plan : Plan
+  features : Feature[]
 }
 
 export default class DbSetup {
@@ -85,8 +85,6 @@ export default class DbSetup {
 
   public featureSetup : FeatureSetup
 
-  public featureTypeSetup : FeatureTypeSetup
-
   public planSetup : PlanSetup
 
   public plansFeaturesSetup : PlansFeaturesSetup
@@ -101,7 +99,6 @@ export default class DbSetup {
     this.countrySetup = new CountrySetup()
     this.botSetup = new BotSetup()
     this.featureSetup = new FeatureSetup()
-    this.featureTypeSetup = new FeatureTypeSetup()
     this.planSetup = new PlanSetup()
     this.plansFeaturesSetup = new PlansFeaturesSetup()
   }
@@ -132,16 +129,16 @@ export default class DbSetup {
       planParams? : BasicPlanSetupParams,
       featuresToCreate?: number
     },
-  ) : Promise<Plan> {
+  ) : Promise<FullPlanSetupReturn> {
     const { plan } = await this.BasicPlanSetup(planParams)
     const numberOfFeatures = featuresToCreate ?? faker.datatype.number({ max: 10 })
     const features = await this.CreateXFeatures(numberOfFeatures)
 
-    for (let i = 1; i <= featuresToCreate; i += 1) {
-      await this.BasicPlanFeatureSetup(features.map((f) => f.feature.id, { plan }))
+    for (const f of features) {
+      await this.plansFeaturesSetup.Create({ planId: plan.id, featureId: f.feature.id })
     }
 
-    return plan
+    return { plan, features: features.map((f) => f.feature) }
   }
 
   public async BasicPlanFeatureSetup(featureIds : number[], params? : BasicPlanSetupParams) : Promise<void> {
@@ -164,16 +161,13 @@ export default class DbSetup {
   }
 
   public async BasicFeatureSetup(params? : BasicFeatureSetupParams) : Promise<BasicFeatureSetupReturn> {
-    const featureType = params?.featureType ? FeatureTypeMock.GetRandom(params.featureType) : FeatureTypeMock.GetRandom()
     const feature = params?.feature
-      ? FeatureMock.GetRandom(featureType.id, params.feature)
-      : FeatureMock.GetRandom(featureType.id)
+      ? FeatureMock.GetRandom(params.feature)
+      : FeatureMock.GetRandom()
 
-    const insertedFeatureType = await this.featureTypeSetup.Create(featureType)
     const insertedfeature = await this.featureSetup.Create(feature)
 
     return {
-      featureType: insertedFeatureType,
       feature: insertedfeature,
     }
   }
@@ -215,7 +209,6 @@ export default class DbSetup {
       await this.plansFeaturesSetup.CleanUp()
       await this.planSetup.CleanUp()
       await this.featureSetup.CleanUp()
-      await this.featureTypeSetup.CleanUp()
       await this.botSetup.CleanUp()
       await this.userSetup.CleanUp()
       await this.citySetup.CleanUp()

@@ -49,14 +49,9 @@
     "max_limit" int
   );
 
-  CREATE TABLE feature_types (
-    "id" SERIAL PRIMARY KEY,
-    "name" varchar NOT NULL
-  );
-
   CREATE TABLE features (
     "id" SERIAL PRIMARY KEY,
-    "type_id" int,
+    "type" varchar NOT NULL,
     "name" varchar NOT NULL,
     "is_active" bool,
     "created_at" date NOT NULL DEFAULT 'now()',
@@ -113,8 +108,6 @@
   ALTER TABLE "plans_features" ADD FOREIGN KEY ("plan_id") REFERENCES "plans" ("id");
 
   ALTER TABLE "plans_features" ADD FOREIGN KEY ("feature_id") REFERENCES "features" ("id");
-
-  ALTER TABLE "features" ADD FOREIGN KEY ("type_id") REFERENCES "feature_types" ("id");
 
   ALTER TABLE "payments" ADD FOREIGN KEY ("plan_id") REFERENCES "plans" ("id");
 
