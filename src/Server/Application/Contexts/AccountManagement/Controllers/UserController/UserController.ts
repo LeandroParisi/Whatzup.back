@@ -24,6 +24,7 @@ import { CityDTO } from '../../../../Shared/DTOs/Locations/CityDTO'
 import { CountryDTO } from '../../../../Shared/DTOs/Locations/CountryDTO'
 import { StateDTO } from '../../../../Shared/DTOs/Locations/StateDTO'
 import ApiError from '../../../../Shared/Errors/ApiError'
+import PasswordHashing from '../../../Authentication/Hashing/PasswordHashing'
 import CreateUserRequest from './Requests/CreateUserRequest'
 
 @Service()
@@ -48,7 +49,9 @@ export default class UserController extends BaseCrudController<User> {
 
     await this.CheckLocalities(country, state, city)
 
-    const user = Mapper.map(body, CreateUserRequest, User)
+    const hashedPassword = await PasswordHashing.HashPassword(body.password)
+
+    const user = Mapper.map(body, CreateUserRequest, User, { extraArgs: () => ({ hashedPassword }) })
 
     return await super.Create(user)
   }

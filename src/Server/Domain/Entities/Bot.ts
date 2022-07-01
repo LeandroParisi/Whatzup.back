@@ -8,6 +8,8 @@ export default class Bot extends BaseEntity {
 
   readonly steps : Step[]
 
+  readonly userId : number
+
   readonly isActive : boolean
 
   readonly createdAt : Date

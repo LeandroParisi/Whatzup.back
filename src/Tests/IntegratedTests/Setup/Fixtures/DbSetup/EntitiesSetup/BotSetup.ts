@@ -2,23 +2,23 @@
 /* eslint-disable camelcase */
 import { TableHelper } from '@databases/pg-typed'
 import { Service } from 'typedi'
-import User from '../../../../../../Server/Domain/Entities/User'
+import Bot from '../../../../../../Server/Domain/Entities/Bot'
 import {
-  Users as UserDbModel,
-  Users_InsertParameters,
+  Bots as BotDbModel,
+  Bots_InsertParameters,
 } from '../../../../../../Server/Infrastructure/PgTyped/Schemas/__generated__'
 import { TestDbConnection } from '../TestDbConnection'
 import { BaseEntitySetup } from './BaseEntitySetup'
 
 @Service()
-export class UserSetup extends BaseEntitySetup<User, UserDbModel, Users_InsertParameters> {
-  table: TableHelper<UserDbModel, Users_InsertParameters, 'defaultConnection'>
+export class BotSetup extends BaseEntitySetup<Bot, BotDbModel, Bots_InsertParameters> {
+  table: TableHelper<BotDbModel, Bots_InsertParameters, 'defaultConnection'>
 
   /**
    *
    */
   constructor() {
     super()
-    this.table = TestDbConnection.tables.users
+    this.table = TestDbConnection.tables.bots
   }
 }

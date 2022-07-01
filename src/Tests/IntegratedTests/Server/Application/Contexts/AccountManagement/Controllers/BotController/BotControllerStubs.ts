@@ -1,15 +1,14 @@
-import { faker } from '@faker-js/faker'
 import CreateBotRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/Requests/CreateBot/CreateBotRequest'
+import StepTypes from '../../../../../../../../Server/Domain/Entities/Steps/Enums/StepTypes'
 import BotMock from '../../../../../../../Shared/Mocks/BotMock'
 
 export default class BotControllerStubs {
-  public static GetValidPayload(userId?: number) : CreateBotRequest {
+  public static GetValidPayload() : CreateBotRequest {
     const bot = BotMock.GetRandom()
 
     const payload = new CreateBotRequest()
     payload.botName = bot.botName
     payload.steps = bot.steps
-    payload.userId = userId || faker.datatype.number(1000000)
 
     return payload
   }
@@ -24,6 +23,31 @@ export default class BotControllerStubs {
       {
         ...validPayload,
         botName: null,
+      },
+      {
+        ...validPayload,
+        steps: [
+          {
+            id: null,
+            introMessage: simpleStep.introMessage,
+            name: simpleStep.name,
+            type: StepTypes.Options,
+            options: [],
+          },
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          simpleStep,
+          {
+            id: null,
+            introMessage: simpleStep.introMessage,
+            name: simpleStep.name,
+            type: StepTypes.Simple,
+            options: optionsStep.options,
+          },
+        ],
       },
       {
         ...validPayload,

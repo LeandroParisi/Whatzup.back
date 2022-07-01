@@ -5,7 +5,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator'
 import Container, { Service } from 'typedi'
-import { UserRepository } from '../../../Infrastructure/PgTyped/Repositories/UserRepository'
+import { UserRepository } from '../../../../Infrastructure/PgTyped/Repositories/UserRepository'
 
 @ValidatorConstraint({ async: true })
 @Service()

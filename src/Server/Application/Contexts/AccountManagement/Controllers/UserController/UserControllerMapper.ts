@@ -1,13 +1,13 @@
 import {
-  createMap, forMember, ignore, mapFrom, Mapper,
+  createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments
 } from '@automapper/core'
-import StaticImplements from '../../../../../../Commons/Anotations/StaticImplements'
-import User from '../../../../../../Domain/Entities/User'
-import { IMapInstaller } from '../../../../../../Setup/Interfaces/IMapInstaller'
-import CreateUserRequest from './CreateUserRequest'
+import StaticImplements from '../../../../../Commons/Anotations/StaticImplements'
+import User from '../../../../../Domain/Entities/User'
+import { IMapInstaller } from '../../../../../Setup/Interfaces/IMapInstaller'
+import CreateUserRequest from './Requests/CreateUserRequest'
 
 @StaticImplements<IMapInstaller>()
-export default class CreateUserMapper {
+export default class UserControllerMapper {
   public static CreateMappings(mapper : Mapper) {
     createMap(
       mapper,
@@ -28,6 +28,10 @@ export default class CreateUserMapper {
       forMember(
         (dst) => dst.id,
         ignore(),
+      ),
+      forMember(
+        (dst) => dst.password,
+        mapWithArguments((_s, { hashedPassword }) => hashedPassword),
       ),
     )
   }

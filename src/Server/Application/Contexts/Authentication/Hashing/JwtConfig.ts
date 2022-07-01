@@ -15,7 +15,7 @@ export default class JwtConfig {
     algorithm: 'HS256',
   };
 
-  static CreateJWTPayload(user : IUserToken) : JwtPayload {
+  private static CreateJWTPayload(user : IUserToken) : JwtPayload {
     return {
       iss: 'WhatsappApp',
       aud: 'identity',

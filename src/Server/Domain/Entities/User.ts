@@ -62,6 +62,8 @@ export default class User extends BaseEntity {
 
   readonly updatedAt?: Date
 
+  readonly planId?: number
+
   /**
    *
    */
@@ -85,6 +87,7 @@ export default class User extends BaseEntity {
     postalCode?: string,
     wasActivated?: boolean,
     isActive?: boolean,
+    planId?: number,
     createdAt?: Date,
     updatedAt?: Date,
   ) {
@@ -110,6 +113,7 @@ export default class User extends BaseEntity {
     this.isActive = isActive
     this.createdAt = createdAt
     this.updatedAt = updatedAt
+    this.planId = planId
   }
 
   public GetFullName() : string {

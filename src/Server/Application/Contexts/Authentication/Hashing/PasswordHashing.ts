@@ -1,9 +1,8 @@
 import { compare, hash } from 'bcrypt'
-import CONSTANTS from '../../../../Configuration/constants'
 
 export default class PasswordHashing {
   static async HashPassword(password : string) {
-    const hashedPassword = await hash(password, CONSTANTS.SALT_SECRET)
+    const hashedPassword = await hash(password, 10)
     return hashedPassword
   }
 

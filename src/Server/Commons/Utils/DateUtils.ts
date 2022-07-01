@@ -1,20 +1,6 @@
 /* eslint-disable no-shadow */
 
-enum dayTranslation {
-  sunday = 'Sunday',
-  monday = 'Monday',
-  tuesday = 'Tuesday',
-  wednesday = 'Wednesday',
-  thursday = 'Thursday',
-  friday = 'Friday',
-  saturday = 'Saturday'
-}
-
 export default class DaysUtils {
-  static TranslateToPt(day : keyof typeof dayTranslation) : string {
-    return dayTranslation[day]
-  }
-
   static DateNow() {
     const timestampDate = new Date(Date.now())
 

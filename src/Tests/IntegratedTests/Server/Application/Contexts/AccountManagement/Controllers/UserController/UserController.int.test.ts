@@ -42,7 +42,10 @@ describe('User controller: Integrated Tests', () => {
     const insertedCountry = await dbSetup.countrySetup.FindOne({ iso2: payload.country.iso2 })
 
     assert.equal(response.status, StatusCode.CREATED)
-    assert.deepEqual(JSON.stringify({ ...insertedUser, ...expectedUser }), JSON.stringify(insertedUser))
+    assert.deepEqual(
+      JSON.stringify({ ...insertedUser, ...expectedUser, password: insertedUser.password }),
+      JSON.stringify(insertedUser),
+    )
     assert.deepEqual(insertedState, payload.state)
     assert.deepEqual(insertedCity, payload.city)
     assert.deepEqual(insertedCountry, payload.country)

@@ -3,8 +3,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Client } from 'pg'
 import * as PostgressConnectionStringParser from 'pg-connection-string'
-import { upScript } from '../../../Server/Infrastructure/Migrations/1655918532171_create-database'
+import { createDatabaseScript } from '../../../Server/Infrastructure/Migrations/1655918532171_create-database'
 import IntegratedTestsConfig from './IntegratedTestsConfig'
+
+require('dotenv/config')
+
+const { env } = process
 
 const {
   host, user, password, port,
@@ -23,29 +27,63 @@ class GlobalSetup {
     await this.CreateDataBase()
   }
 
-  static async CreateDataBase() {
+  private static async CreateDataBase() {
+    await this.TryCreateDb()
+    await this.TrySeedDb()
+  }
+
+  private static async TrySeedDb() {
+    await client.connect()
+
+    console.log('\nChecking if Db needs to be seeded\n')
+
+    const { rowCount } = await client.query(`
+    SELECT * FROM information_schema.tables
+      WHERE table_catalog = '${IntegratedTestsConfig.TEST_DATABASE_NAME}' AND table_name = 'countries'
+    `)
+
+    if (!rowCount) {
+      console.log('\nSeeding DB\n')
+
+      await client.query(createDatabaseScript)
+
+      console.log('\nDB successfully seeded\n')
+    } else {
+      console.log('\nNo need to seed DB\n')
+    }
+
+    await client.end()
+  }
+
+  private static async TryCreateDb() {
+    console.log('\nChecking if Db needs to be created\n')
+
     await client2.connect()
+
     const { rowCount } = await client2.query(`
     SELECT 'CREATE DATABASE ${IntegratedTestsConfig.TEST_DATABASE_NAME}'
       WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${IntegratedTestsConfig.TEST_DATABASE_NAME}')
     `)
+
     if (rowCount) {
+      console.log('\nCreating DB\n')
       await client2.query(`CREATE DATABASE ${IntegratedTestsConfig.TEST_DATABASE_NAME}`)
-      await client.connect()
-      await client.query(upScript)
-      await client.end()
+      console.log('\nDB successfully created\n')
+    } else {
+      console.log('\nNo need to create DB\n')
     }
+
     await client2.end()
   }
 }
 
 module.exports = async () => {
   try {
-    console.log('Setting up test environment')
+    console.log('\nSetting up test environment\n')
     await GlobalSetup.Setup()
-    console.log('Successfully set up test environment')
+    console.log('\nSuccessfully set up test environment\n')
   } catch (error) {
-    console.log('Error trying to set up test environment')
+    console.log('\nError trying to set up test environment\n')
     console.log(error)
     process.exit(1)
   }

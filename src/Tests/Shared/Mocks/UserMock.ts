@@ -29,6 +29,7 @@ export default class UserMock {
       optionals?.postalCode || faker.address.zipCode(),
       optionals?.wasActivated || optionals?.wasActivated || faker.datatype.boolean(),
       optionals?.isActive || optionals?.isActive || faker.datatype.boolean(),
+      optionals?.planId || null,
     )
 
     return user

@@ -1,16 +1,32 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
+import { SQLQuery } from '@databases/pg'
+import { faker } from '@faker-js/faker'
 import 'reflect-metadata'
 import City from '../../../../../Server/Domain/Entities/City'
 import Country from '../../../../../Server/Domain/Entities/Country'
+import Feature from '../../../../../Server/Domain/Entities/Feature'
+import FeatureType from '../../../../../Server/Domain/Entities/FeatureType'
+import Plan from '../../../../../Server/Domain/Entities/Plan'
 import State from '../../../../../Server/Domain/Entities/State'
 import User from '../../../../../Server/Domain/Entities/User'
 import CityMock from '../../../../Shared/Mocks/CityMock'
 import CountryMock from '../../../../Shared/Mocks/CountryMock'
+import FeatureMock from '../../../../Shared/Mocks/FeatureMock'
+import FeatureTypeMock from '../../../../Shared/Mocks/FeatureTypeMock'
+import PlanMock from '../../../../Shared/Mocks/PlanMock'
 import StateMock from '../../../../Shared/Mocks/StateMock'
 import UserMock from '../../../../Shared/Mocks/UserMock'
+import { BotSetup } from './EntitiesSetup/BotSetup'
 import { CitySetup } from './EntitiesSetup/CitySetup'
 import { CountrySetup } from './EntitiesSetup/CountrySetup'
+import { FeatureSetup } from './EntitiesSetup/FeatureSetup'
+import { FeatureTypeSetup } from './EntitiesSetup/FeatureTypeSetup'
+import { PlanSetup } from './EntitiesSetup/PlanSetup'
+import { PlansFeaturesSetup } from './EntitiesSetup/PlansFeaturesSetup'
 import { StateSetup } from './EntitiesSetup/StateSetup'
 import { UserSetup } from './EntitiesSetup/UserSetup'
+import { TestDbConnection } from './TestDbConnection'
 
 export interface BasicUserSetupParams {
   user? : Partial<User>
@@ -18,21 +34,42 @@ export interface BasicUserSetupParams {
   country? : Partial<Country>
   city? : Partial<City>
 }
-export interface BasicLocationsSetupParams {
-  state? : Partial<State>
-  country? : Partial<Country>
-  city? : Partial<City>
-}
+
 export interface BasicUserSetupReturn {
   user : User
   state : State
   country : Country
   city : City
 }
+
+export interface BasicLocationsSetupParams {
+  state? : Partial<State>
+  country? : Partial<Country>
+  city? : Partial<City>
+}
+
 export interface BasicLocationsSetupReturn {
   state : State
   country : Country
   city : City
+}
+
+export interface BasicFeatureSetupParams {
+  feature? : Partial<Feature>
+  featureType? : Partial<FeatureType>
+}
+
+export interface BasicFeatureSetupReturn {
+  feature : Feature
+  featureType : FeatureType
+}
+
+export interface BasicPlanSetupParams {
+  plan? : Partial<Plan>
+}
+
+export interface BasicPlanSetupReturn {
+  plan : Plan
 }
 
 export default class DbSetup {
@@ -44,6 +81,16 @@ export default class DbSetup {
 
   public countrySetup : CountrySetup
 
+  public botSetup : BotSetup
+
+  public featureSetup : FeatureSetup
+
+  public featureTypeSetup : FeatureTypeSetup
+
+  public planSetup : PlanSetup
+
+  public plansFeaturesSetup : PlansFeaturesSetup
+
   /**
    *
    */
@@ -52,6 +99,11 @@ export default class DbSetup {
     this.stateSetup = new StateSetup()
     this.citySetup = new CitySetup()
     this.countrySetup = new CountrySetup()
+    this.botSetup = new BotSetup()
+    this.featureSetup = new FeatureSetup()
+    this.featureTypeSetup = new FeatureTypeSetup()
+    this.planSetup = new PlanSetup()
+    this.plansFeaturesSetup = new PlansFeaturesSetup()
   }
 
   public async BasicUserSetup(params? : BasicUserSetupParams) : Promise<BasicUserSetupReturn> {
@@ -71,6 +123,72 @@ export default class DbSetup {
     }
   }
 
+  public async FullPlanSetup(
+    {
+      planParams,
+      featuresToCreate,
+    } :
+    {
+      planParams? : BasicPlanSetupParams,
+      featuresToCreate?: number
+    },
+  ) : Promise<Plan> {
+    const { plan } = await this.BasicPlanSetup(planParams)
+    const numberOfFeatures = featuresToCreate ?? faker.datatype.number({ max: 10 })
+    const features = await this.CreateXFeatures(numberOfFeatures)
+
+    for (let i = 1; i <= featuresToCreate; i += 1) {
+      await this.BasicPlanFeatureSetup(features.map((f) => f.feature.id, { plan }))
+    }
+
+    return plan
+  }
+
+  public async BasicPlanFeatureSetup(featureIds : number[], params? : BasicPlanSetupParams) : Promise<void> {
+    const { plan } = await this.BasicPlanSetup(params)
+
+    for (const featureId of featureIds) {
+      const { feature } = await this.BasicFeatureSetup({ feature: { id: featureId } })
+      await this.plansFeaturesSetup.Create({ planId: plan.id, featureId: feature.id })
+    }
+  }
+
+  public async BasicPlanSetup(params? : BasicPlanSetupParams) : Promise<BasicPlanSetupReturn> {
+    const plan = params?.plan ? PlanMock.GetRandom(params.plan) : PlanMock.GetRandom()
+
+    const insertedPlan = await this.planSetup.Create(plan)
+
+    return {
+      plan: insertedPlan,
+    }
+  }
+
+  public async BasicFeatureSetup(params? : BasicFeatureSetupParams) : Promise<BasicFeatureSetupReturn> {
+    const featureType = params?.featureType ? FeatureTypeMock.GetRandom(params.featureType) : FeatureTypeMock.GetRandom()
+    const feature = params?.feature
+      ? FeatureMock.GetRandom(featureType.id, params.feature)
+      : FeatureMock.GetRandom(featureType.id)
+
+    const insertedFeatureType = await this.featureTypeSetup.Create(featureType)
+    const insertedfeature = await this.featureSetup.Create(feature)
+
+    return {
+      featureType: insertedFeatureType,
+      feature: insertedfeature,
+    }
+  }
+
+  public async CreateXFeatures(featuresToCreate : number) : Promise<BasicFeatureSetupReturn[]> {
+    const output : BasicFeatureSetupReturn[] = []
+
+    for (let i = 1; i <= featuresToCreate; i += 1) {
+      const feature = await this.BasicFeatureSetup()
+      output.push(feature)
+    }
+
+    return output
+  }
+
   public async BasicLocationsSetup(params? : BasicLocationsSetupParams) : Promise<BasicLocationsSetupReturn> {
     const cityToAdd = params?.city ?? CityMock.GetRandom()
     const addedCity = await this.citySetup.Create(cityToAdd)
@@ -88,10 +206,26 @@ export default class DbSetup {
     }
   }
 
+  public async ExecuteQuery<T>(query : SQLQuery) : Promise<T> {
+    return await TestDbConnection.db.query(query) as unknown as T
+  }
+
   public async CleanUp() {
-    await this.userSetup.CleanUp()
-    await this.citySetup.CleanUp()
-    await this.stateSetup.CleanUp()
-    await this.countrySetup.CleanUp()
+    try {
+      await this.plansFeaturesSetup.CleanUp()
+      await this.planSetup.CleanUp()
+      await this.featureSetup.CleanUp()
+      await this.featureTypeSetup.CleanUp()
+      await this.botSetup.CleanUp()
+      await this.userSetup.CleanUp()
+      await this.citySetup.CleanUp()
+      await this.stateSetup.CleanUp()
+      await this.countrySetup.CleanUp()
+    } catch (e) {
+      const error = e as Error
+      console.log('Failed to clean up test info\n')
+      console.log(`${error.message}\n`)
+      console.log('TODO: Solve this in the future, since db will be all cleaned after all tests\n')
+    }
   }
 }

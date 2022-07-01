@@ -4,6 +4,7 @@
 import { Client } from 'pg'
 import * as PostgressConnectionStringParser from 'pg-connection-string'
 import pgtools from 'pgtools'
+import { dropDatabaseScript } from '../../../Server/Infrastructure/Migrations/1655918532171_create-database'
 import IntegratedTestsConfig from './IntegratedTestsConfig'
 
 const {
@@ -16,7 +17,20 @@ const client = new Client({
 
 class GlobalTearDown {
   static async Setup() {
-    await this.DropDatabase()
+    try {
+      console.log('Trying to unseed DB\n')
+      await client.connect()
+      await client.query(dropDatabaseScript)
+      console.log('Successfully unseed DB\n')
+    } catch (e) {
+      console.log('Error trying to unseed Db.\n')
+      console.log(e)
+    } finally {
+      await client.end()
+      console.log('Trying to drop DB\n')
+      await this.DropDatabase()
+      console.log('Successfully drop DB\n')
+    }
   }
 
   static async DropDatabase() {
@@ -29,11 +43,6 @@ class GlobalTearDown {
       },
       IntegratedTestsConfig.TEST_DATABASE_NAME,
       (err, res) => {
-        if (err) {
-          console.error(err)
-          process.exit(-1)
-        }
-        console.log(res)
       },
     )
   }

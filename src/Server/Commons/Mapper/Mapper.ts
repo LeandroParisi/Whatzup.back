@@ -1,7 +1,7 @@
 import { classes } from '@automapper/classes'
 import { createMapper } from '@automapper/core'
-import CreateBotMapper from '../../Application/Contexts/AccountManagement/Controllers/BotController/CreateBotMapper'
-import CreateUserMapper from '../../Application/Contexts/AccountManagement/Controllers/UserController/Requests/CreateUserMapper'
+import BotControllerMapper from '../../Application/Contexts/AccountManagement/Controllers/BotController/BotControllerMapper'
+import UserControllerMapper from '../../Application/Contexts/AccountManagement/Controllers/UserController/UserControllerMapper'
 
 // Create and export the mapper
 export const Mapper = createMapper({
@@ -9,5 +9,5 @@ export const Mapper = createMapper({
 })
 
 // Installation of mappings
-CreateUserMapper.CreateMappings(Mapper)
-CreateBotMapper.CreateMappings(Mapper)
+UserControllerMapper.CreateMappings(Mapper)
+BotControllerMapper.CreateMappings(Mapper)
