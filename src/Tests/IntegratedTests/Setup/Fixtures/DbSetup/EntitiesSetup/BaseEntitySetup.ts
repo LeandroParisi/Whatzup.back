@@ -21,7 +21,9 @@ export abstract class BaseEntitySetup<
   async Create(model: Partial<Entity>, connection?: Connections): Promise<Entity> {
     const dbConnection = connection || TestDbConnection.db
 
-    const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, DbInsertableEntity>(model)
+    const entity = this.CleanEntity(model)
+
+    const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, DbInsertableEntity>(entity)
 
     const [inserted] = await this.table(dbConnection).insert(serializedEntity)
 
@@ -61,6 +63,18 @@ export abstract class BaseEntitySetup<
       await this.PreCleanUp(entity)
       await this.DeleteById(entity.id)
     }
+  }
+
+  private CleanEntity(model: Partial<Entity>) : Partial<Entity> {
+    const entity = { ...model }
+
+    Object.entries(entity).forEach(([key, value]) => {
+      if (!value && key === 'id') {
+        delete entity[key]
+      }
+    })
+
+    return entity
   }
 
   async PreCleanUp(_entity : Entity) {

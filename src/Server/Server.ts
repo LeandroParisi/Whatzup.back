@@ -4,7 +4,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* istanbul ignore file */
 
-import bodyParser from 'body-parser'
 import express from 'express'
 import morgan from 'morgan'
 import { createExpressServer, useContainer } from 'routing-controllers'
@@ -12,7 +11,9 @@ import Container from 'typedi'
 import BotController from './Application/Contexts/AccountManagement/Controllers/BotController/BotController'
 import UserController from './Application/Contexts/AccountManagement/Controllers/UserController/UserController'
 import { PostDefaultInterceptor } from './Application/Shared/APIs/Interceptors/PostDefaultInterceptor'
+import BodyParser from './Application/Shared/Middlewares/BodyParser/BodyParser'
 import ErrorHandler from './Application/Shared/Middlewares/ErrorHandler/ErrorHandler'
+
 import HealthCheck from './Application/Shared/Middlewares/HealthCheck/HealthCheck'
 import { Logger } from './Commons/Logger'
 import constants from './Configuration/constants'
@@ -25,7 +26,7 @@ export class Server {
 
   static readonly RoutingControllersOptions = {
     controllers: [HealthCheck, UserController, BotController],
-    middlewares: [ErrorHandler],
+    middlewares: [BodyParser, ErrorHandler],
     interceptors: [PostDefaultInterceptor],
     routePrefix: '/api',
     classTransformer: true,
@@ -60,8 +61,6 @@ export class Server {
   }
 
   private ConfigureGlobalMiddlewares() {
-    this.App.use(bodyParser.urlencoded({ extended: true }))
-    this.App.use(bodyParser.json())
     this.App.use(morgan(constants.ENV, { skip: () => !Logger.logFile }))
   }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable max-len */
 export enum ErrorMessages {
-  InternalError = 'We had an internal error, please try again later.',
+  InternalError = 'We had an internal error, please try again later or contact our support.',
   NotFound = 'We could not find requested information, please check request parameters.',
   ValidationErrors = 'Some validation errors ocurred during your request',
   ExpiredSession = 'Your session has expired, please login again.',

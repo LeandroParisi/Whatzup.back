@@ -62,6 +62,7 @@ export default class User extends BaseEntity {
 
   readonly updatedAt?: Date
 
+  @AutoMap()
   readonly planId?: number
 
   /**

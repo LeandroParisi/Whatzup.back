@@ -1,6 +1,6 @@
 /* eslint-disable no-return-await */
 import {
-  Body, HttpCode, JsonController, Post, Req, UseBefore,
+  Body, HttpCode, JsonController, Post, Req, UseBefore
 } from 'routing-controllers'
 import { Service } from 'typedi'
 import { Mapper } from '../../../../../Commons/Mapper/Mapper'
@@ -9,7 +9,8 @@ import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositorie
 import BaseCrudController from '../../../../Shared/APIs/BaseClasses/BaseCrudController'
 import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import TokenAuthentication from '../../../Authentication/Middlewares/TokenAuthentication'
-import CreateBotRequest from './Requests/CreateBot/CreateBotRequest'
+import ValidateUserPlan from '../../Middlewares/Plans/ValidateUserPlan'
+import CreateBotRequest, { CreateBotStepPath } from './Requests/CreateBot/CreateBotRequest'
 
 @Service()
 @JsonController('/account-management/bot')
@@ -25,7 +26,7 @@ export default class BotController extends BaseCrudController<Bot> {
 
   @HttpCode(201)
   @Post('')
-  @UseBefore(TokenAuthentication)
+  @UseBefore(TokenAuthentication, ValidateUserPlan({ bot: { newBot: true, requestStepsPath: CreateBotStepPath } }))
   public async CreateBot(
     @Body({ validate: { skipMissingProperties: true } }) body : CreateBotRequest,
     @Req() req : IAuthenticatedRequest,

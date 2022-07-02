@@ -3,7 +3,10 @@ import { Type } from 'class-transformer'
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsString,
+  Min,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator'
 import User from '../../../../../../Domain/Entities/User'
@@ -16,6 +19,12 @@ export default class CreateUserRequest implements Partial<User> {
   @IsString()
   @AutoMap()
   whatsappNumber?: string
+
+  @ValidateIf((o : CreateUserRequest) => o?.planId !== undefined)
+  @IsNumber()
+  @Min(1)
+  @AutoMap()
+  planId?: number
 
   @IsNotEmpty()
   @IsString()

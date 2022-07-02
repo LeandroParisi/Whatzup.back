@@ -10,7 +10,7 @@ type MockOptionals = Partial<Feature>
 export default class FeatureMock {
   static GetRandom(optionals? : MockOptionals) : Feature {
     const entity : Feature = {
-      id: optionals?.id || faker.datatype.number(),
+      id: optionals?.id || null,
       name: optionals?.name || RandomEnumValue(FeatureNames),
       type: optionals?.type || RandomEnumValue(FeatureTypes),
       createdAt: DateUtils.DateNow(),

@@ -9,6 +9,8 @@ import { IStepOption } from '../../../../../../../Domain/Entities/Steps/OptionsS
 import { Step } from '../../../../../../../Domain/Entities/Steps/Step'
 import { IsValidOptionsType, IsValidStepType } from '../../../../../../Shared/CustomValidations/Bot/StepsValidation'
 
+export const CreateBotStepPath = 'body.steps' as string
+
 export class StepOptionRequest implements Partial<IStepOption> {
   @IsNumber()
   @IsDefined()

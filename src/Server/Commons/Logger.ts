@@ -42,12 +42,12 @@ export class Logger {
     AttemptLog(() => {
       if (error instanceof ApiError) {
         Logger.console.error(`
-        ${error.message}: ${error.stack}\n\n 
-        Inner Error: \n${error.innerError}\n\n
-        Inner Error Stack: ${error.innerError.stack}`)
+        ${error.message}: ${error?.stack}\n\n 
+        Inner Error: \n${error?.innerError}\n\n
+        Inner Error Stack: ${error?.innerError?.stack}`)
       } else {
         Logger.console.error(`
-        ${error.message}: ${error.stack}\n\n`)
+        ${error?.message}: ${error?.stack}\n\n`)
       }
     })
   }

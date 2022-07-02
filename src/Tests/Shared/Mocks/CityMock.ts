@@ -5,16 +5,10 @@ import City from '../../../Server/Domain/Entities/City'
 type MockOptionals = Partial<City>
 
 export default class CityMock {
-  static GetRandom(optionals? : MockOptionals) : Partial<City> {
-    let city : Partial<City> = {
-      name: faker.name.findName(),
-    }
-
-    if (optionals) {
-      city = {
-        ...city,
-        ...optionals,
-      }
+  static GetRandom(optionals? : MockOptionals) : City {
+    const city : City = {
+      id: optionals?.id || null,
+      name: optionals?.name || faker.name.findName(),
     }
 
     return city

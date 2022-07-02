@@ -6,6 +6,7 @@ import request from 'supertest'
 import { StatusCode } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import { Server } from '../../../../../../../../Server/Server'
 import JwtMocks from '../../../../../../../Shared/Mocks/JwtMocks'
+import PlanMock from '../../../../../../../Shared/Mocks/PlanMock'
 import UserMock from '../../../../../../../Shared/Mocks/UserMock'
 import DbSetup from '../../../../../../Setup/Fixtures/DbSetup/DbSetup'
 import BotControllerStubs from './BotControllerStubs'
@@ -31,17 +32,19 @@ describe('Bot controller: Integrated Tests', () => {
 
   it('1. Should properlly create bot', async () => {
     // Arrange
-    const { user } = await dbSetup.BasicUserSetup()
-    const payload = BotControllerStubs.GetValidPayload()
+    const plan = await dbSetup.planSetup.Create(PlanMock.GetRandom())
+    const { user } = await dbSetup.BasicUserSetup({ user: { planId: plan.id } })
+    const body = BotControllerStubs.GetValidPayload()
     const token = JwtMocks.GetToken({ email: user.email, id: user.id })
 
     // Act
     const response = await request(app)
       .post('/api/account-management/bot')
-      .set('authorization', token).send(payload)
+      .set('authorization', token)
+      .send(body)
 
     // Assert
-    const createdBot = await dbSetup.botSetup.FindOne({ botName: payload.botName })
+    const createdBot = await dbSetup.botSetup.FindOne({ botName: body.botName })
 
     expect(createdBot).not.toBeNull()
     expect(response.status).toBe(StatusCode.CREATED)
@@ -70,7 +73,8 @@ describe('Bot controller: Integrated Tests', () => {
     BotControllerStubs.GetInvalidPayloadTheory(),
     async (theory) => {
       // Arrange
-      const { user: { email, id } } = await dbSetup.BasicUserSetup()
+      const plan = await dbSetup.planSetup.Create(PlanMock.GetRandom())
+      const { user: { email, id } } = await dbSetup.BasicUserSetup({ user: { planId: plan.id } })
       const token = JwtMocks.GetToken({ email, id })
 
       // Act

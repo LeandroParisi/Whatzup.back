@@ -1,5 +1,5 @@
 import {
-  createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments
+  afterMap, createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments,
 } from '@automapper/core'
 import StaticImplements from '../../../../../Commons/Anotations/StaticImplements'
 import User from '../../../../../Domain/Entities/User'
@@ -32,6 +32,13 @@ export default class UserControllerMapper {
       forMember(
         (dst) => dst.password,
         mapWithArguments((_s, { hashedPassword }) => hashedPassword),
+      ),
+      afterMap(
+        (src, dst) => {
+          if (src.planId === 0) {
+            Object.assign(dst, { planId: null })
+          }
+        },
       ),
     )
   }

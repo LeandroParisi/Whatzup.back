@@ -10,7 +10,7 @@ export default class UserMock {
     const phone = faker.phone.number()
 
     const user = new User(
-      null || optionals?.id,
+      optionals?.id || null,
       optionals?.whatsappNumber || phone,
       optionals?.whatsappId || `55@${phone}`,
       optionals?.email || faker.internet.email(),

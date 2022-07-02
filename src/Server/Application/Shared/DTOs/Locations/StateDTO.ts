@@ -13,6 +13,7 @@ export class StateDTO implements State {
 
   @IsNumber()
   @IsNotEmpty()
+  @Min(1)
   @AutoMap()
   countryId: number;
 

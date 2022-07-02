@@ -34,6 +34,13 @@ export default class UserControllerStubs {
         country,
         city,
         ...userObj,
+        planId: 0,
+      },
+      {
+        state,
+        country,
+        city,
+        ...userObj,
         whatsappId: null,
       },
       {

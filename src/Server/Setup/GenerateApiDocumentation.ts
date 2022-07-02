@@ -30,9 +30,22 @@ export default class GenerateApiDocumentation {
       },
     })
 
+    const swaggerOpts : swaggerUiExpress.SwaggerUiOptions = {
+      swaggerOptions: {
+        basicAuth: {
+          name: 'Authorization',
+          schema: {
+            type: 'basic',
+            in: 'header',
+          },
+          value: '<JWT>',
+        },
+      },
+    }
+
     const newSpec = this.ParseSpec(spec)
 
-    app.use('/swagger', swaggerUiExpress.serve, swaggerUiExpress.setup(newSpec))
+    app.use('/swagger', swaggerUiExpress.serve, swaggerUiExpress.setup(newSpec, swaggerOpts))
 
     app.get('/swagger/docs', (_req, res) => {
       res.json(newSpec)

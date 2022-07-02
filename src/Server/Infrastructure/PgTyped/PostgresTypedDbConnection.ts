@@ -27,7 +27,7 @@ export class PgTypedDbConnection {
       Logger.info(
         `${new Date().toISOString()} START QUERY\n${text} - ${JSON.stringify(
           values,
-        )}`,
+        )}\n`,
       )
     },
     onQueryResults: (_query, { text }, results) => {

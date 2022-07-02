@@ -7,7 +7,7 @@ type MockOptionals = Partial<Plan>
 export default class PlanMock {
   static GetRandom(optionals? : MockOptionals) : Plan {
     const plan : Plan = {
-      id: optionals?.id || faker.datatype.number(),
+      id: optionals?.id || null,
       name: optionals?.name || faker.name.findName(),
       isCustomPlan: optionals?.isCustomPlan || false,
       price: optionals?.price || Number(faker.finance.amount()),
