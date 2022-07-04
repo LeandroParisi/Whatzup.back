@@ -1,4 +1,5 @@
 import CreateBotRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/Requests/CreateBot/CreateBotRequest'
+import UpdateBotRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/Requests/UpdateBot/UpdateBotRequestBody'
 import StepTypes from '../../../../../../../../Server/Domain/Entities/Steps/Enums/StepTypes'
 import BotMock from '../../../../../../../Shared/Mocks/BotMock'
 
@@ -13,7 +14,7 @@ export default class BotControllerStubs {
     return payload
   }
 
-  public static GetInvalidPayloadTheory() : Array<Partial<CreateBotRequest>> {
+  public static GetInvalidCreatePayload() : Array<Partial<CreateBotRequest>> {
     const validPayload = this.GetValidPayload()
     const { steps } = validPayload
     const [simpleStep, optionsStep] = steps
@@ -31,6 +32,17 @@ export default class BotControllerStubs {
             id: null,
             introMessage: simpleStep.introMessage,
             name: simpleStep.name,
+            type: StepTypes.Simple,
+          },
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          {
+            id: 1,
+            introMessage: simpleStep.introMessage,
+            name: simpleStep.name,
             type: StepTypes.Options,
             options: [],
           },
@@ -41,7 +53,7 @@ export default class BotControllerStubs {
         steps: [
           simpleStep,
           {
-            id: null,
+            id: 1,
             introMessage: simpleStep.introMessage,
             name: simpleStep.name,
             type: StepTypes.Simple,
@@ -53,7 +65,7 @@ export default class BotControllerStubs {
         ...validPayload,
         steps: [
           {
-            id: null,
+            id: 1,
             introMessage: null,
             name: simpleStep.name,
             type: simpleStep.type,
@@ -65,7 +77,7 @@ export default class BotControllerStubs {
         ...validPayload,
         steps: [
           {
-            id: null,
+            id: 1,
             introMessage: simpleStep.introMessage,
             name: null,
             type: simpleStep.type,
@@ -77,7 +89,7 @@ export default class BotControllerStubs {
         ...validPayload,
         steps: [
           {
-            id: null,
+            id: 1,
             introMessage: simpleStep.introMessage,
             name: simpleStep.name,
             type: null,
@@ -87,7 +99,6 @@ export default class BotControllerStubs {
       },
       {
         ...validPayload,
-
         steps: [
           simpleStep,
           {
@@ -96,7 +107,7 @@ export default class BotControllerStubs {
               ...optionsStep.options,
               {
                 ...optionOne,
-                nextStep: null,
+                nextStepId: 0,
               },
             ],
           },
@@ -112,7 +123,140 @@ export default class BotControllerStubs {
               ...optionsStep.options,
               {
                 ...optionOne,
-                nextStep: 0,
+                outboundMessages: null,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          simpleStep,
+          {
+            ...optionsStep,
+            options: [
+              ...optionsStep.options,
+              {
+                ...optionOne,
+                selectionKey: null,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          simpleStep,
+          {
+            ...optionsStep,
+            options: [
+              ...optionsStep.options,
+              {
+                ...optionOne,
+                name: null,
+              },
+            ],
+          },
+        ],
+      },
+    ]
+  }
+
+  public static GetInvalidUpdatePayload(): Array<Partial<UpdateBotRequest>> {
+    const validPayload = this.GetValidPayload()
+    const { steps } = validPayload
+    const [simpleStep, optionsStep] = steps
+    const { options: [optionOne] } = optionsStep
+
+    return [
+      {
+        ...validPayload,
+        botName: '',
+      },
+      {
+        steps: [
+          {
+            id: null,
+            introMessage: simpleStep.introMessage,
+            name: simpleStep.name,
+            type: StepTypes.Simple,
+          },
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          {
+            id: 1,
+            introMessage: simpleStep.introMessage,
+            name: simpleStep.name,
+            type: StepTypes.Options,
+            options: [],
+          },
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          simpleStep,
+          {
+            id: 1,
+            introMessage: simpleStep.introMessage,
+            name: simpleStep.name,
+            type: StepTypes.Simple,
+            options: optionsStep.options,
+          },
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          {
+            id: 1,
+            introMessage: null,
+            name: simpleStep.name,
+            type: simpleStep.type,
+          },
+          optionsStep,
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          {
+            id: 1,
+            introMessage: simpleStep.introMessage,
+            name: null,
+            type: simpleStep.type,
+          },
+          optionsStep,
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          {
+            id: 1,
+            introMessage: simpleStep.introMessage,
+            name: simpleStep.name,
+            type: null,
+          },
+          optionsStep,
+        ],
+      },
+      {
+        ...validPayload,
+        steps: [
+          simpleStep,
+          {
+            ...optionsStep,
+            options: [
+              ...optionsStep.options,
+              {
+                ...optionOne,
+                nextStepId: 0,
               },
             ],
           },

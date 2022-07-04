@@ -82,14 +82,14 @@ async function ValidatePlan(
   rules: IValidateUserPlanParams,
   request : Request,
 ) {
-  const { bot: { newBot } } = rules
+  const { bot } = rules
 
-  if (newBot) {
-    await ValidateNewBot(userId, detailedPlan, request, rules.bot)
+  if (bot) {
+    await ValidateBot(userId, detailedPlan, request, rules.bot)
   }
 }
 
-async function ValidateNewBot(
+async function ValidateBot(
   userId: number,
   detailedPlan: DetailedCustomPlanDTO,
   request: Request,
@@ -101,7 +101,7 @@ async function ValidateNewBot(
 
   const numberOfBots = await botRepository.Count({ userId, isActive: true })
 
-  if (planAllowedBots && numberOfBots + 1 > planAllowedBots.maxLimit) {
+  if (bot.newBot && planAllowedBots && numberOfBots + 1 > planAllowedBots.maxLimit) {
     throw new ApiError(StatusCode.FORBIDDEN, 'You have reached maximum bots your plan allows.')
   }
 

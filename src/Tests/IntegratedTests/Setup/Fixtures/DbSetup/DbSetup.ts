@@ -11,8 +11,6 @@ import State from '../../../../../Server/Domain/Entities/State'
 import User from '../../../../../Server/Domain/Entities/User'
 import CityMock from '../../../../Shared/Mocks/CityMock'
 import CountryMock from '../../../../Shared/Mocks/CountryMock'
-import FeatureMock from '../../../../Shared/Mocks/FeatureMock'
-import PlanMock from '../../../../Shared/Mocks/PlanMock'
 import StateMock from '../../../../Shared/Mocks/StateMock'
 import UserMock from '../../../../Shared/Mocks/UserMock'
 import { BotSetup } from './EntitiesSetup/BotSetup'
@@ -51,20 +49,10 @@ export interface BasicLocationsSetupReturn {
   city : City
 }
 
-export interface BasicFeatureSetupParams {
-  feature? : Partial<Feature>
-}
-
-export interface BasicFeatureSetupReturn {
-  feature : Feature
-}
-
-export interface BasicPlanSetupParams {
-  plan? : Partial<Plan>
-}
-
-export interface BasicPlanSetupReturn {
-  plan : Plan
+export interface FullPlanSetupParams {
+  plan? : Partial<Plan>,
+  featuresToCreate?: number
+  features? : Partial<Feature>[]
 }
 
 export interface FullPlanSetupReturn {
@@ -122,65 +110,40 @@ export default class DbSetup {
 
   public async FullPlanSetup(
     {
-      planParams,
+      plan,
       featuresToCreate,
-    } :
-    {
-      planParams? : BasicPlanSetupParams,
-      featuresToCreate?: number
-    },
+    } : FullPlanSetupParams,
   ) : Promise<FullPlanSetupReturn> {
-    const { plan } = await this.BasicPlanSetup(planParams)
+    const createdPlan = await this.planSetup.InsertOnePlan(plan)
     const numberOfFeatures = featuresToCreate ?? faker.datatype.number({ max: 10 })
-    const features = await this.CreateXFeatures(numberOfFeatures)
+    const features = await this.featureSetup.CreateXFeatures(numberOfFeatures)
 
-    for (const f of features) {
-      await this.plansFeaturesSetup.Create({ planId: plan.id, featureId: f.feature.id })
-    }
+    await this.plansFeaturesSetup.CreatePlanFeaturesRelation(features.map((f) => f.id), createdPlan)
 
-    return { plan, features: features.map((f) => f.feature) }
+    return { plan: createdPlan, features }
   }
 
-  public async BasicPlanFeatureSetup(featureIds : number[], params? : BasicPlanSetupParams) : Promise<void> {
-    const { plan } = await this.BasicPlanSetup(params)
+  public async DefaultPlanSetup() : Promise<FullPlanSetupReturn> {
+    const createdPlan = await this.planSetup.InsertOnePlan({ isCustomPlan: false })
 
-    for (const featureId of featureIds) {
-      const { feature } = await this.BasicFeatureSetup({ feature: { id: featureId } })
-      await this.plansFeaturesSetup.Create({ planId: plan.id, featureId: feature.id })
-    }
-  }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { feature: botFeature, limit: botLimit } = FeatureSetup.NUMBER_OF_BOTS_FEATURE
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { feature: stepsFeature, limit: stepsLimit } = FeatureSetup.MAX_STEPS_FEATURE
 
-  public async BasicPlanSetup(params? : BasicPlanSetupParams) : Promise<BasicPlanSetupReturn> {
-    const plan = params?.plan ? PlanMock.GetRandom(params.plan) : PlanMock.GetRandom()
+    const createdBotFeature = await this.featureSetup.Create({ ...botFeature })
+    const createdStepFeature = await this.featureSetup.Create({ ...stepsFeature })
 
-    const insertedPlan = await this.planSetup.Create(plan)
+    await this.plansFeaturesSetup.CreatePlanFeaturesRelation([createdBotFeature.id], createdPlan, { maxLimit: botLimit })
+    await this.plansFeaturesSetup.CreatePlanFeaturesRelation([createdStepFeature.id], createdPlan, { maxLimit: stepsLimit })
 
     return {
-      plan: insertedPlan,
+      plan: createdPlan,
+      features: [
+        createdBotFeature,
+        createdStepFeature,
+      ],
     }
-  }
-
-  public async BasicFeatureSetup(params? : BasicFeatureSetupParams) : Promise<BasicFeatureSetupReturn> {
-    const feature = params?.feature
-      ? FeatureMock.GetRandom(params.feature)
-      : FeatureMock.GetRandom()
-
-    const insertedfeature = await this.featureSetup.Create(feature)
-
-    return {
-      feature: insertedfeature,
-    }
-  }
-
-  public async CreateXFeatures(featuresToCreate : number) : Promise<BasicFeatureSetupReturn[]> {
-    const output : BasicFeatureSetupReturn[] = []
-
-    for (let i = 1; i <= featuresToCreate; i += 1) {
-      const feature = await this.BasicFeatureSetup()
-      output.push(feature)
-    }
-
-    return output
   }
 
   public async BasicLocationsSetup(params? : BasicLocationsSetupParams) : Promise<BasicLocationsSetupReturn> {

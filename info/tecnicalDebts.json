@@ -1,0 +1,7 @@
+{
+  "BotController:Update": "Specifically validate if bot belongs to usre",
+  "StepsValidation": [
+    "Validate if all nextStepIds send user to a valid step id"
+  ],
+  "StepsCreationUpdate": "Allow user to partially update an step"
+}

@@ -68,6 +68,8 @@ export abstract class BaseRepository<
       serializedEntity,
     )
 
+    console.log({ updatedEntities })
+
     return !!updatedEntities
   }
 

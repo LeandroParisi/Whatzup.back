@@ -1,4 +1,4 @@
-export default abstract class BaseResponse {
+export default class BaseResponse {
   message : string
 
   /**

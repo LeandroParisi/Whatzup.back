@@ -7,6 +7,7 @@ import {
   Plans as PlansDbModel,
   Plans_InsertParameters,
 } from '../../../../../../Server/Infrastructure/PgTyped/Schemas/__generated__'
+import PlanMock from '../../../../../Shared/Mocks/PlanMock'
 import { TestDbConnection } from '../TestDbConnection'
 import { BaseEntitySetup } from './BaseEntitySetup'
 
@@ -20,5 +21,13 @@ export class PlanSetup extends BaseEntitySetup<Plan, PlansDbModel, Plans_InsertP
   constructor() {
     super()
     this.table = TestDbConnection.tables.plans
+  }
+
+  public async InsertOnePlan(params? : Partial<Plan>) : Promise<Plan> {
+    const plan = params ? PlanMock.GetRandom(params) : PlanMock.GetRandom()
+
+    const insertedPlan = await this.Create(plan)
+
+    return insertedPlan
   }
 }

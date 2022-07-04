@@ -1,10 +1,11 @@
 import {
-  createMap, forMember, mapFrom, Mapper, mapWithArguments
+  createMap, forMember, mapFrom, Mapper, mapWithArguments,
 } from '@automapper/core'
 import StaticImplements from '../../../../../Commons/Anotations/StaticImplements'
 import Bot from '../../../../../Domain/Entities/Bot'
 import { IMapInstaller } from '../../../../../Setup/Interfaces/IMapInstaller'
 import CreateBotRequest from './Requests/CreateBot/CreateBotRequest'
+import UpdateBotRequest from './Requests/UpdateBot/UpdateBotRequestBody'
 
 @StaticImplements<IMapInstaller>()
 export default class BotControllerMapper {
@@ -24,6 +25,20 @@ export default class BotControllerMapper {
       forMember(
         (dst) => dst.userId,
         mapWithArguments((_s, { userId }) => userId),
+      ),
+    )
+
+    createMap(
+      mapper,
+      UpdateBotRequest,
+      Bot,
+      forMember(
+        (dst) => dst.botName,
+        mapFrom((src) => src.botName),
+      ),
+      forMember(
+        (dst) => dst.steps,
+        mapFrom((src) => src.steps),
       ),
     )
   }

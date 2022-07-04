@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* istanbul ignore file */
-import * as bodyParser from 'body-parser';
-import { NextFunction, Request, Response } from 'express';
-import { ExpressMiddlewareInterface, Middleware } from 'routing-controllers';
-import { Service } from 'typedi';
+import * as bodyParser from 'body-parser'
+import { NextFunction, Request, Response } from 'express'
+import { ExpressMiddlewareInterface, Middleware } from 'routing-controllers'
+import { Service } from 'typedi'
 
 @Service()
 @Middleware({

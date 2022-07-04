@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import { assert } from 'chai'
 import express from 'express'
 import theoretically from 'jest-theories'
@@ -11,7 +12,7 @@ import UserMock from '../../../../../../../Shared/Mocks/UserMock'
 import DbSetup from '../../../../../../Setup/Fixtures/DbSetup/DbSetup'
 import BotControllerStubs from './BotControllerStubs'
 
-describe('Bot controller: Integrated Tests', () => {
+describe('Bot controller: Create - Integrated Tests', () => {
   let app : express.Express
   let dbSetup : DbSetup
 
@@ -70,17 +71,21 @@ describe('Bot controller: Integrated Tests', () => {
 
   theoretically(
     '3. Should not accept request with invalid data',
-    BotControllerStubs.GetInvalidPayloadTheory(),
+    BotControllerStubs.GetInvalidCreatePayload(),
     async (theory) => {
       // Arrange
       const plan = await dbSetup.planSetup.Create(PlanMock.GetRandom())
       const { user: { email, id } } = await dbSetup.BasicUserSetup({ user: { planId: plan.id } })
       const token = JwtMocks.GetToken({ email, id })
+      const body = {
+        ...theory,
+        botName: theory.botName !== null ? faker.name.findName() : null,
+      }
 
       // Act
       const response = await request(app)
         .post('/api/account-management/bot')
-        .set('authorization', token).send(theory)
+        .set('authorization', token).send(body)
 
       // Assert
       const createdBot = await dbSetup.botSetup.FindOne({ botName: theory.botName })

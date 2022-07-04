@@ -1,6 +1,3 @@
-import {
-  Body,
-} from 'routing-controllers'
 import { Service } from 'typedi'
 import { BaseEntity } from '../../../../Domain/Entities/BaseClasses/BaseEntity'
 import ApiError from '../../Errors/ApiError'
@@ -20,7 +17,7 @@ export default abstract class BaseCrudController<Entity extends BaseEntity> {
     this.Repository = repository
   }
 
-  public async Create(@Body() body : Partial<Entity>) {
+  public async Create(body : Partial<Entity>) {
     try {
       const insertedEntity = await this.Repository.Create(body)
       return insertedEntity
@@ -33,8 +30,13 @@ export default abstract class BaseCrudController<Entity extends BaseEntity> {
     return 'tete'
   }
 
-  public Update() {
-
+  public async Update(query : Partial<Entity>, fieldsToUpdate : Partial<Entity>) : Promise<boolean> {
+    try {
+      const isUpdated = await this.Repository.UpdateOne(query, fieldsToUpdate)
+      return isUpdated
+    } catch (e) {
+      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, 'Unable to insert entity', e)
+    }
   }
 
   // @Delete()

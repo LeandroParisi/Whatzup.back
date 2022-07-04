@@ -1,7 +1,7 @@
 INSERT INTO features (id, type, name, is_active)
   VALUES
-    (1, 'limit_number', 'number_of_steps', true),
-    (2, 'limit_number', 'number_of_bots', true);
+    (1, 'max_limit', 'number_of_steps', true),
+    (2, 'max_limit', 'number_of_bots', true);
 
 INSERT INTO plans (id, is_custom_plan, price, name, is_active)
   VALUES

@@ -9,27 +9,22 @@ import { IStepOption } from '../../../../../../../Domain/Entities/Steps/OptionsS
 import { Step } from '../../../../../../../Domain/Entities/Steps/Step'
 import { IsValidOptionsType, IsValidStepType } from '../../../../../../Shared/CustomValidations/Bot/StepsValidation'
 
-export const CreateBotStepPath = 'body.steps' as string
-
 export class StepOptionRequest implements IStepOption {
   @IsNumber()
-  @IsDefined()
-  @IsNotEmpty()
   @Min(1)
+  @IsDefined()
   nextStepId: number;
 
   @IsNumber()
-  @IsNotEmpty()
   @IsDefined()
   selectionKey: number;
 
   @IsString()
-  @IsNotEmpty()
   @IsDefined()
   name: string;
 
-  @IsDefined()
   @IsString({ each: true })
+  @IsDefined()
   outboundMessages: string[];
 }
 
@@ -40,17 +35,14 @@ export class StepRequest implements Step {
   id : number
 
   @IsString()
-  @IsNotEmpty()
   @IsDefined()
   name: string;
 
   @IsEnum(StepTypes)
-  @IsNotEmpty()
   @IsDefined()
   type: StepTypes;
 
   @IsString({ each: true })
-  @IsNotEmpty()
   @IsDefined()
   introMessage: string[];
 
@@ -62,10 +54,9 @@ export class StepRequest implements Step {
   options?: StepOptionRequest[];
 }
 
-export default class CreateBotRequest implements Partial<Bot> {
-  @IsString()
+export default class UpdateBotRequest implements Partial<Bot> {
   @IsNotEmpty()
-  @IsDefined()
+  @IsString()
   botName : string
 
   @IsArray()

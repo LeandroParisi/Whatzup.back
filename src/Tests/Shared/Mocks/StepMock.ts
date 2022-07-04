@@ -10,7 +10,7 @@ type MockOptionalsSimple = Partial<StepInfo>
 export default class StepMock {
   public static GetRandomSimpleStep(optionals? : MockOptionalsSimple) : StepInfo {
     const step : StepInfo = {
-      id: optionals?.id || null,
+      id: optionals?.id || faker.datatype.number(),
       introMessage: optionals?.introMessage || [faker.datatype.string(10000)],
       name: optionals?.name || faker.name.findName(),
       type: optionals?.type || StepTypes.Simple,
@@ -21,20 +21,20 @@ export default class StepMock {
 
   public static GetRandomOptionsStep(optionals? : MockOptionalsOptions) : OptionsStepInfo {
     const step : OptionsStepInfo = {
-      id: optionals?.id || null,
+      id: optionals?.id || faker.datatype.number(),
       introMessage: optionals?.introMessage || [faker.datatype.string(10000)],
       name: optionals?.name || faker.name.findName(),
       type: optionals?.type || StepTypes.Options,
       options: optionals?.options || [
         {
           name: faker.name.findName(),
-          nextStep: faker.datatype.number({ min: 1, max: 10 }),
+          nextStepId: faker.datatype.number({ min: 1, max: 10 }),
           outboundMessages: [faker.datatype.string(10000)],
           selectionKey: 1,
         },
         {
           name: faker.name.findName(),
-          nextStep: faker.datatype.number({ min: 1, max: 10 }),
+          nextStepId: faker.datatype.number({ min: 1, max: 10 }),
           outboundMessages: [faker.datatype.string(10000)],
           selectionKey: 2,
         },

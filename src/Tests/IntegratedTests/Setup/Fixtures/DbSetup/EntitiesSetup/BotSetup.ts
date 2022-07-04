@@ -7,6 +7,7 @@ import {
   Bots as BotDbModel,
   Bots_InsertParameters,
 } from '../../../../../../Server/Infrastructure/PgTyped/Schemas/__generated__'
+import BotMock from '../../../../../Shared/Mocks/BotMock'
 import { TestDbConnection } from '../TestDbConnection'
 import { BaseEntitySetup } from './BaseEntitySetup'
 
@@ -20,5 +21,15 @@ export class BotSetup extends BaseEntitySetup<Bot, BotDbModel, Bots_InsertParame
   constructor() {
     super()
     this.table = TestDbConnection.tables.bots
+  }
+
+  public async InsertOne(params? : Partial<Bot>) : Promise<Bot> {
+    const bot = params
+      ? BotMock.GetRandom(params)
+      : BotMock.GetRandom()
+
+    const insertedBot = await this.Create(bot)
+
+    return insertedBot
   }
 }

@@ -159,19 +159,19 @@ describe('Validate user plan middleware integrated test', () => {
   }
 
   async function RegisterPlanFeatures(planId: number, currentBots: number, allowedBotSteps: number) {
-    const numberOfBotsFeature = await dbSetup.BasicFeatureSetup(
-      { feature: { name: FeatureNames.NumberOfBots, type: FeatureTypes.LimitNumber } },
+    const numberOfBotsFeature = await dbSetup.featureSetup.InsertOneFeature(
+      { name: FeatureNames.NumberOfBots, type: FeatureTypes.MaxLimit },
     )
-    const maxStepsFeature = await dbSetup.BasicFeatureSetup(
-      { feature: { name: FeatureNames.NumberOfSteps, type: FeatureTypes.LimitNumber } },
-    )
-
-    await dbSetup.plansFeaturesSetup.Create(
-      { featureId: numberOfBotsFeature.feature.id, planId, maxLimit: currentBots + 1 },
+    const maxStepsFeature = await dbSetup.featureSetup.InsertOneFeature(
+      { name: FeatureNames.NumberOfSteps, type: FeatureTypes.MaxLimit },
     )
 
     await dbSetup.plansFeaturesSetup.Create(
-      { featureId: maxStepsFeature.feature.id, planId, maxLimit: allowedBotSteps },
+      { featureId: numberOfBotsFeature.id, planId, maxLimit: currentBots + 1 },
+    )
+
+    await dbSetup.plansFeaturesSetup.Create(
+      { featureId: maxStepsFeature.id, planId, maxLimit: allowedBotSteps },
     )
   }
 
