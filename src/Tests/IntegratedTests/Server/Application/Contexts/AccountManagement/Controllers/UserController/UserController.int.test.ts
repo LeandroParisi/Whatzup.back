@@ -3,6 +3,7 @@ import express from 'express'
 import theoretically from 'jest-theories'
 import 'reflect-metadata'
 import request from 'supertest'
+import { BaseRoutes } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import { Server } from '../../../../../../../../Server/Server'
 import UserControllerStubsShared from '../../../../../../../Shared/Stubs/UserControllerStubs.shared'
@@ -33,7 +34,7 @@ describe('User controller: Integrated Tests', () => {
     delete expectedUser.state
 
     // Act
-    const response = await request(app).post('/api/account-management/user').send(payload)
+    const response = await request(app).post(`/api/${BaseRoutes.AccountManagementUser}`).send(payload)
 
     // Assert
     const insertedUser = await dbSetup.userSetup.FindOne({ email: payload.email })
@@ -56,7 +57,7 @@ describe('User controller: Integrated Tests', () => {
     UserControllerStubs.GetInvalidPayloads(),
     async (theory) => {
       // Act
-      const response = await request(app).post('/api/account-management/user').send(theory)
+      const response = await request(app).post(`/api/${BaseRoutes.AccountManagementUser}`).send(theory)
 
       // Assert
       assert.equal(response.status, StatusCode.BAD_REQUEST)

@@ -34,6 +34,11 @@ export class FeatureSetup extends BaseEntitySetup<Feature, FeaturesDbModel, Feat
     limit: 4,
   }
 
+  static PHONES_PER_BOT : BasicFeature= {
+    feature: { name: FeatureNames.PhonesPerBot, type: FeatureTypes.MaxLimit },
+    limit: 1,
+  }
+
   /**
    *
    */

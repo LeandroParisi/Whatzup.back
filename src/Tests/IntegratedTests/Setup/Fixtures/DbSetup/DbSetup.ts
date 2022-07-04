@@ -126,16 +126,17 @@ export default class DbSetup {
   public async DefaultPlanSetup() : Promise<FullPlanSetupReturn> {
     const createdPlan = await this.planSetup.InsertOnePlan({ isCustomPlan: false })
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { feature: botFeature, limit: botLimit } = FeatureSetup.NUMBER_OF_BOTS_FEATURE
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { feature: stepsFeature, limit: stepsLimit } = FeatureSetup.MAX_STEPS_FEATURE
+    const { feature: phonesFeature, limit: phonesLimit } = FeatureSetup.PHONES_PER_BOT
 
     const createdBotFeature = await this.featureSetup.Create({ ...botFeature })
     const createdStepFeature = await this.featureSetup.Create({ ...stepsFeature })
+    const createdPhonesFeature = await this.featureSetup.Create({ ...phonesFeature })
 
     await this.plansFeaturesSetup.CreatePlanFeaturesRelation([createdBotFeature.id], createdPlan, { maxLimit: botLimit })
     await this.plansFeaturesSetup.CreatePlanFeaturesRelation([createdStepFeature.id], createdPlan, { maxLimit: stepsLimit })
+    await this.plansFeaturesSetup.CreatePlanFeaturesRelation([phonesFeature.id], createdPlan, { maxLimit: phonesLimit })
 
     return {
       plan: createdPlan,

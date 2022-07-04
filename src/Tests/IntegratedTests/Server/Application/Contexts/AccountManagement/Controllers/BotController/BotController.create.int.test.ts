@@ -4,6 +4,7 @@ import express from 'express'
 import theoretically from 'jest-theories'
 import 'reflect-metadata'
 import request from 'supertest'
+import { BaseRoutes } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import { Server } from '../../../../../../../../Server/Server'
 import JwtMocks from '../../../../../../../Shared/Mocks/JwtMocks'
@@ -40,7 +41,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
     // Act
     const response = await request(app)
-      .post('/api/account-management/bot')
+      .post(`/api/${BaseRoutes.AccountManagementBot}`)
       .set('authorization', token)
       .send(body)
 
@@ -59,7 +60,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
     // Act
     const response = await request(app)
-      .post('/api/account-management/bot')
+      .post(`/api/${BaseRoutes.AccountManagementBot}`)
       .set('authorization', token).send(payload)
 
     // Assert
@@ -84,7 +85,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
       // Act
       const response = await request(app)
-        .post('/api/account-management/bot')
+        .post(`/api/${BaseRoutes.AccountManagementBot}`)
         .set('authorization', token).send(body)
 
       // Assert

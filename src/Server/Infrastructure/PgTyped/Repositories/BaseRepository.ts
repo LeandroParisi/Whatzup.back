@@ -4,11 +4,13 @@ import { Service } from 'typedi'
 import { Connections, IBaseRepository } from '../../../Application/Shared/Repositories/IRepository'
 import { CaseSerializer } from '../../../Commons/Globals/Serializers/CaseSerializer'
 import { Logger } from '../../../Commons/Logger'
+import DateUtils from '../../../Commons/Utils/DateUtils'
+import { BaseEntity } from '../../../Domain/Entities/BaseClasses/BaseEntity'
 import { PgTypedDbConnection } from '../PostgresTypedDbConnection'
 
 @Service()
 export abstract class BaseRepository<
-    Entity,
+    Entity extends BaseEntity,
     DbEntity,
     DbInsertableEntity
   > implements IBaseRepository<Entity> {
@@ -65,10 +67,8 @@ export abstract class BaseRepository<
 
     const [updatedEntities] = await this.table(dbConnection).update(
       serializedQuery,
-      serializedEntity,
+      { ...serializedEntity, updated_at: DateUtils.DateNow() },
     )
-
-    console.log({ updatedEntities })
 
     return !!updatedEntities
   }

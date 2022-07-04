@@ -1,0 +1,2 @@
+1. Criar tabela pivot para permitir um bot ter varios numeros vinculados
+2. Confirmação email: criação de conta (nodemailer)

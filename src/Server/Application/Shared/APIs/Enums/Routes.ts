@@ -1,6 +1,9 @@
 /* eslint-disable no-shadow */
-enum Routes {
+export enum Routes {
 
 }
 
-export default Routes
+export enum BaseRoutes {
+  AccountManagementBot = 'account-management/bot',
+  AccountManagementUser = 'account-management/user'
+}

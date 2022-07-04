@@ -5,6 +5,7 @@ import theoretically from 'jest-theories'
 import 'reflect-metadata'
 import request from 'supertest'
 import UpdateBotRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/Requests/UpdateBot/UpdateBotRequestBody'
+import { BaseRoutes } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import Bot from '../../../../../../../../Server/Domain/Entities/Bot'
 import User from '../../../../../../../../Server/Domain/Entities/User'
@@ -48,7 +49,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
     // Act
     const response = await request(app)
-      .put(`/api/account-management/bot/${bot.id}`)
+      .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
       .set('authorization', token)
       .send(body)
 
@@ -77,7 +78,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
     // Act
     const response = await request(app)
-      .put(`/api/account-management/bot/${bot.id}`)
+      .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
       .set('authorization', token)
       .send(body)
 
@@ -102,7 +103,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
     // Act
     const response = await request(app)
-      .put(`/api/account-management/bot/${bot.id}`)
+      .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
       .set('authorization', anotherUserToken)
       .send(body)
 
@@ -119,7 +120,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
       // Act
       const response = await request(app)
-        .put(`/api/account-management/bot/${bot.id}`)
+        .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
         .set('authorization', token)
         .send(body)
 
