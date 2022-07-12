@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator'
-import StepTypes from '../../../../Domain/Entities/Steps/Enums/StepTypes'
-import { StepRequest } from '../../../Contexts/AccountManagement/Controllers/BotController/Requests/CreateBot/CreateBotRequest'
+import StepTypes from '../../../../../Domain/Entities/Steps/Enums/StepTypes'
+import { StepRequest } from '../../../../Contexts/AccountManagement/Controllers/BotController/Requests/CreateBot/CreateBotRequest'
 
 export function IsValidStepType(validationOptions?: ValidationOptions) {
   const defaultMessage = `Options are only valid for steps of type ${StepTypes.Options}`

@@ -136,7 +136,9 @@ export default class DbSetup {
 
     await this.plansFeaturesSetup.CreatePlanFeaturesRelation([createdBotFeature.id], createdPlan, { maxLimit: botLimit })
     await this.plansFeaturesSetup.CreatePlanFeaturesRelation([createdStepFeature.id], createdPlan, { maxLimit: stepsLimit })
-    await this.plansFeaturesSetup.CreatePlanFeaturesRelation([phonesFeature.id], createdPlan, { maxLimit: phonesLimit })
+    await this.plansFeaturesSetup.CreatePlanFeaturesRelation(
+      [createdPhonesFeature.id], createdPlan, { maxLimit: phonesLimit },
+    )
 
     return {
       plan: createdPlan,
@@ -170,11 +172,11 @@ export default class DbSetup {
 
   public async CleanUp() {
     try {
-      await this.plansFeaturesSetup.CleanUp()
-      await this.planSetup.CleanUp()
-      await this.featureSetup.CleanUp()
       await this.botSetup.CleanUp()
+      await this.plansFeaturesSetup.CleanUp()
+      await this.featureSetup.CleanUp()
       await this.userSetup.CleanUp()
+      await this.planSetup.CleanUp()
       await this.citySetup.CleanUp()
       await this.stateSetup.CleanUp()
       await this.countrySetup.CleanUp()

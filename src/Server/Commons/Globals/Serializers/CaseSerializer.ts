@@ -80,9 +80,9 @@ export class CaseSerializer {
     }
   }
 
-  private static ToSnake = (s : any) => s.replace(/[A-Z]/g, (letter : string) => `_${letter.toLowerCase()}`);
+  public static ToSnake = (s : string) : string => s.replace(/[A-Z]/g, (letter : string) => `_${letter.toLowerCase()}`);
 
-  private static ToCamel = (s : any) => s.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase()
+  public static ToCamel = (s : string) : string => s.replace(/([-_][a-z])/ig, ($1) => $1.toUpperCase()
     .replace('-', '')
     .replace('_', ''));
 }

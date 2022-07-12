@@ -33,4 +33,11 @@ export class PlansFeaturesSetup extends BaseEntitySetup<PlanFeature, PlansFeatur
       }
     }
   }
+
+  async CleanUp() : Promise<void> {
+    for (const entity of this.EntitiesToDispose) {
+      await this.PreCleanUp(entity)
+      await this.table(TestDbConnection.db).delete({ feature_id: entity.featureId, plan_id: entity.planId })
+    }
+  }
 }

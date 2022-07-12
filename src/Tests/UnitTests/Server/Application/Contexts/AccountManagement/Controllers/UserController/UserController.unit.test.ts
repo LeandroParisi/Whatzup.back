@@ -7,7 +7,7 @@ import {
   anything, instance, mock, verify, when,
 } from 'ts-mockito'
 import UserController from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/UserController/UserController'
-import { IBaseRepository } from '../../../../../../../../Server/Application/Shared/Repositories/IRepository'
+import { IBaseRepository } from '../../../../../../../../Server/Application/Shared/Database/Repositories/IRepository'
 import { CityRepository } from '../../../../../../../../Server/Infrastructure/PgTyped/Repositories/CityRepository'
 import { CountryRepository } from '../../../../../../../../Server/Infrastructure/PgTyped/Repositories/CountryRepository'
 import { StateRepository } from '../../../../../../../../Server/Infrastructure/PgTyped/Repositories/StateRepository'

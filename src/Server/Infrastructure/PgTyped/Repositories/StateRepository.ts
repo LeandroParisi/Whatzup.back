@@ -3,7 +3,6 @@
 import { TableHelper } from '@databases/pg-typed'
 import { Service } from 'typedi'
 import State from '../../../Domain/Entities/State'
-import User from '../../../Domain/Entities/User'
 import { PgTypedDbConnection } from '../PostgresTypedDbConnection'
 import { States as StatesDbModel, States_InsertParameters } from '../Schemas/__generated__'
 import { BaseRepository } from './BaseRepository'

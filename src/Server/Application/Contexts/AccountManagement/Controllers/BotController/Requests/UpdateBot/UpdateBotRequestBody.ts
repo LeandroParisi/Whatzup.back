@@ -7,7 +7,7 @@ import Bot from '../../../../../../../Domain/Entities/Bot'
 import StepTypes from '../../../../../../../Domain/Entities/Steps/Enums/StepTypes'
 import { IStepOption } from '../../../../../../../Domain/Entities/Steps/OptionsStep/OptionsStepInfo'
 import { Step } from '../../../../../../../Domain/Entities/Steps/Step'
-import { IsValidOptionsType, IsValidStepType } from '../../../../../../Shared/CustomValidations/Bot/StepsValidation'
+import { IsValidOptionsType, IsValidStepType } from '../../../../../../Shared/CustomValidations/Bot/ClassValidators/StepsValidation'
 
 export class StepOptionRequest implements IStepOption {
   @IsNumber()

@@ -3,10 +3,12 @@
 import { sql } from '@databases/pg'
 import { TableHelper } from '@databases/pg-typed'
 import { Service } from 'typedi'
-import { Connections } from '../../../Application/Shared/Repositories/IRepository'
+import { Connections } from '../../../Application/Shared/Database/Repositories/IRepository'
 import { CaseSerializer } from '../../../Commons/Globals/Serializers/CaseSerializer'
-import DetailedCustomPlanDTO from '../../../Domain/DTOs/DetailedCustomPlanDTO'
+import DetailedCustomPlanDTO from '../../../Domain/DTOs/DetailedPlanDTO'
 import { FeatureDTO } from '../../../Domain/DTOs/FeatureDTO'
+import { FeatureColumns } from '../../../Domain/Entities/Feature'
+import { PlanFeaturesColumns } from '../../../Domain/Entities/Pivot/PlanFeature'
 import Plan from '../../../Domain/Entities/Plan'
 import { PgTypedDbConnection } from '../PostgresTypedDbConnection'
 import { Plans as PlanDbModel, Plans_InsertParameters } from '../Schemas/__generated__'
@@ -44,13 +46,13 @@ export class PlanRepository extends BaseRepository<Plan, PlanDbModel, Plans_Inse
   private async GetPlanFeatures(planId: number, conn: Connections) : Promise<FeatureDTO[]> {
     const planFeatures = await conn.query(sql`
       SELECT
-        f.id,
-        f.name AS name,
-        f.type AS type,
-        pf.max_limit
+        f.${FeatureColumns.id},
+        f.${FeatureColumns.name} AS name,
+        f.${FeatureColumns.type} AS type,
+        pf.${PlanFeaturesColumns.max_limit}
       FROM plans_features AS pf
-        INNER JOIN features AS f ON f.id = pf.feature_id
-      WHERE pf.plan_id = ${planId}
+        INNER JOIN features AS f ON f.${FeatureColumns.id} = pf.${PlanFeaturesColumns.feature_id}
+      WHERE pf.${PlanFeaturesColumns.plan_id} = ${planId}
     `)
 
     return CaseSerializer.CastArrayToCamel<any, FeatureDTO>(planFeatures)

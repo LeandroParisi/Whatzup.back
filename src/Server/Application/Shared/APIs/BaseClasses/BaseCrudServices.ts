@@ -1,7 +1,7 @@
 import { Service } from 'typedi'
 import { BaseEntity } from '../../../../Domain/Entities/BaseClasses/BaseEntity'
+import { IBaseRepository } from '../../Database/Repositories/IRepository'
 import ApiError from '../../Errors/ApiError'
-import { IBaseRepository } from '../../Repositories/IRepository'
 import { StatusCode } from '../Enums/Status'
 
 @Service()
@@ -26,9 +26,14 @@ export default class BaseCrudServices<Entity extends BaseEntity> {
     }
   }
 
-  // public Read() {
-  //   return 'tete'
-  // }
+  public async FindOne(body : Partial<Entity>) {
+    try {
+      const entity = await this.Repository.FindOne(body)
+      return entity
+    } catch (e) {
+      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, `Unable to locate entity ${body.id}`, e)
+    }
+  }
 
   public async Update(query : Partial<Entity>, fieldsToUpdate : Partial<Entity>) : Promise<boolean> {
     try {
@@ -42,7 +47,7 @@ export default class BaseCrudServices<Entity extends BaseEntity> {
   public async Deactivate(id : number, additionalQuery? : Partial<Entity>) : Promise<boolean> {
     try {
       const deactivate = { isActive: false } as Partial<Entity>
-      const isUpdated = await this.Repository.UpdateOne({ ...additionalQuery, id }, deactivate)
+      const isUpdated = await this.Repository.UpdateOne({ ...additionalQuery, id, isActive: true }, deactivate)
       return isUpdated
     } catch (e) {
       throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, 'Unable to update entity', e)
@@ -51,12 +56,24 @@ export default class BaseCrudServices<Entity extends BaseEntity> {
 
   public async Activate(id : number, additionalQuery? : Partial<Entity>) : Promise<boolean> {
     try {
-      const deactivate = { isActive: true } as Partial<Entity>
-      const isUpdated = await this.Repository.UpdateOne({ ...additionalQuery, id }, deactivate)
+      const activate = { isActive: true } as Partial<Entity>
+      const isUpdated = await this.Repository.UpdateOne({ ...additionalQuery, id, isActive: false }, activate)
       return isUpdated
     } catch (e) {
       throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, 'Unable to update entity', e)
     }
+  }
+
+  protected CleanEntity(model: Partial<Entity>) : Partial<Entity> {
+    const entity = { ...model }
+
+    Object.entries(entity).forEach(([key, value]) => {
+      if (!value && value !== 0) {
+        delete entity[key]
+      }
+    })
+
+    return entity
   }
   // public Delete() {
 

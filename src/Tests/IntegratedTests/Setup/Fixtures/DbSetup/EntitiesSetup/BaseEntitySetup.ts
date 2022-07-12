@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { TableHelper, WhereCondition } from '@databases/pg-typed'
 import { Service } from 'typedi'
-import { Connections } from '../../../../../../Server/Application/Shared/Repositories/IRepository'
+import { Connections } from '../../../../../../Server/Application/Shared/Database/Repositories/IRepository'
 import { CaseSerializer } from '../../../../../../Server/Commons/Globals/Serializers/CaseSerializer'
 import { BaseEntity } from '../../../../../../Server/Domain/Entities/BaseClasses/BaseEntity'
 import { TestDbConnection } from '../TestDbConnection'
@@ -42,6 +42,16 @@ export abstract class BaseEntitySetup<
     const entity = await this.table(dbConnection).findOne(serializedQuery)
 
     return CaseSerializer.CastToCamel<DbEntity, Entity>(entity)
+  }
+
+  async FindAll(query: Partial<Entity>, connection?: Connections): Promise<Entity[]> {
+    const dbConnection = connection || TestDbConnection.db
+
+    const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(query)
+
+    const entities = await this.table(dbConnection).find(serializedQuery).all()
+
+    return CaseSerializer.CastArrayToCamel<DbEntity, Entity>(entities)
   }
 
   async Delete(query: Partial<Entity>, connection?: Connections): Promise<void> {

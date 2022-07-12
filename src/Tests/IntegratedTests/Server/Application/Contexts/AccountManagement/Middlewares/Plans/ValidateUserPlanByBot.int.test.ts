@@ -8,7 +8,7 @@ import { getMockReq, getMockRes } from '@jest-mock/express'
 import theoretically from 'jest-theories'
 import 'reflect-metadata'
 import { CreateBotStepPath } from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/Requests/CreateBot/CreateBotRequest'
-import ValidateUserPlan from '../../../../../../../../Server/Application/Contexts/AccountManagement/Middlewares/Plans/ValidateUserPlan'
+import ValidateUserPlanByBot from '../../../../../../../../Server/Application/Contexts/AccountManagement/Middlewares/Plans/ValidateUserPlanByBot'
 import { StatusCode } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import IAuthenticatedRequest from '../../../../../../../../Server/Application/Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import ApiError from '../../../../../../../../Server/Application/Shared/Errors/ApiError'
@@ -22,8 +22,10 @@ import PlanMock from '../../../../../../../Shared/Mocks/PlanMock'
 import StepMock from '../../../../../../../Shared/Mocks/StepMock'
 import DbSetup from '../../../../../../Setup/Fixtures/DbSetup/DbSetup'
 
-describe('Validate user plan middleware integrated test', () => {
+describe('Validate user plan by bot middleware integrated test', () => {
   let dbSetup : DbSetup
+  let validateUserPlan : ValidateUserPlanByBot
+
   const { res, next, mockClear } = getMockRes()
 
   enum PossibleErrors {
@@ -50,6 +52,7 @@ describe('Validate user plan middleware integrated test', () => {
 
   beforeEach(() => {
     dbSetup = new DbSetup()
+    validateUserPlan = new ValidateUserPlanByBot()
   })
 
   afterEach(async () => {
@@ -66,7 +69,7 @@ describe('Validate user plan middleware integrated test', () => {
 
     // Act
     try {
-      const middleware = ValidateUserPlan({ bot: { newBot: true, requestStepsPath: CreateBotStepPath } })
+      const middleware = validateUserPlan.BuildValidator({ newBot: true, requestStepsPath: CreateBotStepPath })
       await middleware(req, res, next)
     } catch (error) {
       expect(false).toBeTruthy() // It has thrown an error, not what we expected
@@ -87,7 +90,7 @@ describe('Validate user plan middleware integrated test', () => {
     const req = getMockReq({ user: { id: userId }, body: { steps } }) as unknown as IAuthenticatedRequest
 
     // Act
-    const middleware = ValidateUserPlan({ bot: { newBot: true, requestStepsPath: CreateBotStepPath } })
+    const middleware = validateUserPlan.BuildValidator({ newBot: true, requestStepsPath: CreateBotStepPath })
     await middleware(req, res, next)
     ValidateErroScenario(error)
   })

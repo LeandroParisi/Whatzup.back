@@ -2,16 +2,10 @@
 /* eslint-disable camelcase */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-return-await */
-import { Request } from 'express'
-import { ParamsDictionary } from 'express-serve-static-core'
-import { ParsedQs } from 'qs'
 import {
   Body,
   HttpCode,
-  JsonController, Patch,
-  Post,
-  Req,
-  UseBefore,
+  JsonController, Post, Put, Req,
 } from 'routing-controllers'
 import { Service } from 'typedi'
 import { Logger } from '../../../../../Commons/Logger'
@@ -22,10 +16,10 @@ import { CityRepository } from '../../../../../Infrastructure/PgTyped/Repositori
 import { CountryRepository } from '../../../../../Infrastructure/PgTyped/Repositories/CountryRepository'
 import { StateRepository } from '../../../../../Infrastructure/PgTyped/Repositories/StateRepository'
 import { UserRepository } from '../../../../../Infrastructure/PgTyped/Repositories/UserRepository'
-import { default as BaseCrudController, default as BaseCrudServices } from '../../../../Shared/APIs/BaseClasses/BaseCrudServices'
+import BaseCrudServices from '../../../../Shared/APIs/BaseClasses/BaseCrudServices'
 import IBaseCrudController from '../../../../Shared/APIs/BaseClasses/IBaseCrudController'
 import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResponse'
-import { ErrorMessages, ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
+import { ErrorMessages } from '../../../../Shared/APIs/Enums/Messages'
 import { BaseRoutes } from '../../../../Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
 import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
@@ -34,13 +28,13 @@ import { CountryDTO } from '../../../../Shared/DTOs/Locations/CountryDTO'
 import { StateDTO } from '../../../../Shared/DTOs/Locations/StateDTO'
 import ApiError from '../../../../Shared/Errors/ApiError'
 import PasswordHashing from '../../../Authentication/Hashing/PasswordHashing'
-import TokenAuthentication from '../../../Authentication/Middlewares/TokenAuthentication'
 import CreateUserRequest from './Requests/CreateUserRequest'
+import UpdateUserRequest from './Requests/UpdateUserRequest'
 
 @Service()
 @JsonController(`/${BaseRoutes.AccountManagementUser}`)
 export default class UserController implements IBaseCrudController<User> {
-  Service: BaseCrudController<User>
+  Service: BaseCrudServices<User>
 
   /**
    *
@@ -66,6 +60,18 @@ export default class UserController implements IBaseCrudController<User> {
     const user = Mapper.map(body, CreateUserRequest, User, { extraArgs: () => ({ hashedPassword }) })
 
     return await this.Service.Create(user)
+  }
+
+  @HttpCode(StatusCode.OK)
+  @Put('')
+  // @UseBefore(TokenAuthentication, ValidateUserPlanBuilder({ newUserPlan: true }))
+  public Update(
+    @Body({ validate: { skipMissingProperties: true } }) _body: UpdateUserRequest,
+    @Req() _req: IAuthenticatedRequest,
+  ): Promise<BaseResponse> {
+    // const { country, state, city } = body
+
+    throw new Error('Method not implemented.')
   }
 
   private async CheckLocalities(country: CountryDTO, state: StateDTO, city: CityDTO) {
@@ -99,39 +105,19 @@ export default class UserController implements IBaseCrudController<User> {
     }
   }
 
-  @HttpCode(StatusCode.OK)
-  @Patch('/deactivate')
-  @UseBefore(TokenAuthentication)
-  public async Deactivate(
-    @Req() req : IAuthenticatedRequest,
-  ) : Promise<BaseResponse> {
-    const { user: { id: userId } } = req
-    const isUpdated = await this.Service.Deactivate(userId)
-
-    if (isUpdated) {
-      return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
-    }
-
-    throw new ApiError(StatusCode.NOT_FOUND, `Unable to find user with id ${userId}`)
+  Get(_query: any, _req: IAuthenticatedRequest): Promise<User[]> {
+    throw new Error('Method not implemented.')
   }
 
-  @HttpCode(StatusCode.OK)
-  @Patch('/activate')
-  @UseBefore(TokenAuthentication)
-  public async Activate(
-    @Req() req : IAuthenticatedRequest,
+  public Deactivate(
+    @Req() _req : IAuthenticatedRequest,
   ) : Promise<BaseResponse> {
-    const { user: { id: userId } } = req
-    const isUpdated = await this.Service.Activate(userId)
-
-    if (isUpdated) {
-      return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
-    }
-
-    throw new ApiError(StatusCode.NOT_FOUND, `Unable to find user with id ${userId}`)
+    throw new Error('Method not implemented.')
   }
 
-  public Update(body: any, req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, id: number): Promise<BaseResponse> {
+  public Activate(
+    @Req() _req : IAuthenticatedRequest,
+  ) : Promise<BaseResponse> {
     throw new Error('Method not implemented.')
   }
 }
