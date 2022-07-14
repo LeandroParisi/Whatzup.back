@@ -1,4 +1,5 @@
 import { Service } from 'typedi'
+import { EnumDictionary } from '../../../../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import { FeatureDTO } from '../../../../../../Domain/DTOs/FeatureDTO'
 import { FeatureNames } from '../../../../../../Domain/Enums/FeatureNames'
 import { StatusCode } from '../../../../../Shared/APIs/Enums/Status'
@@ -7,30 +8,31 @@ import SwitchStatementeError from '../../../../../Shared/Errors/GenericErrors/Sw
 
 @Service()
 export class ValidateUserPlanAgainstNewPlan {
-  public Validate(currentPlanFeatures: FeatureDTO[], newFeatures: FeatureDTO[]) {
+  public Validate(
+    currentPlanFeatures: FeatureDTO[], newFeatures: FeatureDTO[], errorMessages : EnumDictionary<FeatureNames, string>,
+  ) {
     currentPlanFeatures.forEach((f) => {
-      this.ValidatePlanAgainsPlan(f, newFeatures.find((nf) => nf.name === f.name))
+      this.ValidatePlanAgainsPlan(f, newFeatures.find((nf) => nf.name === f.name), errorMessages[f.name])
     })
   }
 
-  private ValidatePlanAgainsPlan(currentPlanFeature: FeatureDTO, newFeature: FeatureDTO) {
+  private ValidatePlanAgainsPlan(currentPlanFeature: FeatureDTO, newFeature: FeatureDTO, errorMessage : string) {
     switch (currentPlanFeature.name) {
       case FeatureNames.NumberOfBots:
-        if (newFeature.maxLimit > currentPlanFeature.maxLimit) {
-          throw new ApiError(StatusCode.FORBIDDEN, 'You have reached maximum bots your plan allows, try disabling or deleting those you are not using.')
+        if (newFeature.maxLimit < currentPlanFeature.maxLimit) {
+          throw new ApiError(StatusCode.FORBIDDEN, errorMessage)
         }
         break
 
       case FeatureNames.NumberOfSteps:
-        if (newFeature.maxLimit > currentPlanFeature.maxLimit) {
-          throw new ApiError(StatusCode.FORBIDDEN, `Your plan only allows ${currentPlanFeature.maxLimit} steps per bot, you are trying to register ${newFeature.maxLimit}`)
+        if (newFeature.maxLimit < currentPlanFeature.maxLimit) {
+          throw new ApiError(StatusCode.FORBIDDEN, errorMessage)
         }
         break
 
       case FeatureNames.PhonesPerBot:
-        // TODO
-        if (newFeature.maxLimit > currentPlanFeature.maxLimit) {
-          throw new ApiError(StatusCode.FORBIDDEN, `Your plan only allows ${currentPlanFeature.maxLimit} phone numbers per bot, you are trying to register ${newFeature.maxLimit}`)
+        if (newFeature.maxLimit < currentPlanFeature.maxLimit) {
+          throw new ApiError(StatusCode.FORBIDDEN, errorMessage)
         }
         break
       default:

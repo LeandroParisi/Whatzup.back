@@ -103,7 +103,7 @@ describe('Token authentication middleware tests', () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       when(mockedUserRepository.FindOne({ id: anyNumber() })).thenResolve(null)
     } else {
-      when(mockedUserRepository.FindOne(anything())).thenResolve(UserMock.GetRandomUser(1, 1, 1))
+      when(mockedUserRepository.FindOne(anything())).thenResolve(UserMock.GetRandomUser(1, 1, 1, 1))
     }
     return headers
   }

@@ -19,8 +19,8 @@ export default class UserControllerMapper {
         mapFrom((src) => src.city.id),
       ),
       forMember(
-        (dst) => dst.isActive,
-        mapFrom((_src) => true),
+        (dst) => dst.phoneNumberId,
+        mapWithArguments((_s, { phoneNumberId }) => phoneNumberId),
       ),
       forMember(
         (dst) => dst.stateId,
@@ -32,6 +32,14 @@ export default class UserControllerMapper {
       ),
       forMember(
         (dst) => dst.id,
+        ignore(),
+      ),
+      forMember(
+        (dst) => dst.isActive,
+        ignore(),
+      ),
+      forMember(
+        (dst) => dst.wasActivated,
         ignore(),
       ),
       forMember(

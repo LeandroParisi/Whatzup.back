@@ -55,7 +55,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
   it('2. Should not create bot if user does not exist', async () => {
     // Arrange
     const payload = BotControllerStubs.GetValidPayload()
-    const { email, id } = UserMock.GetRandomUser(1, 1, 1)
+    const { email, id } = UserMock.GetRandomUser(1, 1, 1, 1)
     const token = JwtMocks.GetToken({ email, id })
 
     // Act

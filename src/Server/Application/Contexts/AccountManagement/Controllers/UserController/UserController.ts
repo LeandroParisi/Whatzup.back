@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-return-await */
+import { Transaction } from '@databases/pg'
 import {
   Body,
   HttpCode,
@@ -14,6 +15,7 @@ import User from '../../../../../Domain/Entities/User'
 import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
 import { CityRepository } from '../../../../../Infrastructure/PgTyped/Repositories/CityRepository'
 import { CountryRepository } from '../../../../../Infrastructure/PgTyped/Repositories/CountryRepository'
+import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
 import { StateRepository } from '../../../../../Infrastructure/PgTyped/Repositories/StateRepository'
 import { UserRepository } from '../../../../../Infrastructure/PgTyped/Repositories/UserRepository'
 import BaseCrudServices from '../../../../Shared/APIs/BaseClasses/BaseCrudServices'
@@ -26,6 +28,7 @@ import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInt
 import { CityDTO } from '../../../../Shared/DTOs/Locations/CityDTO'
 import { CountryDTO } from '../../../../Shared/DTOs/Locations/CountryDTO'
 import { StateDTO } from '../../../../Shared/DTOs/Locations/StateDTO'
+import { PhoneNumberDTO } from '../../../../Shared/DTOs/PhoneNumberDTO'
 import ApiError from '../../../../Shared/Errors/ApiError'
 import PasswordHashing from '../../../Authentication/Hashing/PasswordHashing'
 import CreateUserRequest from './Requests/CreateUserRequest'
@@ -44,20 +47,23 @@ export default class UserController implements IBaseCrudController<User> {
     private countryRepository : CountryRepository,
     private stateRepository : StateRepository,
     private cityRepository : CityRepository,
+    private phoneNumberRepository : PhoneNumberRepository,
   ) {
     this.Service = new BaseCrudServices<User>(repository)
   }
 
   @HttpCode(StatusCode.CREATED)
   @Post()
-  public async Create(@Body() body : CreateUserRequest) : Promise<User> {
-    const { country, state, city } = body
+  public async Create(@Body({ validate: true }) body : CreateUserRequest) : Promise<User> {
+    const {
+      country, state, city, phoneNumber,
+    } = body
 
-    await this.CheckLocalities(country, state, city)
+    const phoneNumberId = await this.UpsertUserDependencies(country, state, city, phoneNumber)
 
     const hashedPassword = await PasswordHashing.HashPassword(body.password)
 
-    const user = Mapper.map(body, CreateUserRequest, User, { extraArgs: () => ({ hashedPassword }) })
+    const user = Mapper.map(body, CreateUserRequest, User, { extraArgs: () => ({ hashedPassword, phoneNumberId }) })
 
     return await this.Service.Create(user)
   }
@@ -74,37 +80,6 @@ export default class UserController implements IBaseCrudController<User> {
     throw new Error('Method not implemented.')
   }
 
-  private async CheckLocalities(country: CountryDTO, state: StateDTO, city: CityDTO) {
-    const self = this
-
-    async function transaction() {
-      await PgTypedDbConnection.db.tx(async (db) => {
-        const isCountryInserted = await self.countryRepository.FindOne({ id: country.id, iso2: country.iso2 }, db)
-        const isStateInserted = await self.stateRepository.FindOne({ id: state.id, iso2: state.iso2 }, db)
-        const isCityInserted = await self.cityRepository.FindOne({ id: city.id }, db)
-
-        if (!isCountryInserted) {
-          Logger.info(`Creating country ${country.name}, with ID ${country.id}`)
-          await self.countryRepository.Create(country, db)
-        }
-        if (!isStateInserted) {
-          Logger.info(`Creating state ${state.name}, with ID ${state.id}`)
-          await self.stateRepository.Create(state, db)
-        }
-        if (!isCityInserted) {
-          Logger.info(`Creating city ${city.name}, with ID ${city.id}`)
-          await self.cityRepository.Create(city, db)
-        }
-      })
-    }
-
-    try {
-      await transaction()
-    } catch (e) {
-      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, e)
-    }
-  }
-
   Get(_query: any, _req: IAuthenticatedRequest): Promise<User[]> {
     throw new Error('Method not implemented.')
   }
@@ -119,5 +94,46 @@ export default class UserController implements IBaseCrudController<User> {
     @Req() _req : IAuthenticatedRequest,
   ) : Promise<BaseResponse> {
     throw new Error('Method not implemented.')
+  }
+
+  private async UpsertUserDependencies(
+    country: CountryDTO, state: StateDTO, city: CityDTO, phoneNumber: PhoneNumberDTO,
+  ) : Promise<number> {
+    const self = this
+    let phoneNumberId : number = null
+
+    async function transaction() {
+      await PgTypedDbConnection.db.tx(async (db) => {
+        await self.UpsertLocalities(country, state, city, db)
+        const { id } = await self.phoneNumberRepository.Create(phoneNumber)
+        phoneNumberId = id
+      })
+    }
+
+    try {
+      await transaction()
+      return phoneNumberId
+    } catch (e) {
+      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, e)
+    }
+  }
+
+  private async UpsertLocalities(country: CountryDTO, state: StateDTO, city: CityDTO, transaction : Transaction) {
+    const isCountryInserted = await this.countryRepository.FindOne({ id: country.id, iso2: country.iso2 }, transaction)
+    const isStateInserted = await this.stateRepository.FindOne({ id: state.id, iso2: state.iso2 }, transaction)
+    const isCityInserted = await this.cityRepository.FindOne({ id: city.id }, transaction)
+
+    if (!isCountryInserted) {
+      Logger.info(`Creating country ${country.name}, with ID ${country.id}`)
+      await this.countryRepository.Create(country, transaction)
+    }
+    if (!isStateInserted) {
+      Logger.info(`Creating state ${state.name}, with ID ${state.id}`)
+      await this.stateRepository.Create(state, transaction)
+    }
+    if (!isCityInserted) {
+      Logger.info(`Creating city ${city.name}, with ID ${city.id}`)
+      await this.cityRepository.Create(city, transaction)
+    }
   }
 }

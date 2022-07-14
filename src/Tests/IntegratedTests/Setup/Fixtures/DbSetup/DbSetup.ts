@@ -6,17 +6,21 @@ import 'reflect-metadata'
 import City from '../../../../../Server/Domain/Entities/City'
 import Country from '../../../../../Server/Domain/Entities/Country'
 import Feature from '../../../../../Server/Domain/Entities/Feature'
+import PlanFeature from '../../../../../Server/Domain/Entities/Pivot/PlanFeature'
 import Plan from '../../../../../Server/Domain/Entities/Plan'
 import State from '../../../../../Server/Domain/Entities/State'
 import User from '../../../../../Server/Domain/Entities/User'
 import CityMock from '../../../../Shared/Mocks/CityMock'
 import CountryMock from '../../../../Shared/Mocks/CountryMock'
+import PhoneNumberMock from '../../../../Shared/Mocks/PhoneNumberMock'
 import StateMock from '../../../../Shared/Mocks/StateMock'
 import UserMock from '../../../../Shared/Mocks/UserMock'
 import { BotSetup } from './EntitiesSetup/BotSetup'
+import { BotsPhoneNumbersSetup } from './EntitiesSetup/BotsPhoneNumbers'
 import { CitySetup } from './EntitiesSetup/CitySetup'
 import { CountrySetup } from './EntitiesSetup/CountrySetup'
 import { FeatureSetup } from './EntitiesSetup/FeatureSetup'
+import { PhoneNumberSetup } from './EntitiesSetup/PhoneNumberSetup'
 import { PlanSetup } from './EntitiesSetup/PlanSetup'
 import { PlansFeaturesSetup } from './EntitiesSetup/PlansFeaturesSetup'
 import { StateSetup } from './EntitiesSetup/StateSetup'
@@ -51,8 +55,8 @@ export interface BasicLocationsSetupReturn {
 
 export interface FullPlanSetupParams {
   plan? : Partial<Plan>,
-  featuresToCreate?: number
-  features? : Partial<Feature>[]
+  numberOfRandomFeaturesToCreate?: number
+  features? : Partial<Feature & PlanFeature>[]
 }
 
 export interface FullPlanSetupReturn {
@@ -61,39 +65,30 @@ export interface FullPlanSetupReturn {
 }
 
 export default class DbSetup {
-  public userSetup : UserSetup
+  public userSetup = new UserSetup()
 
-  public stateSetup : StateSetup
+  public stateSetup = new StateSetup()
 
-  public citySetup : CitySetup
+  public citySetup = new CitySetup()
 
-  public countrySetup : CountrySetup
+  public countrySetup = new CountrySetup()
 
-  public botSetup : BotSetup
+  public botSetup = new BotSetup()
 
-  public featureSetup : FeatureSetup
+  public featureSetup = new FeatureSetup()
 
-  public planSetup : PlanSetup
+  public planSetup = new PlanSetup()
 
-  public plansFeaturesSetup : PlansFeaturesSetup
+  public plansFeaturesSetup = new PlansFeaturesSetup()
 
-  /**
-   *
-   */
-  constructor() {
-    this.userSetup = new UserSetup()
-    this.stateSetup = new StateSetup()
-    this.citySetup = new CitySetup()
-    this.countrySetup = new CountrySetup()
-    this.botSetup = new BotSetup()
-    this.featureSetup = new FeatureSetup()
-    this.planSetup = new PlanSetup()
-    this.plansFeaturesSetup = new PlansFeaturesSetup()
-  }
+  public phoneNumberSetup = new PhoneNumberSetup()
+
+  public botsPhoneNumbersSetup = new BotsPhoneNumbersSetup()
 
   public async BasicUserSetup(params? : BasicUserSetupParams) : Promise<BasicUserSetupReturn> {
     const { state, city, country } = await this.BasicLocationsSetup(params)
-    const user = UserMock.GetRandomPartialUser(country.id, state.id, city.id)
+    const { id: phoneNumberId } = await this.phoneNumberSetup.Create(PhoneNumberMock.GetRandom())
+    const user = UserMock.GetRandomPartialUser(country.id, state.id, city.id, phoneNumberId)
     const userToInsert = params?.user ? {
       ...user, ...params.user, stateId: state.id, countryId: country.id, cityId: city.id,
     } : user
@@ -111,16 +106,28 @@ export default class DbSetup {
   public async FullPlanSetup(
     {
       plan,
-      featuresToCreate,
+      numberOfRandomFeaturesToCreate,
+      features,
     } : FullPlanSetupParams,
   ) : Promise<FullPlanSetupReturn> {
     const createdPlan = await this.planSetup.InsertOnePlan(plan)
-    const numberOfFeatures = featuresToCreate ?? faker.datatype.number({ max: 10 })
-    const features = await this.featureSetup.CreateXFeatures(numberOfFeatures)
 
-    await this.plansFeaturesSetup.CreatePlanFeaturesRelation(features.map((f) => f.id), createdPlan)
+    let createdFeatures : Feature[] = []
 
-    return { plan: createdPlan, features }
+    if (features) {
+      createdFeatures = await this.featureSetup.CreateXFeatures({ features })
+
+      for (const f of createdFeatures) {
+        const { maxLimit } = features.find((x) => x.name === f.name)
+        await this.plansFeaturesSetup.CreatePlanFeaturesRelation([f.id], createdPlan, { maxLimit })
+      }
+    } else {
+      const numberOfFeatures = numberOfRandomFeaturesToCreate ?? faker.datatype.number({ max: 10 })
+      createdFeatures = await this.featureSetup.CreateXFeatures({ randomFeaturesToCreate: numberOfFeatures })
+      await this.plansFeaturesSetup.CreatePlanFeaturesRelation(createdFeatures.map((f) => f.id), createdPlan)
+    }
+
+    return { plan: createdPlan, features: createdFeatures }
   }
 
   public async DefaultPlanSetup() : Promise<FullPlanSetupReturn> {
@@ -172,10 +179,12 @@ export default class DbSetup {
 
   public async CleanUp() {
     try {
+      await this.botsPhoneNumbersSetup.CleanUp()
       await this.botSetup.CleanUp()
       await this.plansFeaturesSetup.CleanUp()
       await this.featureSetup.CleanUp()
       await this.userSetup.CleanUp()
+      await this.phoneNumberSetup.CleanUp()
       await this.planSetup.CleanUp()
       await this.citySetup.CleanUp()
       await this.stateSetup.CleanUp()

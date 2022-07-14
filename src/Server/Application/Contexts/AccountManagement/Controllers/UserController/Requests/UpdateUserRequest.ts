@@ -3,31 +3,26 @@ import { Type } from 'class-transformer'
 import {
   IsEmail, IsNumber,
   IsString,
-  Min,
-  ValidateIf,
-  ValidateNested,
+  Min, ValidateNested,
 } from 'class-validator'
 import User from '../../../../../../Domain/Entities/User'
 import { CityDTO } from '../../../../../Shared/DTOs/Locations/CityDTO'
 import { CountryDTO } from '../../../../../Shared/DTOs/Locations/CountryDTO'
 import { StateDTO } from '../../../../../Shared/DTOs/Locations/StateDTO'
+import { PhoneNumberDTO } from '../../../../../Shared/DTOs/PhoneNumberDTO'
 
 export const UpdateUserPlanIdPath = 'body.planId' as string
 
 export default class UpdateUserRequest implements Partial<User> {
-  @IsString()
-  @AutoMap()
-  whatsappNumber?: string
+  @ValidateNested()
+  @Type(() => PhoneNumberDTO)
+  @AutoMap(() => PhoneNumberDTO)
+  phoneNumber : PhoneNumberDTO
 
-  @ValidateIf((o : UpdateUserRequest) => o?.planId !== undefined)
   @IsNumber()
   @Min(1)
   @AutoMap()
   planId?: number
-
-  @IsString()
-  @AutoMap()
-  whatsappId?: string
 
   @IsEmail()
   @AutoMap()

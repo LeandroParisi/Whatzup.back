@@ -1,8 +1,16 @@
+  CREATE TABLE phone_numbers (
+    "id" SERIAL PRIMARY KEY,
+    "whatsapp_number" varchar NOT NULL,
+    "whatsapp_id" varchar,
+    "is_active" bool DEFAULT true,
+    "created_at" date NOT NULL DEFAULT 'now()',
+    "updated_at" date NOT NULL DEFAULT 'now()'
+  );
+
   CREATE TABLE users (
     "id" SERIAL PRIMARY KEY,
     "plan_id" int,
-    "whatsapp_number" varchar UNIQUE NOT NULL,
-    "whatsapp_id" varchar UNIQUE NOT NULL,
+    "phone_number_id" int,
     "email" varchar UNIQUE NOT NULL,
     "password" varchar UNIQUE NOT NULL,
     "document_number" varchar UNIQUE NOT NULL,
@@ -18,7 +26,7 @@
     "address_complement" varchar,
     "postal_code" varchar,
     "was_activated" bool DEFAULT false,
-    "is_active" bool DEFAULT false,
+    "is_active" bool DEFAULT true,
     "created_at" date NOT NULL DEFAULT 'now()',
     "updated_at" date NOT NULL DEFAULT 'now()'
   );
@@ -31,6 +39,11 @@
     "user_id" int NOT NULL,
     "created_at" date NOT NULL DEFAULT 'now()',
     "updated_at" date NOT NULL DEFAULT 'now()'
+  );
+
+  CREATE TABLE bots_phone_numbers (
+    "bot_id" int NOT NULL,
+    "phone_number_id" int NOT NULL
   );
 
   CREATE TABLE plans (
@@ -91,7 +104,13 @@
     "name" varchar NOT NULL
   );
 
-  CREATE INDEX "whatsapp_number" ON "users" ("whatsapp_number");
+  CREATE INDEX "whatsapp_number" ON "phone_numbers" ("whatsapp_number");
+
+  CREATE INDEX "whatsapp_id" ON "phone_numbers" ("whatsapp_id");
+
+  
+-- todo: composite unique constraint
+  -- bots_phone_numbers
 
   ALTER TABLE "users" ADD FOREIGN KEY ("country_id") REFERENCES "countries" ("id");
 
@@ -100,6 +119,12 @@
   ALTER TABLE "users" ADD FOREIGN KEY ("state_id") REFERENCES "states" ("id");
 
   ALTER TABLE "users" ADD FOREIGN KEY ("city_id") REFERENCES "cities" ("id");
+
+  ALTER TABLE "users" ADD FOREIGN KEY ("phone_number_id") REFERENCES "phone_numbers" ("id");
+
+  ALTER TABLE "bots_phone_numbers" ADD FOREIGN KEY ("bot_id") REFERENCES "bots" ("id");
+
+  ALTER TABLE "bots_phone_numbers" ADD FOREIGN KEY ("phone_number_id") REFERENCES "phone_numbers" ("id");
 
   ALTER TABLE "bots" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 

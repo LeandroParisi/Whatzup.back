@@ -10,10 +10,12 @@ import UserController from '../../../../../../../../Server/Application/Contexts/
 import { IBaseRepository } from '../../../../../../../../Server/Application/Shared/Database/Repositories/IRepository'
 import { CityRepository } from '../../../../../../../../Server/Infrastructure/PgTyped/Repositories/CityRepository'
 import { CountryRepository } from '../../../../../../../../Server/Infrastructure/PgTyped/Repositories/CountryRepository'
+import { PhoneNumberRepository } from '../../../../../../../../Server/Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
 import { StateRepository } from '../../../../../../../../Server/Infrastructure/PgTyped/Repositories/StateRepository'
 import { UserRepository } from '../../../../../../../../Server/Infrastructure/PgTyped/Repositories/UserRepository'
 import CityMock from '../../../../../../../Shared/Mocks/CityMock'
 import CountryMock from '../../../../../../../Shared/Mocks/CountryMock'
+import PhoneNumberMock from '../../../../../../../Shared/Mocks/PhoneNumberMock'
 import StateMock from '../../../../../../../Shared/Mocks/StateMock'
 import UserControllerStubsShared from '../../../../../../../Shared/Stubs/UserControllerStubs.shared'
 import UserControllerStubs from './UserControllerStubs'
@@ -26,6 +28,7 @@ describe('User Controller: Unit Tests', () => {
   let stateRepository : StateRepository
   let cityRepository : CityRepository
   let userController : UserController
+  let phonesRepository : PhoneNumberRepository
 
   beforeEach(() => {
     TestSetup()
@@ -112,8 +115,16 @@ describe('User Controller: Unit Tests', () => {
     countryRepository = mock(CountryRepository)
     stateRepository = mock(StateRepository)
     cityRepository = mock(CityRepository)
+    phonesRepository = mock(PhoneNumberRepository)
+
+    when(phonesRepository.Create(anything())).thenResolve(PhoneNumberMock.GetRandom({ id: 1 }))
+
     userController = new UserController(
-      instance(userRepository), instance(countryRepository), instance(stateRepository), instance(cityRepository),
+      instance(userRepository),
+      instance(countryRepository),
+      instance(stateRepository),
+      instance(cityRepository),
+      instance(phonesRepository),
     )
   }
 })

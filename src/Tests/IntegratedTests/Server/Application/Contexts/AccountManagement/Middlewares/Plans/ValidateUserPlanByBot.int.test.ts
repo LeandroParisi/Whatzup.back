@@ -22,6 +22,7 @@ import PlanMock from '../../../../../../../Shared/Mocks/PlanMock'
 import StepMock from '../../../../../../../Shared/Mocks/StepMock'
 import DbSetup from '../../../../../../Setup/Fixtures/DbSetup/DbSetup'
 
+// TODO: Caso de phone numbers by bot
 describe('Validate user plan by bot middleware integrated test', () => {
   let dbSetup : DbSetup
   let validateUserPlan : ValidateUserPlanByBot

@@ -1,35 +1,32 @@
+/* eslint-disable no-use-before-define */
 import { AutoMap } from '@automapper/classes'
 import { Type } from 'class-transformer'
 import {
   IsEmail,
-  IsNotEmpty,
-  IsNumber,
+  IsNotEmpty, IsNumber,
   IsString,
   Min,
   ValidateIf,
   ValidateNested,
 } from 'class-validator'
 import User from '../../../../../../Domain/Entities/User'
+import HasPlanId from '../../../../../Shared/CustomValidations/Plans/FunctionValidators/HasPlanId'
 import { CityDTO } from '../../../../../Shared/DTOs/Locations/CityDTO'
 import { CountryDTO } from '../../../../../Shared/DTOs/Locations/CountryDTO'
 import { StateDTO } from '../../../../../Shared/DTOs/Locations/StateDTO'
+import { PhoneNumberDTO } from '../../../../../Shared/DTOs/PhoneNumberDTO'
 
 export default class CreateUserRequest implements Partial<User> {
-  @IsNotEmpty()
-  @IsString()
-  @AutoMap()
-  whatsappNumber?: string
+  @ValidateNested()
+  @Type(() => PhoneNumberDTO)
+  @AutoMap(() => PhoneNumberDTO)
+  phoneNumber : PhoneNumberDTO
 
-  @ValidateIf((o : CreateUserRequest) => o?.planId !== undefined)
+  @ValidateIf((o : CreateUserRequest) => HasPlanId(o.planId))
   @IsNumber()
   @Min(1)
   @AutoMap()
   planId?: number
-
-  @IsNotEmpty()
-  @IsString()
-  @AutoMap()
-  whatsappId?: string
 
   @IsNotEmpty()
   @IsEmail()

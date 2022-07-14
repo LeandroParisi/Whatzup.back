@@ -1,5 +1,7 @@
+/* eslint-disable max-len */
 import { NextFunction, Response } from 'express'
 import Container, { Service } from 'typedi'
+import { EnumDictionary } from '../../../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import DetailedPlanDTO from '../../../../../Domain/DTOs/DetailedPlanDTO'
 import { FeatureDTO } from '../../../../../Domain/DTOs/FeatureDTO'
 import { Step } from '../../../../../Domain/Entities/Steps/Step'
@@ -96,6 +98,7 @@ export default class ValidateUserPlanByBot extends BasePlanValidationMiddlewareB
         }
       }
       if (f.name === FeatureNames.PhonesPerBot) {
+        // TODO
         return {
           ...f,
         }
@@ -104,6 +107,30 @@ export default class ValidateUserPlanByBot extends BasePlanValidationMiddlewareB
       throw new SwitchStatementeError(`Unmapped feature name ${f.name}`)
     })
 
-    this.validateUserPlanAgainstNewPlan.Validate(planFeatures, newUserFeatures)
+    const errorMessages = this.BuildErrorMessages(planFeatures, newUserFeatures)
+
+    this.validateUserPlanAgainstNewPlan.Validate(newUserFeatures, planFeatures, errorMessages)
+  }
+
+  private BuildErrorMessages(planFeatures: FeatureDTO[], newUserFeatures: FeatureDTO[]) : EnumDictionary<FeatureNames, string> {
+    const errorMessages = {}
+
+    planFeatures.forEach((f) => {
+      switch (f.name) {
+        case FeatureNames.NumberOfBots:
+          errorMessages[FeatureNames.NumberOfBots] = 'You have reached maximum bots your plan allows, try disabling or deleting those you are not using.'
+          break
+        case FeatureNames.NumberOfSteps:
+          errorMessages[FeatureNames.NumberOfSteps] = `Your plan only allows ${f.maxLimit} steps per bot, you are trying to register ${newUserFeatures.find((x) => x.name === FeatureNames.NumberOfSteps).maxLimit}`
+          break
+        case FeatureNames.PhonesPerBot:
+          errorMessages[FeatureNames.PhonesPerBot] = `Your plan only allows ${f.maxLimit} phone numbers per bot, you are trying to register ${newUserFeatures.find((x) => x.name === FeatureNames.PhonesPerBot).maxLimit}`
+          break
+        default:
+          throw new SwitchStatementeError(`Unmapped feature name ${f.name}`)
+      }
+    })
+
+    return errorMessages as EnumDictionary<FeatureNames, string>
   }
 }

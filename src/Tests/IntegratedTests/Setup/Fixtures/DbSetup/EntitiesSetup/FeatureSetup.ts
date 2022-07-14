@@ -20,6 +20,11 @@ export interface BasicFeature {
   limit: number
 }
 
+export interface CreateXFeaturesParams {
+  randomFeaturesToCreate? : number,
+  features? : Partial<Feature>[]
+}
+
 @Service()
 export class FeatureSetup extends BaseEntitySetup<Feature, FeaturesDbModel, Features_InsertParameters> {
   table: TableHelper<FeaturesDbModel, Features_InsertParameters, 'defaultConnection'>
@@ -57,7 +62,7 @@ export class FeatureSetup extends BaseEntitySetup<Feature, FeaturesDbModel, Feat
     return insertedfeature
   }
 
-  public async CreateXFeatures(totalFeaturesToCreate : number, features? : Partial<Feature>[]) : Promise<Feature[]> {
+  public async CreateXFeatures({ randomFeaturesToCreate, features } : CreateXFeaturesParams) : Promise<Feature[]> {
     const output : Feature[] = []
 
     if (features?.length) {
@@ -67,11 +72,11 @@ export class FeatureSetup extends BaseEntitySetup<Feature, FeaturesDbModel, Feat
       }
     }
 
-    const extraFeatures = totalFeaturesToCreate - features?.length
-
-    for (let i = 1; i <= extraFeatures; i += 1) {
-      const feature = await this.InsertOneFeature()
-      output.push(feature)
+    if (randomFeaturesToCreate) {
+      for (let i = 1; i <= randomFeaturesToCreate; i += 1) {
+        const feature = await this.InsertOneFeature()
+        output.push(feature)
+      }
     }
 
     return output

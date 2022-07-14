@@ -32,6 +32,7 @@ describe('User controller: Integrated Tests', () => {
     delete expectedUser.city
     delete expectedUser.country
     delete expectedUser.state
+    delete expectedUser.phoneNumber
 
     // Act
     const response = await request(app).post(`/api/${BaseRoutes.AccountManagementUser}`).send(payload)
@@ -44,8 +45,19 @@ describe('User controller: Integrated Tests', () => {
 
     assert.equal(response.status, StatusCode.CREATED)
     assert.deepEqual(
-      JSON.stringify({ ...insertedUser, ...expectedUser, password: insertedUser.password }),
-      JSON.stringify(insertedUser),
+      { ...insertedUser, password: expectedUser.password },
+      {
+        ...expectedUser,
+        id: insertedUser.id,
+        cityId: payload.city.id,
+        stateId: payload.state.id,
+        countryId: payload.country.id,
+        phoneNumberId: insertedUser.phoneNumberId,
+        createdAt: insertedUser.createdAt,
+        updatedAt: insertedUser.updatedAt,
+        isActive: true,
+        wasActivated: false,
+      },
     )
     assert.deepEqual(insertedState, payload.state)
     assert.deepEqual(insertedCity, payload.city)

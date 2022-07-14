@@ -1,123 +1,94 @@
 import { AutoMap } from '@automapper/classes'
+import { sql } from '@databases/pg'
 import { Service } from 'typedi'
+import { KeysOf } from '../../Commons/Interfaces/SystemInterfaces/EnumTypes'
+import { Users } from '../../Infrastructure/PgTyped/Schemas/__generated__'
 import { BaseEntity } from './BaseClasses/BaseEntity'
 
 @Service()
 export default class User extends BaseEntity {
-  readonly id: number
+  id: number
+
+  phoneNumberId : number
 
   @AutoMap()
-  readonly whatsappNumber: string
+  email: string
 
   @AutoMap()
-  readonly whatsappId: string
+  password: string
 
   @AutoMap()
-  readonly email: string
+  documentNumber: string
 
   @AutoMap()
-  readonly password: string
+  firstName: string
 
   @AutoMap()
-  readonly documentNumber: string
+  middleName?: string
 
   @AutoMap()
-  readonly firstName: string
+  lastName: string
 
   @AutoMap()
-  readonly middleName?: string
+  countryId: number
 
   @AutoMap()
-  readonly lastName: string
+  stateId: number
 
   @AutoMap()
-  readonly countryId: number
+  cityId: number
 
   @AutoMap()
-  readonly stateId: number
+  neighbourhood?: string
 
   @AutoMap()
-  readonly cityId: number
+  addressStreet?: string
 
   @AutoMap()
-  readonly neighbourhood?: string
+  addressNumber?: string
 
   @AutoMap()
-  readonly addressStreet?: string
+  addressComplement?: string
 
   @AutoMap()
-  readonly addressNumber?: string
+  postalCode?: string
+
+  wasActivated?: boolean
+
+  isActive?: boolean
+
+  createdAt?: Date
+
+  updatedAt?: Date
 
   @AutoMap()
-  readonly addressComplement?: string
-
-  @AutoMap()
-  readonly postalCode?: string
-
-  readonly wasActivated?: boolean
-
-  readonly isActive?: boolean
-
-  readonly createdAt?: Date
-
-  readonly updatedAt?: Date
-
-  @AutoMap()
-  readonly planId?: number
-
-  /**
-   *
-   */
-  constructor(
-    id: number,
-    whatsappNumber: string,
-    whatsappId: string,
-    email: string,
-    password: string,
-    documentNumber: string,
-    firstName: string,
-    lastName: string,
-    countryId: number,
-    stateId: number,
-    cityId: number,
-    middleName?: string,
-    neighbourhood?: string,
-    addressStreet?: string,
-    addressNumber?: string,
-    addressComplement?: string,
-    postalCode?: string,
-    wasActivated?: boolean,
-    isActive?: boolean,
-    planId?: number,
-    createdAt?: Date,
-    updatedAt?: Date,
-  ) {
-    super()
-    this.id = id
-    this.whatsappNumber = whatsappNumber
-    this.whatsappId = whatsappId
-    this.email = email
-    this.password = password
-    this.documentNumber = documentNumber
-    this.firstName = firstName
-    this.middleName = middleName
-    this.lastName = lastName
-    this.countryId = countryId
-    this.stateId = stateId
-    this.cityId = cityId
-    this.neighbourhood = neighbourhood
-    this.addressStreet = addressStreet
-    this.addressNumber = addressNumber
-    this.addressComplement = addressComplement
-    this.postalCode = postalCode
-    this.wasActivated = wasActivated
-    this.isActive = isActive
-    this.createdAt = createdAt
-    this.updatedAt = updatedAt
-    this.planId = planId
-  }
+  planId?: number
 
   public GetFullName() : string {
     return `${this.firstName}${this.middleName ?? ` ${this.middleName}`}${this.lastName}`
   }
+}
+
+export const UsersColumns : KeysOf<Users> = {
+  address_complement: sql.ident('address_complement'),
+  address_number: sql.ident('address_number'),
+  address_street: sql.ident('address_street'),
+  city_id: sql.ident('city_id'),
+  country_id: sql.ident('country_id'),
+  created_at: sql.ident('created_at'),
+  document_number: sql.ident('document_number'),
+  email: sql.ident('email'),
+  first_name: sql.ident('first_name'),
+  id: sql.ident('id'),
+  is_active: sql.ident('is_active'),
+  last_name: sql.ident('last_name'),
+  middle_name: sql.ident('middle_name'),
+  neighbourhood: sql.ident('neighbourhood'),
+  password: sql.ident('password'),
+  phone_number_id: sql.ident('phone_number_id'),
+  plan_id: sql.ident('plan_id'),
+  postal_code: sql.ident('postal_code'),
+  state_id: sql.ident('state_id'),
+  updated_at: sql.ident('updated_at'),
+  was_activated: sql.ident('was_activated'),
 }
