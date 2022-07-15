@@ -3,13 +3,13 @@ import { Type } from 'class-transformer'
 import {
   IsEmail, IsNumber,
   IsString,
-  Min, ValidateNested,
+  Min, ValidateNested
 } from 'class-validator'
+import { CityDTO } from '../../../../../../Domain/DTOs/Locations/CityDTO'
+import { CountryDTO } from '../../../../../../Domain/DTOs/Locations/CountryDTO'
+import { StateDTO } from '../../../../../../Domain/DTOs/Locations/StateDTO'
+import { PhoneNumberDTO } from '../../../../../../Domain/DTOs/PhoneNumberDTO'
 import User from '../../../../../../Domain/Entities/User'
-import { CityDTO } from '../../../../../Shared/DTOs/Locations/CityDTO'
-import { CountryDTO } from '../../../../../Shared/DTOs/Locations/CountryDTO'
-import { StateDTO } from '../../../../../Shared/DTOs/Locations/StateDTO'
-import { PhoneNumberDTO } from '../../../../../Shared/DTOs/PhoneNumberDTO'
 
 export const UpdateUserPlanIdPath = 'body.planId' as string
 

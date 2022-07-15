@@ -1,8 +1,9 @@
 /* eslint-disable max-classes-per-file */
 import { Type } from 'class-transformer'
 import {
-  IsArray, IsDefined, IsEnum, IsNotEmpty, IsNumber, IsString, Min, ValidateNested,
+  IsArray, IsDefined, IsEnum, IsNotEmpty, IsNumber, IsString, Min, ValidateIf, ValidateNested,
 } from 'class-validator'
+import { PhoneNumberDTO } from '../../../../../../../Domain/DTOs/PhoneNumberDTO'
 import Bot from '../../../../../../../Domain/Entities/Bot'
 import StepTypes from '../../../../../../../Domain/Entities/Steps/Enums/StepTypes'
 import { IStepOption } from '../../../../../../../Domain/Entities/Steps/OptionsStep/OptionsStepInfo'
@@ -72,4 +73,10 @@ export default class CreateBotRequest implements Partial<Bot> {
   @ValidateNested({ each: true })
   @Type(() => StepRequest)
   steps : StepRequest[]
+
+  @ValidateIf((o : CreateBotRequest) => !!o?.phoneNumbers?.length)
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PhoneNumberDTO)
+  phoneNumbers : PhoneNumberDTO[]
 }

@@ -7,7 +7,7 @@
 /* eslint-disable no-use-before-define */
 import chai, { assert } from 'chai'
 import 'reflect-metadata'
-import { CaseSerializer } from '../../../../../../Server/Commons/Globals/Serializers/CaseSerializer'
+import { CaseSerializer } from '../../../../../../Server/Application/Shared/Serializers/CaseSerializer'
 import TypeUtils from '../../../../../../Server/Commons/Utils/TypeUtils'
 import { RandomCamelCaseObject } from '../../../../../Shared/Mocks/Randoms/RandomCamelCaseObject'
 import { RandomSnakeCaseObject } from '../../../../../Shared/Mocks/Randoms/RandomSnakeCaseObject'

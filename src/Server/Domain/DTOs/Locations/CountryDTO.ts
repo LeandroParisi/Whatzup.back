@@ -2,7 +2,7 @@ import { AutoMap } from '@automapper/classes'
 import {
   IsNotEmpty, IsNumber, IsString, MaxLength, Min,
 } from 'class-validator'
-import Country from '../../../../Domain/Entities/Country'
+import Country from '../../Entities/Country'
 
 export class CountryDTO implements Country {
   @IsNumber()

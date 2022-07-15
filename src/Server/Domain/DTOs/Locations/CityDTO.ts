@@ -2,7 +2,7 @@ import { AutoMap } from '@automapper/classes'
 import {
   IsNotEmpty, IsNumber, IsString, Min,
 } from 'class-validator'
-import City from '../../../../Domain/Entities/City'
+import City from '../../Entities/City'
 
 export class CityDTO implements City {
   @IsNumber()

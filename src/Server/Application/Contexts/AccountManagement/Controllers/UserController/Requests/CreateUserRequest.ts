@@ -9,12 +9,12 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator'
+import { CityDTO } from '../../../../../../Domain/DTOs/Locations/CityDTO'
+import { CountryDTO } from '../../../../../../Domain/DTOs/Locations/CountryDTO'
+import { StateDTO } from '../../../../../../Domain/DTOs/Locations/StateDTO'
+import { PhoneNumberDTO } from '../../../../../../Domain/DTOs/PhoneNumberDTO'
 import User from '../../../../../../Domain/Entities/User'
 import HasPlanId from '../../../../../Shared/CustomValidations/Plans/FunctionValidators/HasPlanId'
-import { CityDTO } from '../../../../../Shared/DTOs/Locations/CityDTO'
-import { CountryDTO } from '../../../../../Shared/DTOs/Locations/CountryDTO'
-import { StateDTO } from '../../../../../Shared/DTOs/Locations/StateDTO'
-import { PhoneNumberDTO } from '../../../../../Shared/DTOs/PhoneNumberDTO'
 
 export default class CreateUserRequest implements Partial<User> {
   @ValidateNested()

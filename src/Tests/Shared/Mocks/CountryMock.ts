@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { CountryDTO } from '../../../Server/Application/Shared/DTOs/Locations/CountryDTO'
+import { CountryDTO } from '../../../Server/Domain/DTOs/Locations/CountryDTO'
 import Country from '../../../Server/Domain/Entities/Country'
 
 type MockOptionals = Partial<Country>

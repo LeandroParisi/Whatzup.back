@@ -4,7 +4,7 @@
 import { TableHelper, WhereCondition } from '@databases/pg-typed'
 import { Service } from 'typedi'
 import { Connections } from '../../../../../../Server/Application/Shared/Database/Repositories/IRepository'
-import { CaseSerializer } from '../../../../../../Server/Commons/Globals/Serializers/CaseSerializer'
+import { CaseSerializer } from '../../../../../../Server/Application/Shared/Serializers/CaseSerializer'
 import { BaseEntity } from '../../../../../../Server/Domain/Entities/BaseClasses/BaseEntity'
 import { TestDbConnection } from '../TestDbConnection'
 
@@ -15,6 +15,8 @@ export abstract class BaseEntitySetup<
     DbInsertableEntity
   > {
   abstract table : TableHelper<DbEntity, DbInsertableEntity, 'defaultConnection'>
+
+  protected connection = TestDbConnection.db
 
   public EntitiesToDispose : Array<Entity> = []
 

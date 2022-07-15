@@ -2,7 +2,8 @@
 import { TableHelper, WhereCondition } from '@databases/pg-typed'
 import { Service } from 'typedi'
 import { Connections, IBaseRepository } from '../../../Application/Shared/Database/Repositories/IRepository'
-import { CaseSerializer } from '../../../Commons/Globals/Serializers/CaseSerializer'
+import { CaseSerializer } from '../../../Application/Shared/Serializers/CaseSerializer'
+import EntityCleaning from '../../../Application/Shared/Serializers/EntityCleaning'
 import DateUtils from '../../../Commons/Utils/DateUtils'
 import { BaseEntity } from '../../../Domain/Entities/BaseClasses/BaseEntity'
 import { PgTypedDbConnection } from '../PostgresTypedDbConnection'
@@ -18,7 +19,7 @@ export abstract class BaseRepository<
   async Create(model: Partial<Entity>, connection?: Connections): Promise<Entity> {
     const dbConnection = connection || PgTypedDbConnection.db
 
-    const cleanedEntity = this.CleanEntity(model)
+    const cleanedEntity = EntityCleaning.CleanEntity(model)
 
     const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, DbInsertableEntity>(cleanedEntity)
 
@@ -74,18 +75,6 @@ export abstract class BaseRepository<
     )
 
     return !!updatedEntities
-  }
-
-  private CleanEntity(model: Partial<Entity>) : Partial<Entity> {
-    const entity = { ...model }
-
-    Object.entries(entity).forEach(([key, value]) => {
-      if (!value && value !== 0) {
-        delete entity[key]
-      }
-    })
-
-    return entity
   }
 
   // async Delete(query: WhereCondition<DbEntity>, connection?: Connections): Promise<void> {

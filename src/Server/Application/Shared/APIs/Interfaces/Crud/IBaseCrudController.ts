@@ -1,7 +1,7 @@
 import { Request } from 'express'
-import { BaseEntity } from '../../../../Domain/Entities/BaseClasses/BaseEntity'
-import BaseCrudServices from './BaseCrudServices'
-import BaseResponse from './Responses/BaseResponse'
+import { BaseEntity } from '../../../../../Domain/Entities/BaseClasses/BaseEntity'
+import BaseCrudServices from '../../BaseClasses/BaseCrudServices'
+import BaseResponse from '../../BaseClasses/Responses/BaseResponse'
 
 export default interface IBaseCrudController<Entity extends BaseEntity> {
   Service : BaseCrudServices<Entity>

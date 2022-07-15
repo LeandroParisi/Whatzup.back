@@ -4,6 +4,7 @@ import express from 'express'
 import theoretically from 'jest-theories'
 import 'reflect-metadata'
 import request from 'supertest'
+import CreateBotRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/Requests/CreateBot/CreateBotRequest'
 import { BaseRoutes } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import { Server } from '../../../../../../../../Server/Server'
@@ -34,7 +35,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
   it('1. Should properlly create bot', async () => {
     // Arrange
-    const plan = await dbSetup.planSetup.Create(PlanMock.GetRandom())
+    const { plan } = await dbSetup.DefaultPlanSetup()
     const { user } = await dbSetup.BasicUserSetup({ user: { planId: plan.id } })
     const body = BotControllerStubs.GetValidPayload()
     const token = JwtMocks.GetToken({ email: user.email, id: user.id })
@@ -47,8 +48,16 @@ describe('Bot controller: Create - Integrated Tests', () => {
 
     // Assert
     const createdBot = await dbSetup.botSetup.FindOne({ botName: body.botName })
+    const createdBotPhoneNumbers = await dbSetup.phoneNumberSetup.FindAllByBotId(createdBot.id)
+
+    const createBotInfo : CreateBotRequest = {
+      botName: createdBot.botName,
+      steps: createdBot.steps,
+      phoneNumbers: createdBotPhoneNumbers.map(({ whatsappNumber, whatsappId }) => ({ whatsappNumber, whatsappId })),
+    }
 
     expect(createdBot).not.toBeNull()
+    assert.deepEqual(createBotInfo, body)
     expect(response.status).toBe(StatusCode.CREATED)
   })
 

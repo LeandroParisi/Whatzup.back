@@ -5,12 +5,15 @@ import {
 } from 'routing-controllers'
 import Container, { Service } from 'typedi'
 import { Mapper } from '../../../../../Commons/Mapper/Mapper'
-import Bot from '../../../../../Domain/Entities/Bot'
-import IBaseCrudController from '../../../../Shared/APIs/BaseClasses/IBaseCrudController'
+import Bot, { PartialBot } from '../../../../../Domain/Entities/Bot'
+import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
+import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
+import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
 import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResponse'
-import { ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
+import { ErrorMessages, ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
 import { BaseRoutes } from '../../../../Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
+import IBaseCrudController from '../../../../Shared/APIs/Interfaces/Crud/IBaseCrudController'
 import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import ApiError from '../../../../Shared/Errors/ApiError'
 import TokenAuthentication from '../../../Authentication/Middlewares/TokenAuthentication'
@@ -28,10 +31,11 @@ export default class BotController implements IBaseCrudController<Bot> {
    */
   constructor(
       public Service : BotServices,
+      public Repository : BotRepository,
+      public PhoneNumbersRepository : PhoneNumberRepository,
   ) {
   }
 
-  // GET : accountmanagent/bot?botName=John
   @HttpCode(StatusCode.OK)
   @Get('')
   @UseBefore(TokenAuthentication)
@@ -46,6 +50,7 @@ export default class BotController implements IBaseCrudController<Bot> {
     return bots
   }
 
+  // TODO: Refactor to use service
   @HttpCode(StatusCode.CREATED)
   @Post('')
   @UseBefore(
@@ -57,16 +62,34 @@ export default class BotController implements IBaseCrudController<Bot> {
     @Req() req : IAuthenticatedRequest,
   ) : Promise<Bot> {
     const bot = Mapper.map(body, CreateBotRequest, Bot, { extraArgs: () => ({ userId: req.user.id }) })
-    const insertedBot = await this.Service.Create(bot)
 
-    return insertedBot
+    let insertedBot : Bot
+    const self = this
+
+    async function transaction() {
+      await PgTypedDbConnection.db.tx(async (db) => {
+        insertedBot = await self.Repository.Create(bot, db)
+
+        if (body?.phoneNumbers?.length) {
+          await self.PhoneNumbersRepository.TryCreateBotPhoneNumbers(body.phoneNumbers, insertedBot.id, db)
+        }
+      })
+    }
+
+    try {
+      await transaction()
+      return insertedBot
+    } catch (e) {
+      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, e)
+    }
   }
 
+  // TODO: Permitir a mudança de numeros de celular
   @HttpCode(StatusCode.OK)
   @Put('/:id')
   @UseBefore(
     TokenAuthentication,
-    Container.get(ValidateUserPlanByBot).BuildValidator({ newBot: false, requestStepsPath: CreateBotStepPath }),
+    Container.get(ValidateUserPlanByBot).BuildValidator({ newBot: false, requestStepsPath: CreateBotStepPath, canIgnoreSteps: true }),
   )
   public async Update(
     @Body({ validate: { skipMissingProperties: true } }) body : UpdateBotRequest,
@@ -74,8 +97,9 @@ export default class BotController implements IBaseCrudController<Bot> {
     @Param('id') botId : number,
   ) : Promise<BaseResponse> {
     const { user: { id: userId } } = req
-    const bot = Mapper.map(body, UpdateBotRequest, Bot)
-    const isUpdated = await this.Service.Update({ id: botId, userId }, bot)
+    const botInfoToUpdate = Mapper.map(body, UpdateBotRequest, PartialBot)
+
+    const isUpdated = await this.Service.Update({ id: botId, userId }, botInfoToUpdate, body?.phoneNumbers)
 
     if (isUpdated) {
       return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
@@ -93,7 +117,7 @@ export default class BotController implements IBaseCrudController<Bot> {
   ) : Promise<BaseResponse> {
     const { user: { id: userId } } = req
 
-    const exists = await this.Service.FindOne({ id: botId, userId })
+    const exists = await this.Service.Repository.FindOne({ id: botId, userId })
 
     if (!exists) {
       throw new ApiError(StatusCode.NOT_FOUND, `Unable to find bot with id ${botId} vinculated to user ${userId}`)
@@ -108,6 +132,7 @@ export default class BotController implements IBaseCrudController<Bot> {
     return new BaseResponse(`Bot ${botId} already deactivated`)
   }
 
+  // TODO: Validar o plano do usuario quando ele tentar ativar um bot
   @HttpCode(StatusCode.OK)
   @Patch('/activate/:id')
   @UseBefore(TokenAuthentication)
@@ -117,7 +142,7 @@ export default class BotController implements IBaseCrudController<Bot> {
   ) : Promise<BaseResponse> {
     const { user: { id: userId } } = req
 
-    const exists = await this.Service.FindOne({ id: botId, userId })
+    const exists = await this.Service.Repository.FindOne({ id: botId, userId })
 
     if (!exists) {
       throw new ApiError(StatusCode.NOT_FOUND, `Unable to find bot with id ${botId} vinculated to user ${userId}`)

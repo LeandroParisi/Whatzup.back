@@ -3,6 +3,7 @@ import { Type } from 'class-transformer'
 import {
   IsArray, IsDefined, IsEnum, IsNotEmpty, IsNumber, IsString, Min, ValidateNested,
 } from 'class-validator'
+import { PhoneNumberDTO } from '../../../../../../../Domain/DTOs/PhoneNumberDTO'
 import Bot from '../../../../../../../Domain/Entities/Bot'
 import StepTypes from '../../../../../../../Domain/Entities/Steps/Enums/StepTypes'
 import { IStepOption } from '../../../../../../../Domain/Entities/Steps/OptionsStep/OptionsStepInfo'
@@ -55,12 +56,17 @@ export class StepRequest implements Step {
 }
 
 export default class UpdateBotRequest implements Partial<Bot> {
-  @IsNotEmpty()
   @IsString()
-  botName : string
+  @IsNotEmpty()
+  botName? : string
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => StepRequest)
-  steps : StepRequest[]
+  steps? : StepRequest[]
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PhoneNumberDTO)
+  phoneNumbers? : PhoneNumberDTO[]
 }

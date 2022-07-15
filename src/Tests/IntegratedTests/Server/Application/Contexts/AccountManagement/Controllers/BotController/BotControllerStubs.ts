@@ -1,15 +1,28 @@
+import { faker } from '@faker-js/faker'
 import CreateBotRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/Requests/CreateBot/CreateBotRequest'
 import UpdateBotRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/Requests/UpdateBot/UpdateBotRequestBody'
+import { PhoneNumberDTO } from '../../../../../../../../Server/Domain/DTOs/PhoneNumberDTO'
 import StepTypes from '../../../../../../../../Server/Domain/Entities/Steps/Enums/StepTypes'
 import BotMock from '../../../../../../../Shared/Mocks/BotMock'
+import PhoneNumberMock from '../../../../../../../Shared/Mocks/PhoneNumberMock'
+import StepMock from '../../../../../../../Shared/Mocks/StepMock'
+import { FeatureSetup } from '../../../../../../Setup/Fixtures/DbSetup/EntitiesSetup/FeatureSetup'
 
 export default class BotControllerStubs {
   public static GetValidPayload() : CreateBotRequest {
     const bot = BotMock.GetRandom()
+    const { limit: phonesLimit } = FeatureSetup.PHONES_PER_BOT
+
+    const phoneNumbers : PhoneNumberDTO[] = []
+
+    for (let i = 1; i <= phonesLimit; i += 1) {
+      phoneNumbers.push(PhoneNumberMock.GetDTO())
+    }
 
     const payload = new CreateBotRequest()
     payload.botName = bot.botName
     payload.steps = bot.steps
+    payload.phoneNumbers = phoneNumbers
 
     return payload
   }
@@ -24,6 +37,12 @@ export default class BotControllerStubs {
       {
         ...validPayload,
         botName: null,
+      },
+      {
+        ...validPayload,
+        phoneNumbers: [
+          { whatsappNumber: null },
+        ],
       },
       {
         ...validPayload,
@@ -164,6 +183,25 @@ export default class BotControllerStubs {
     ]
   }
 
+  public static GetValidUpdateTheory() : Array<Partial<UpdateBotRequest>> {
+    return [
+      {
+        botName: `NOVO_NOME: ${faker.name.findName()}`,
+      },
+      {
+        steps: StepMock.GenerateXSteps(FeatureSetup.MAX_STEPS_FEATURE.limit),
+      },
+      {
+        phoneNumbers: PhoneNumberMock.GetXDTOs(FeatureSetup.PHONES_PER_BOT.limit),
+      },
+      {
+        botName: `NOVO_NOME: ${faker.name.findName()}`,
+        steps: StepMock.GenerateXSteps(FeatureSetup.MAX_STEPS_FEATURE.limit),
+        phoneNumbers: PhoneNumberMock.GetXDTOs(FeatureSetup.PHONES_PER_BOT.limit),
+      },
+    ]
+  }
+
   public static GetInvalidUpdatePayload(): Array<Partial<UpdateBotRequest>> {
     const validPayload = this.GetValidPayload()
     const { steps } = validPayload
@@ -174,6 +212,11 @@ export default class BotControllerStubs {
       {
         ...validPayload,
         botName: '',
+      },
+      {
+        phoneNumbers: [
+          { whatsappNumber: null },
+        ],
       },
       {
         steps: [

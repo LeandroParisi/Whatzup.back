@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
-  createMap, forMember, mapFrom, Mapper, mapWithArguments
+  afterMap, createMap, forMember, mapFrom, Mapper, mapWithArguments
 } from '@automapper/core'
 import StaticImplements from '../../../../../Commons/Anotations/StaticImplements'
-import Bot from '../../../../../Domain/Entities/Bot'
+import Bot, { PartialBot } from '../../../../../Domain/Entities/Bot'
 import { IMapInstaller } from '../../../../../Setup/Interfaces/IMapInstaller'
+import EntityCleaning from '../../../../Shared/Serializers/EntityCleaning'
 import CreateBotRequest from './Requests/CreateBot/CreateBotRequest'
 import GetAllBotsRequestQuery from './Requests/GetAllRequest/GetAllBotsRequestQuery'
 import UpdateBotRequest from './Requests/UpdateBot/UpdateBotRequestBody'
@@ -46,7 +48,7 @@ export default class BotControllerMapper {
     createMap(
       mapper,
       UpdateBotRequest,
-      Bot,
+      PartialBot,
       forMember(
         (dst) => dst.botName,
         mapFrom((src) => src.botName),
@@ -55,6 +57,9 @@ export default class BotControllerMapper {
         (dst) => dst.steps,
         mapFrom((src) => src.steps),
       ),
+      afterMap((_s, dst) => {
+        EntityCleaning.RemoveNullableValues(dst)
+      }),
     )
   }
 }

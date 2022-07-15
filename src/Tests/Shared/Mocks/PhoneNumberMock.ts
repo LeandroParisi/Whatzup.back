@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
-import { PhoneNumberDTO } from '../../../Server/Application/Shared/DTOs/PhoneNumberDTO'
 import DateUtils from '../../../Server/Commons/Utils/DateUtils'
+import { PhoneNumberDTO } from '../../../Server/Domain/DTOs/PhoneNumberDTO'
 import PhoneNumber from '../../../Server/Domain/Entities/PhoneNumber'
 
 type MockOptionals = Partial<PhoneNumber>
@@ -28,5 +28,15 @@ export default class PhoneNumberMock {
       whatsappId: optionals?.whatsappId || `${number}.ca.us`,
       whatsappNumber: optionals?.whatsappId || number,
     }
+  }
+
+  public static GetXDTOs(quantity : number) : PhoneNumberDTO[] {
+    const pns : PhoneNumberDTO[] = []
+
+    for (let i = 1; i <= quantity; i += 1) {
+      pns.push(this.GetDTO())
+    }
+
+    return pns
   }
 }

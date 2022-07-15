@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { faker } from '@faker-js/faker'
+import { assert } from 'chai'
 import express from 'express'
 import theoretically from 'jest-theories'
 import 'reflect-metadata'
@@ -8,10 +8,10 @@ import UpdateBotRequest from '../../../../../../../../Server/Application/Context
 import { BaseRoutes } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import Bot from '../../../../../../../../Server/Domain/Entities/Bot'
+import PhoneNumber from '../../../../../../../../Server/Domain/Entities/PhoneNumber'
 import User from '../../../../../../../../Server/Domain/Entities/User'
 import { Server } from '../../../../../../../../Server/Server'
 import JwtMocks from '../../../../../../../Shared/Mocks/JwtMocks'
-import StepMock from '../../../../../../../Shared/Mocks/StepMock'
 import DbSetup from '../../../../../../Setup/Fixtures/DbSetup/DbSetup'
 import BotControllerStubs from './BotControllerStubs'
 
@@ -34,87 +34,12 @@ describe('Bot controller: Create - Integrated Tests', () => {
     await dbSetup.CleanUp()
   })
 
-  it('1. Should properlly update bot', async () => {
-    // Arrange
-    const { bot, token } = await Setup()
-
-    const body : UpdateBotRequest = {
-      botName: `NOVO_NOME: ${faker.name.findName()}`,
-      steps: [
-        StepMock.GetRandomSimpleStep(),
-        StepMock.GetRandomSimpleStep(),
-        StepMock.GetRandomOptionsStep(),
-      ],
-    }
-
-    // Act
-    const response = await request(app)
-      .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
-      .set('authorization', token)
-      .send(body)
-
-    // Assert
-    const updatedBot = await dbSetup.botSetup.FindOne({ id: bot.id })
-
-    expect(updatedBot).not.toBeNull()
-    expect(updatedBot.botName).toBe(body.botName)
-    expect(response.status).toBe(StatusCode.OK)
-  })
-
-  it('2. Should not update bot if user does not exist', async () => {
-    // Arrange
-    const { bot, user } = await Setup()
-
-    const token = JwtMocks.GetToken({ email: faker.internet.email(), id: user.id + faker.datatype.number() })
-
-    const body : UpdateBotRequest = {
-      botName: `NOVO_NOME: ${faker.name.findName()}`,
-      steps: [
-        StepMock.GetRandomSimpleStep(),
-        StepMock.GetRandomSimpleStep(),
-        StepMock.GetRandomOptionsStep(),
-      ],
-    }
-
-    // Act
-    const response = await request(app)
-      .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
-      .set('authorization', token)
-      .send(body)
-
-    // Assert
-    expect(response.status).toBe(StatusCode.NOT_FOUND)
-  })
-
-  it('3. Should not update bot it does not belongs to user', async () => {
-    // Arrange
-    const { bot } = await Setup()
-
-    const { token: anotherUserToken } = await Setup()
-
-    const body : UpdateBotRequest = {
-      botName: `NOVO_NOME: ${faker.name.findName()}`,
-      steps: [
-        StepMock.GetRandomSimpleStep(),
-        StepMock.GetRandomSimpleStep(),
-        StepMock.GetRandomOptionsStep(),
-      ],
-    }
-
-    // Act
-    const response = await request(app)
-      .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
-      .set('authorization', anotherUserToken)
-      .send(body)
-
-    // Assert
-    expect(response.status).toBe(StatusCode.NOT_FOUND)
-  })
-
   theoretically(
-    '4. Should not accept request with invalid data',
-    BotControllerStubs.GetInvalidUpdatePayload(),
-    async (body) => {
+    ({
+      botName, phoneNumbers, steps,
+    }) => `1. Should properlly update bot with \n${botName}\n${phoneNumbers?.join(', ')}\n${steps?.join(', ')}`,
+    BotControllerStubs.GetValidUpdateTheory(),
+    async (theory) => {
     // Arrange
       const { bot, token } = await Setup()
 
@@ -122,12 +47,77 @@ describe('Bot controller: Create - Integrated Tests', () => {
       const response = await request(app)
         .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
         .set('authorization', token)
-        .send(body)
+        .send(theory)
 
       // Assert
-      expect(response.status).toBe(StatusCode.BAD_REQUEST)
+      const updatedBot = await dbSetup.botSetup.FindOne({ id: bot.id })
+      const botPhoneNumbers = await dbSetup.phoneNumberSetup.FindAllByBotId(bot.id)
+
+      expect(response.status).toBe(StatusCode.OK)
+      expect(updatedBot).not.toBeNull()
+      AssertValidInfo(theory, updatedBot, botPhoneNumbers)
     },
   )
+
+  // it('2. Should not update bot if user does not exist', async () => {
+  //   // Arrange
+  //   const { bot, user } = await Setup()
+
+  //   const token = JwtMocks.GetToken({ email: faker.internet.email(), id: user.id + faker.datatype.number() })
+
+  //   const body : UpdateBotRequest = {
+  //     botName: `NOVO_NOME: ${faker.name.findName()}`,
+  //     steps: StepMock.GenerateXSteps(FeatureSetup.MAX_STEPS_FEATURE.limit - 1),
+  //   }
+
+  //   // Act
+  //   const response = await request(app)
+  //     .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
+  //     .set('authorization', token)
+  //     .send(body)
+
+  //   // Assert
+  //   expect(response.status).toBe(StatusCode.NOT_FOUND)
+  // })
+
+  // it('3. Should not update bot it does not belongs to user', async () => {
+  //   // Arrange
+  //   const { bot } = await Setup()
+
+  //   const { token: anotherUserToken } = await Setup()
+
+  //   const body : UpdateBotRequest = {
+  //     botName: `NOVO_NOME: ${faker.name.findName()}`,
+  //     steps: StepMock.GenerateXSteps(FeatureSetup.MAX_STEPS_FEATURE.limit - 1),
+  //   }
+
+  //   // Act
+  //   const response = await request(app)
+  //     .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
+  //     .set('authorization', anotherUserToken)
+  //     .send(body)
+
+  //   // Assert
+  //   expect(response.status).toBe(StatusCode.NOT_FOUND)
+  // })
+
+  // theoretically(
+  //   '4. Should not accept request with invalid data',
+  //   BotControllerStubs.GetInvalidUpdatePayload(),
+  //   async (body) => {
+  //   // Arrange
+  //     const { bot, token } = await Setup()
+
+  //     // Act
+  //     const response = await request(app)
+  //       .put(`/api/${BaseRoutes.AccountManagementBot}/${bot.id}`)
+  //       .set('authorization', token)
+  //       .send(body)
+
+  //     // Assert
+  //     expect(response.status).toBe(StatusCode.BAD_REQUEST)
+  //   },
+  // )
 
   async function Setup() : Promise<{user : User, bot : Bot, token : string}> {
     const { plan } = await dbSetup.DefaultPlanSetup()
@@ -138,3 +128,17 @@ describe('Bot controller: Create - Integrated Tests', () => {
     return { user, bot, token }
   }
 })
+
+function AssertValidInfo(
+  { botName, phoneNumbers, steps }: Partial<UpdateBotRequest>, updatedBot: Bot, botPhoneNumbers: PhoneNumber[],
+) {
+  if (botName) {
+    expect(botName).toBe(updatedBot.botName)
+  }
+  if (phoneNumbers?.length) {
+    assert.deepEqual(phoneNumbers, botPhoneNumbers)
+  }
+  if (steps?.length) {
+    assert.deepEqual(steps, updatedBot.steps)
+  }
+}

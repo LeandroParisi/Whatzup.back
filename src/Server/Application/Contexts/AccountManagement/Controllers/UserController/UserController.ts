@@ -6,11 +6,15 @@ import { Transaction } from '@databases/pg'
 import {
   Body,
   HttpCode,
-  JsonController, Post, Put, Req,
+  JsonController, Post, Put, Req
 } from 'routing-controllers'
 import { Service } from 'typedi'
 import { Logger } from '../../../../../Commons/Logger'
 import { Mapper } from '../../../../../Commons/Mapper/Mapper'
+import { CityDTO } from '../../../../../Domain/DTOs/Locations/CityDTO'
+import { CountryDTO } from '../../../../../Domain/DTOs/Locations/CountryDTO'
+import { StateDTO } from '../../../../../Domain/DTOs/Locations/StateDTO'
+import { PhoneNumberDTO } from '../../../../../Domain/DTOs/PhoneNumberDTO'
 import User from '../../../../../Domain/Entities/User'
 import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
 import { CityRepository } from '../../../../../Infrastructure/PgTyped/Repositories/CityRepository'
@@ -19,16 +23,12 @@ import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Rep
 import { StateRepository } from '../../../../../Infrastructure/PgTyped/Repositories/StateRepository'
 import { UserRepository } from '../../../../../Infrastructure/PgTyped/Repositories/UserRepository'
 import BaseCrudServices from '../../../../Shared/APIs/BaseClasses/BaseCrudServices'
-import IBaseCrudController from '../../../../Shared/APIs/BaseClasses/IBaseCrudController'
 import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResponse'
 import { ErrorMessages } from '../../../../Shared/APIs/Enums/Messages'
 import { BaseRoutes } from '../../../../Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
+import IBaseCrudController from '../../../../Shared/APIs/Interfaces/Crud/IBaseCrudController'
 import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
-import { CityDTO } from '../../../../Shared/DTOs/Locations/CityDTO'
-import { CountryDTO } from '../../../../Shared/DTOs/Locations/CountryDTO'
-import { StateDTO } from '../../../../Shared/DTOs/Locations/StateDTO'
-import { PhoneNumberDTO } from '../../../../Shared/DTOs/PhoneNumberDTO'
 import ApiError from '../../../../Shared/Errors/ApiError'
 import PasswordHashing from '../../../Authentication/Hashing/PasswordHashing'
 import CreateUserRequest from './Requests/CreateUserRequest'
@@ -65,7 +65,7 @@ export default class UserController implements IBaseCrudController<User> {
 
     const user = Mapper.map(body, CreateUserRequest, User, { extraArgs: () => ({ hashedPassword, phoneNumberId }) })
 
-    return await this.Service.Create(user)
+    return await this.Service.Repository.Create(user)
   }
 
   @HttpCode(StatusCode.OK)

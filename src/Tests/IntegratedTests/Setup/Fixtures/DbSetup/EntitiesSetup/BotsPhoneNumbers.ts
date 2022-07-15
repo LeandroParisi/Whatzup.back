@@ -27,6 +27,12 @@ export class BotsPhoneNumbersSetup extends BaseEntitySetup<BotsPhoneNumbers, Bot
     await this.Create({ botId, phoneNumberId })
   }
 
+  public async CreateXRelations(botId : number, phoneNumbersIds : number[]) : Promise<void> {
+    for (const phoneNumberId of phoneNumbersIds) {
+      await this.CreateRelation(botId, phoneNumberId)
+    }
+  }
+
   async CleanUp() : Promise<void> {
     for (const entity of this.EntitiesToDispose) {
       await this.PreCleanUp(entity)

@@ -5,7 +5,7 @@ import { Service } from 'typedi'
 import Bot from '../../../../../../Server/Domain/Entities/Bot'
 import {
   Bots as BotDbModel,
-  Bots_InsertParameters,
+  Bots_InsertParameters
 } from '../../../../../../Server/Infrastructure/PgTyped/Schemas/__generated__'
 import BotMock from '../../../../../Shared/Mocks/BotMock'
 import { TestDbConnection } from '../TestDbConnection'

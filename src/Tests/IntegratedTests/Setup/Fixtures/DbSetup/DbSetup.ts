@@ -3,6 +3,7 @@
 import { SQLQuery } from '@databases/pg'
 import { faker } from '@faker-js/faker'
 import 'reflect-metadata'
+import Bot from '../../../../../Server/Domain/Entities/Bot'
 import City from '../../../../../Server/Domain/Entities/City'
 import Country from '../../../../../Server/Domain/Entities/Country'
 import Feature from '../../../../../Server/Domain/Entities/Feature'
@@ -62,6 +63,14 @@ export interface FullPlanSetupParams {
 export interface FullPlanSetupReturn {
   plan : Plan
   features : Feature[]
+}
+
+export interface BasicUserBotSetupReturn {
+  user : User
+  state : State
+  country : Country
+  city : City
+  bot : Bot
 }
 
 export default class DbSetup {
@@ -152,7 +161,27 @@ export default class DbSetup {
       features: [
         createdBotFeature,
         createdStepFeature,
+        createdPhonesFeature,
       ],
+    }
+  }
+
+  public async BasicUserBotSetup(userSetupParams? : BasicUserSetupParams, bot? : Bot) : Promise<BasicUserBotSetupReturn> {
+    const {
+      user,
+      state,
+      country,
+      city,
+    } = await this.BasicUserSetup(userSetupParams)
+
+    const insertedBot = await this.botSetup.InsertOne(bot || { userId: user.id })
+
+    return {
+      user,
+      state,
+      country,
+      city,
+      bot: insertedBot,
     }
   }
 

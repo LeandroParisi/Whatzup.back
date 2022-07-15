@@ -1,8 +1,9 @@
 import { AutoMap } from '@automapper/classes'
 import {
+  IsDefined,
   IsNotEmpty, IsString,
 } from 'class-validator'
-import PhoneNumber from '../../../Domain/Entities/PhoneNumber'
+import PhoneNumber from '../Entities/PhoneNumber'
 
 export class PhoneNumberDTO implements Partial<PhoneNumber> {
   @IsString()
@@ -11,6 +12,7 @@ export class PhoneNumberDTO implements Partial<PhoneNumber> {
 
   @IsString()
   @IsNotEmpty()
+  @IsDefined()
   @AutoMap()
   whatsappNumber: string;
 }

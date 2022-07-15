@@ -35,7 +35,7 @@ describe('Where query builder unit tests', () => {
       }
 
       // Act
-      const result = new WhereQueryBuilder().BuildQuery(query, likeFields)
+      const result = WhereQueryBuilder.BuildWhereStatement(query, likeFields)
 
       // Assert
       const r = result.split(' ')

@@ -19,6 +19,16 @@ export default class StepMock {
     return step
   }
 
+  public static GenerateXSteps(quantity : number) : StepInfo[] {
+    const steps : StepInfo[] = []
+
+    for (let i = 1; i <= quantity; i += 1) {
+      steps.push(this.GetRandomSimpleStep())
+    }
+
+    return steps
+  }
+
   public static GetRandomOptionsStep(optionals? : MockOptionalsOptions) : OptionsStepInfo {
     const step : OptionsStepInfo = {
       id: optionals?.id || faker.datatype.number(),
