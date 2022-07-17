@@ -13,8 +13,9 @@ import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResp
 import { ErrorMessages, ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
 import { BaseRoutes } from '../../../../Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
-import IBaseCrudController from '../../../../Shared/APIs/Interfaces/Crud/IBaseCrudController'
+import { IBaseCrudController, IBaseSoftDeleteController } from '../../../../Shared/APIs/Interfaces/Crud/IBaseCrudController'
 import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
+import ValidateBotOwnershipMiddleware from '../../../../Shared/CustomValidations/Bot/Middlewares/ValidateBotOwnershipMiddleware'
 import ApiError from '../../../../Shared/Errors/ApiError'
 import TokenAuthentication from '../../../Authentication/Middlewares/TokenAuthentication'
 import ValidateUserPlanByBot from '../../Middlewares/Plans/ValidateUserPlanByBot'
@@ -25,7 +26,7 @@ import UpdateBotRequest from './Requests/UpdateBot/UpdateBotRequestBody'
 
 @Service()
 @JsonController(`/${BaseRoutes.AccountManagementBot}`)
-export default class BotController implements IBaseCrudController<Bot> {
+export default class BotController implements IBaseCrudController<Bot>, IBaseSoftDeleteController<Bot> {
   /**
    *
    */
@@ -84,12 +85,13 @@ export default class BotController implements IBaseCrudController<Bot> {
     }
   }
 
-  // TODO: Permitir a mudança de numeros de celular
   @HttpCode(StatusCode.OK)
   @Put('/:id')
   @UseBefore(
     TokenAuthentication,
-    Container.get(ValidateUserPlanByBot).BuildValidator({ newBot: false, requestStepsPath: CreateBotStepPath, canIgnoreSteps: true }),
+    Container.get(ValidateUserPlanByBot)
+      .BuildValidator({ newBot: false, requestStepsPath: CreateBotStepPath, canIgnoreSteps: true }),
+    ValidateBotOwnershipMiddleware,
   )
   public async Update(
     @Body({ validate: { skipMissingProperties: true } }) body : UpdateBotRequest,
@@ -99,29 +101,22 @@ export default class BotController implements IBaseCrudController<Bot> {
     const { user: { id: userId } } = req
     const botInfoToUpdate = Mapper.map(body, UpdateBotRequest, PartialBot)
 
-    const isUpdated = await this.Service.Update({ id: botId, userId }, botInfoToUpdate, body?.phoneNumbers)
+    await this.Service.Update({ id: botId, userId }, botInfoToUpdate, body?.phoneNumbers)
 
-    if (isUpdated) {
-      return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
-    }
-
-    throw new ApiError(StatusCode.NOT_FOUND, `Unable to find bot with id ${botId} vinculated to user ${userId}`)
+    return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
   }
 
   @HttpCode(StatusCode.OK)
   @Patch('/deactivate/:id')
-  @UseBefore(TokenAuthentication)
+  @UseBefore(
+    TokenAuthentication,
+    ValidateBotOwnershipMiddleware,
+  )
   public async Deactivate(
     @Req() req : IAuthenticatedRequest,
     @Param('id') botId : number,
   ) : Promise<BaseResponse> {
     const { user: { id: userId } } = req
-
-    const exists = await this.Service.Repository.FindOne({ id: botId, userId })
-
-    if (!exists) {
-      throw new ApiError(StatusCode.NOT_FOUND, `Unable to find bot with id ${botId} vinculated to user ${userId}`)
-    }
 
     const isUpdated = await this.Service.Deactivate(botId, { userId })
 
@@ -132,21 +127,18 @@ export default class BotController implements IBaseCrudController<Bot> {
     return new BaseResponse(`Bot ${botId} already deactivated`)
   }
 
-  // TODO: Validar o plano do usuario quando ele tentar ativar um bot
   @HttpCode(StatusCode.OK)
   @Patch('/activate/:id')
-  @UseBefore(TokenAuthentication)
+  @UseBefore(
+    TokenAuthentication,
+    ValidateBotOwnershipMiddleware,
+    Container.get(ValidateUserPlanByBot).BuildValidator({ newBot: true, canIgnoreSteps: true }),
+  )
   public async Activate(
     @Req() req : IAuthenticatedRequest,
     @Param('id') botId : number,
   ) : Promise<BaseResponse> {
     const { user: { id: userId } } = req
-
-    const exists = await this.Service.Repository.FindOne({ id: botId, userId })
-
-    if (!exists) {
-      throw new ApiError(StatusCode.NOT_FOUND, `Unable to find bot with id ${botId} vinculated to user ${userId}`)
-    }
 
     const isUpdated = await this.Service.Activate(botId, { userId })
 

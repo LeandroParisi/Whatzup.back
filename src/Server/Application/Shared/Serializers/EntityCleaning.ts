@@ -11,6 +11,18 @@ export default class EntityCleaning {
     return entity
   }
 
+  static CleanSpecificFields<Entity>(model: Entity, fieldsToRemove: Set<string>) : Partial<Entity> {
+    const entity = { ...model }
+
+    Object.entries(entity).forEach(([key, value]) => {
+      if (fieldsToRemove.has(key) && !value && value !== 0) {
+        delete entity[key]
+      }
+    })
+
+    return entity
+  }
+
   public static RemoveNullableValues<Entity>(model: Partial<Entity>) : void {
     const nonNullableValues = this.CleanEntity(model)
 

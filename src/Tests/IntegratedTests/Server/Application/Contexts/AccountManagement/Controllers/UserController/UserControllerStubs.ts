@@ -1,10 +1,20 @@
+/* eslint-disable no-shadow */
 import { faker } from '@faker-js/faker'
 import CreateUserRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/UserController/Requests/CreateUserRequest'
+import UpdateUserRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/UserController/Requests/UpdateUserRequest'
 import CityMock from '../../../../../../../Shared/Mocks/CityMock'
 import CountryMock from '../../../../../../../Shared/Mocks/CountryMock'
 import PhoneNumberMock from '../../../../../../../Shared/Mocks/PhoneNumberMock'
 import StateMock from '../../../../../../../Shared/Mocks/StateMock'
 import UserMock from '../../../../../../../Shared/Mocks/UserMock'
+
+export enum CreateUpdatePossibleValidScenarios {
+  WithNewCountry,
+  WithNewState,
+  WithNewCity,
+  WithNewPhoneNumber,
+  WithNewPlan
+}
 
 export default class UserControllerStubs {
   public static GetInvalidPayloads() : Array<CreateUserRequest> {
@@ -224,5 +234,41 @@ export default class UserControllerStubs {
         ...userObj,
       },
     ]
+  }
+
+  public static GetValidUpdatePayload(theory : CreateUpdatePossibleValidScenarios, newPlanId : number) : UpdateUserRequest {
+    const {
+      addressStreet,
+      documentNumber,
+      email,
+      firstName,
+      lastName,
+      middleName,
+      neighbourhood,
+      addressComplement,
+      addressNumber,
+      postalCode,
+      countryId,
+    } = UserMock.GetRandomPartialUser(1, 1, 1, 1)
+
+    const payloadToSend : UpdateUserRequest = {
+      addressComplement,
+      addressNumber,
+      addressStreet,
+      documentNumber,
+      email,
+      firstName,
+      lastName,
+      middleName,
+      neighbourhood,
+      planId: theory === CreateUpdatePossibleValidScenarios.WithNewPlan ? newPlanId : null,
+      postalCode,
+      city: theory === CreateUpdatePossibleValidScenarios.WithNewCity ? CityMock.GetDTO() : null,
+      country: theory === CreateUpdatePossibleValidScenarios.WithNewCountry ? CountryMock.GetDTO() : null,
+      state: theory === CreateUpdatePossibleValidScenarios.WithNewState ? StateMock.GetDTO({ countryId }) : null,
+      phoneNumber: theory === CreateUpdatePossibleValidScenarios.WithNewPhoneNumber ? PhoneNumberMock.GetDTO() : null,
+    }
+
+    return payloadToSend
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { AutoMap } from '@automapper/classes'
 import { sql } from '@databases/pg'
 import { Service } from 'typedi'
@@ -29,13 +30,10 @@ export default class User extends BaseEntity {
   @AutoMap()
   lastName: string
 
-  @AutoMap()
   countryId: number
 
-  @AutoMap()
   stateId: number
 
-  @AutoMap()
   cityId: number
 
   @AutoMap()
@@ -91,4 +89,69 @@ export const UsersColumns : KeysOf<Users> = {
   state_id: sql.ident('state_id'),
   updated_at: sql.ident('updated_at'),
   was_activated: sql.ident('was_activated'),
+}
+
+export class PartialUser implements Partial<User> {
+  @AutoMap()
+  id?: number
+
+  @AutoMap()
+  phoneNumberId ?: number
+
+  @AutoMap()
+  email?: string
+
+  @AutoMap()
+  password?: string
+
+  @AutoMap()
+  documentNumber?: string
+
+  @AutoMap()
+  firstName?: string
+
+  @AutoMap()
+  middleName?: string
+
+  @AutoMap()
+  lastName?: string
+
+  @AutoMap()
+  countryId?: number
+
+  @AutoMap()
+  stateId?: number
+
+  @AutoMap()
+  cityId?: number
+
+  @AutoMap()
+  neighbourhood?: string
+
+  @AutoMap()
+  addressStreet?: string
+
+  @AutoMap()
+  addressNumber?: string
+
+  @AutoMap()
+  addressComplement?: string
+
+  @AutoMap()
+  postalCode?: string
+
+  @AutoMap()
+  wasActivated?: boolean
+
+  @AutoMap()
+  isActive?: boolean
+
+  @AutoMap()
+  createdAt?: Date
+
+  @AutoMap()
+  updatedAt?: Date
+
+  @AutoMap()
+  planId?: number
 }

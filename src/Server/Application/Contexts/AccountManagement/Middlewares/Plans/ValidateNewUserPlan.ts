@@ -13,21 +13,20 @@ import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
 import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import { MiddlewareFn } from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/MiddlewareFn'
 import ApiError from '../../../../Shared/Errors/ApiError'
+import NullReferenceError from '../../../../Shared/Errors/GenericErrors/NullReferenceError'
 import SwitchStatementeError from '../../../../Shared/Errors/GenericErrors/SwitchStatementError'
+import ParsingError from '../../../../Shared/Errors/SpecificErrors/ParsingError'
 import BasePlanValidationMiddlewareBuilder from './BaseClasses/BasePlanValidationMiddlewareBuilder'
 import RequestPathExtractor from './Helpers/RequestPathExtractor'
 import { ValidateUserPlanAgainstNewPlan } from './Helpers/ValidateUserPlanAgainstNewPlan'
 
 export interface IValidateNewUserPlan {
   requestPlanIdPath : string
+  maySkipValidation : boolean
 }
 
 @Service()
 export default class ValidateNewUserPlan extends BasePlanValidationMiddlewareBuilder<IValidateNewUserPlan> {
-  rules: IValidateNewUserPlan
-
-  planId : number
-
   private planRepository = Container.get(PlanRepository)
 
   private botRepository = Container.get(BotRepository)
@@ -37,21 +36,18 @@ export default class ValidateNewUserPlan extends BasePlanValidationMiddlewareBui
   private phoneNumberRepository = Container.get(PhoneNumberRepository)
 
   public BuildValidator(rules: IValidateNewUserPlan) : MiddlewareFn {
-    this.rules = rules
+    const ruleSet = rules
     const self = this
 
     return async (req : IAuthenticatedRequest, res : Response, next : NextFunction) => {
       try {
         await self.ValidateRequest(req)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (!req?.body?.planId) {
-          next()
-          return
-        }
-        const planId = RequestPathExtractor.GetInfoFromPath<number>(req, this.rules.requestPlanIdPath)
+        const planId = RequestPathExtractor.GetInfoFromPath<number>(req, ruleSet.requestPlanIdPath)
 
-        this.planId = planId
+        if (!planId) {
+          throw new NullReferenceError('PlanId is null')
+        }
 
         const { user: { id: userId } } = req
 
@@ -61,7 +57,9 @@ export default class ValidateNewUserPlan extends BasePlanValidationMiddlewareBui
 
         next()
       } catch (error) {
-        if (error instanceof ApiError) {
+        if ((error instanceof NullReferenceError || error instanceof ParsingError) && ruleSet.maySkipValidation) {
+          next()
+        } else if (error instanceof ApiError) {
           next(error)
         } else {
           next(new ApiError(StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, error))

@@ -77,6 +77,23 @@ export abstract class BaseEntitySetup<
     }
   }
 
+  async UpdateOne(
+    updateQuery: Partial<Entity>, entity: Partial<Entity>, connection?: Connections,
+  ): Promise<boolean> {
+    const dbConnection = connection || TestDbConnection.db
+
+    const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(updateQuery)
+
+    const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, Partial<DbEntity>>(entity)
+
+    const [updatedEntities] = await this.table(dbConnection).update(
+      serializedQuery,
+      { ...serializedEntity },
+    )
+
+    return !!updatedEntities
+  }
+
   private CleanEntity(model: Partial<Entity>) : Partial<Entity> {
     const entity = { ...model }
 

@@ -7,6 +7,7 @@ import { FeatureDTO } from '../../../../../Domain/DTOs/FeatureDTO'
 import { Step } from '../../../../../Domain/Entities/Steps/Step'
 import { FeatureNames } from '../../../../../Domain/Enums/FeatureNames'
 import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
+import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
 import { PlanRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PlanRepository'
 import { UserRepository } from '../../../../../Infrastructure/PgTyped/Repositories/UserRepository'
 import { ErrorMessages } from '../../../../Shared/APIs/Enums/Messages'
@@ -15,25 +16,25 @@ import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInt
 import { MiddlewareFn } from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/MiddlewareFn'
 import ApiError from '../../../../Shared/Errors/ApiError'
 import SwitchStatementeError from '../../../../Shared/Errors/GenericErrors/SwitchStatementError'
+import { CreateBotStepPath } from '../../Controllers/BotController/Requests/CreateBot/CreateBotRequest'
 import BasePlanValidationMiddlewareBuilder from './BaseClasses/BasePlanValidationMiddlewareBuilder'
 import RequestPathExtractor from './Helpers/RequestPathExtractor'
 import { ValidateUserPlanAgainstNewPlan } from './Helpers/ValidateUserPlanAgainstNewPlan'
 
 export interface IValidateUserPlanByBot {
   newBot : boolean
-  requestStepsPath : string
+  requestStepsPath? : string
   canIgnoreSteps? : boolean
 }
 
 const defaultRules : Partial<IValidateUserPlanByBot> = {
   canIgnoreSteps: false,
+  requestStepsPath: CreateBotStepPath,
 }
 
 @Service()
 export default class ValidateUserPlanByBot extends BasePlanValidationMiddlewareBuilder<IValidateUserPlanByBot> {
-  rules: IValidateUserPlanByBot
-
-  request : IAuthenticatedRequest
+  private request : IAuthenticatedRequest
 
   private userRepository = Container.get(UserRepository)
 
@@ -41,10 +42,12 @@ export default class ValidateUserPlanByBot extends BasePlanValidationMiddlewareB
 
   private botRepository = Container.get(BotRepository)
 
+  private phoneNumberRepository = Container.get(PhoneNumberRepository)
+
   private validateUserPlanAgainstNewPlan = Container.get(ValidateUserPlanAgainstNewPlan)
 
   public BuildValidator(rules: IValidateUserPlanByBot) : MiddlewareFn {
-    this.rules = { ...defaultRules, ...rules }
+    const ruleSet = { ...defaultRules, ...rules }
     const self = this
 
     return async (req : IAuthenticatedRequest, res : Response, next : NextFunction) => {
@@ -57,7 +60,7 @@ export default class ValidateUserPlanByBot extends BasePlanValidationMiddlewareB
 
         const detailedPlan = await self.GetDetailedPlan(userId)
 
-        await self.ValidateBot(userId, detailedPlan)
+        await self.ValidateBot(userId, detailedPlan, ruleSet)
 
         next()
       } catch (error) {
@@ -83,14 +86,17 @@ export default class ValidateUserPlanByBot extends BasePlanValidationMiddlewareB
   private async ValidateBot(
     userId: number,
     detailedPlan: DetailedPlanDTO,
+    rules : IValidateUserPlanByBot,
   ) {
-    const { newBot } = this.rules
+    const { newBot } = rules
 
     const planFeatures = [...detailedPlan.features]
 
     const numberOfBots = await this.botRepository.Count({ userId, isActive: true })
 
-    const numberOfSteps = this.TryGetStepFromRequest()
+    const { maxPhoneCount } = await this.phoneNumberRepository.GetBotsPhoneCountByUser(userId)
+
+    const numberOfSteps = this.TryGetStepFromRequest(rules)
 
     const newUserFeatures : FeatureDTO[] = planFeatures.map((f) => {
       if (f.name === FeatureNames.NumberOfBots) {
@@ -106,9 +112,9 @@ export default class ValidateUserPlanByBot extends BasePlanValidationMiddlewareB
         }
       }
       if (f.name === FeatureNames.PhonesPerBot) {
-        // TODO
         return {
           ...f,
+          maxLimit: maxPhoneCount || f.maxLimit,
         }
       }
 
@@ -120,12 +126,12 @@ export default class ValidateUserPlanByBot extends BasePlanValidationMiddlewareB
     this.validateUserPlanAgainstNewPlan.Validate(newUserFeatures, planFeatures, errorMessages)
   }
 
-  private TryGetStepFromRequest() : number | null {
+  private TryGetStepFromRequest(rules : IValidateUserPlanByBot) : number | null {
     try {
-      const numberOfSteps = RequestPathExtractor.GetInfoFromPath<Step[]>(this.request, this.rules.requestStepsPath)?.length
+      const numberOfSteps = RequestPathExtractor.GetInfoFromPath<Step[]>(this.request, rules.requestStepsPath)?.length
       return numberOfSteps
     } catch (error) {
-      if (this.rules.canIgnoreSteps) return null
+      if (rules.canIgnoreSteps) return null
       throw error
     }
   }

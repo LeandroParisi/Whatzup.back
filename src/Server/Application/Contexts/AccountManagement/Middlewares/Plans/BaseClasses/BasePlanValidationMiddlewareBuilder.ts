@@ -8,8 +8,6 @@ import ApiError from '../../../../../Shared/Errors/ApiError'
 import { InexistentUserError } from '../../../../../Shared/Errors/SpecificErrors/InexistentUserError'
 
 export default abstract class BasePlanValidationMiddlewareBuilder<Rules> {
-  abstract rules : Rules
-
   public abstract BuildValidator (rules : Rules) : MiddlewareFn
 
   protected async ValidateRequest(request: IAuthenticatedRequest) {

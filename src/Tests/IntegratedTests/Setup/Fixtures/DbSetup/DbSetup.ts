@@ -73,6 +73,16 @@ export interface BasicUserBotSetupReturn {
   bot : Bot
 }
 
+export interface BasicUserBotSetupWithPlanReturn {
+  user : User
+  state : State
+  country : Country
+  city : City
+  bot : Bot
+  features : Feature[]
+  plan : Plan
+}
+
 export default class DbSetup {
   public userSetup = new UserSetup()
 
@@ -182,6 +192,37 @@ export default class DbSetup {
       country,
       city,
       bot: insertedBot,
+    }
+  }
+
+  public async BasicUserBotSetupWithPlan(
+    userSetupParams? : BasicUserSetupParams, bot? : Partial<Bot>,
+  ) : Promise<BasicUserBotSetupWithPlanReturn> {
+    const { plan, features } = await this.DefaultPlanSetup()
+
+    const userToInsert : Partial<User> = { ...userSetupParams?.user, planId: plan.id }
+
+    const params = userSetupParams ? { ...userSetupParams, user: userToInsert } : { user: userToInsert }
+
+    const {
+      user,
+      state,
+      country,
+      city,
+    } = await this.BasicUserSetup(params)
+
+    const botToInsert = bot ? { ...bot, userId: user.id } : { userId: user.id }
+
+    const insertedBot = await this.botSetup.InsertOne(botToInsert)
+
+    return {
+      user,
+      state,
+      country,
+      city,
+      bot: insertedBot,
+      features,
+      plan,
     }
   }
 

@@ -12,6 +12,7 @@ import { BotColumns } from '../../../Domain/Entities/Bot'
 import PhoneNumber, { PhoneNumberColumns } from '../../../Domain/Entities/PhoneNumber'
 import { BotsPhoneNumbersColumns } from '../../../Domain/Entities/Pivot/BotsPhoneNumbers'
 import { UsersColumns } from '../../../Domain/Entities/User'
+import PhoneNumberVO from '../../../Domain/ValueObjects/PhoneNumberVO'
 import { PgTypedDbConnection } from '../PostgresTypedDbConnection'
 import WhereQueryBuilder from '../QueryBuilders/WhereQueryBuilder'
 import {
@@ -76,9 +77,16 @@ export class PhoneNumberRepository extends BaseRepository<PhoneNumber, PhoneNumb
     const alreadyVinculatedPhoneNumbers = await this.GetVinculatedPhones(phoneNumbers, botId, dbConnection)
 
     const phonesToVinculate = phoneNumbers
-      .filter((p) => !new Set([...alreadyVinculatedPhoneNumbers.map((x) => x.whatsappNumber)]).has(p.whatsappNumber))
+      .filter(
+        (p) => !new Set([...alreadyVinculatedPhoneNumbers.map((x) => x.whatsappNumber)]).has(p.whatsappNumber),
+      )
 
-    await this.TryCreateBotPhoneNumbers(phonesToVinculate, botId, dbConnection)
+    const insertedIds = await this.TryCreateBotPhoneNumbers(phonesToVinculate, botId, dbConnection)
+
+    return [
+      ...insertedIds,
+      ...alreadyVinculatedPhoneNumbers.map((x) => x.id),
+    ]
   }
 
   public async TryCreateBotPhoneNumbers(phoneNumbers : PhoneNumberDTO[], botId : number, conn? : Connections) {
@@ -92,6 +100,8 @@ export class PhoneNumberRepository extends BaseRepository<PhoneNumber, PhoneNumb
     }))
 
     await this.pivotTable(conn).insert(...pivotEntriesToInsert)
+
+    return insertedIds
   }
 
   private async TryCreatePhoneNumbers(phoneNumbers: PhoneNumberDTO[], conn : Connections) : Promise<number[]> {
@@ -124,12 +134,14 @@ export class PhoneNumberRepository extends BaseRepository<PhoneNumber, PhoneNumb
     const inSet = WhereQueryBuilder.BuildInSet(phoneNumbers.map((p) => p.whatsappNumber))
 
     const alreadyVinculatedPhoneNumbers = await conn.query(sql`
-      SELECT pn.${PhoneNumberColumns.whatsapp_number} AS "whatsappNumber"
+      SELECT 
+        pn.${PhoneNumberColumns.whatsapp_number} AS "whatsappNumber",
+        pn.${PhoneNumberColumns.id}
         FROM bots_phone_numbers AS bpn
         INNER JOIN phone_numbers AS pn ON pn.${PhoneNumberColumns.id} = bpn.${BotsPhoneNumbersColumns.phone_number_id}
       WHERE bpn.${BotsPhoneNumbersColumns.bot_id} = ${botId}
         AND pn.${PhoneNumberColumns.whatsapp_number} IN ${inSet}
-    `) as [{whatsappNumber : string}]
+    `) as PhoneNumberVO[]
 
     return alreadyVinculatedPhoneNumbers
   }

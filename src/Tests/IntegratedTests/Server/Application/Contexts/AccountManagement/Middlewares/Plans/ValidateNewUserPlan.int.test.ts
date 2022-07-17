@@ -70,7 +70,7 @@ describe('Validate new user plan middleware integrated test', () => {
 
     // Act
     try {
-      const middleware = validateUserPlan.BuildValidator({ requestPlanIdPath: UpdateUserPlanIdPath })
+      const middleware = validateUserPlan.BuildValidator({ requestPlanIdPath: UpdateUserPlanIdPath, maySkipValidation: false })
       await middleware(req, res, next)
     } catch (error) {
       expect(false).toBeTruthy() // It has thrown an error, not what we expected
@@ -90,7 +90,7 @@ describe('Validate new user plan middleware integrated test', () => {
     const req = getMockReq({ user: { id: userId }, body: { planId: newPlanId } }) as unknown as IAuthenticatedRequest
 
     // Act
-    const middleware = validateUserPlan.BuildValidator({ requestPlanIdPath: UpdateUserPlanIdPath })
+    const middleware = validateUserPlan.BuildValidator({ requestPlanIdPath: UpdateUserPlanIdPath, maySkipValidation: false })
     await middleware(req, res, next)
     ValidateErroScenario(error)
   })
@@ -101,7 +101,7 @@ describe('Validate new user plan middleware integrated test', () => {
     const req = getMockReq({ user: { id: user.id } }) as unknown as IAuthenticatedRequest
 
     // Act
-    const middleware = validateUserPlan.BuildValidator({ requestPlanIdPath: UpdateUserPlanIdPath })
+    const middleware = validateUserPlan.BuildValidator({ requestPlanIdPath: UpdateUserPlanIdPath, maySkipValidation: true })
     await middleware(req, res, next)
 
     expect(next).toBeCalled()
@@ -231,8 +231,8 @@ describe('Validate new user plan middleware integrated test', () => {
         expect(next).toBeCalledWith(expect.objectContaining({ statusCode: StatusCode.FORBIDDEN }))
         break
       case PossibleErrors.PhonesByBotLimitReached:
-        // TODO
-        expect(true).toBeTruthy()
+        expect(next).toHaveBeenCalledWith(expect.any(ApiError))
+        expect(next).toBeCalledWith(expect.objectContaining({ statusCode: StatusCode.FORBIDDEN }))
         break
       default:
         throw new Error(`invalid possible error ${error}`)

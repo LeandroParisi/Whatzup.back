@@ -17,7 +17,7 @@ export default class UpdateUserRequest implements Partial<User> {
   @ValidateNested()
   @Type(() => PhoneNumberDTO)
   @AutoMap(() => PhoneNumberDTO)
-  phoneNumber : PhoneNumberDTO
+  phoneNumber? : PhoneNumberDTO
 
   @IsNumber()
   @Min(1)
@@ -27,10 +27,6 @@ export default class UpdateUserRequest implements Partial<User> {
   @IsEmail()
   @AutoMap()
   email?: string
-
-  @IsString()
-  @AutoMap()
-  password?: string
 
   @IsString()
   @AutoMap()
@@ -51,17 +47,17 @@ export default class UpdateUserRequest implements Partial<User> {
   @ValidateNested()
   @Type(() => StateDTO)
   @AutoMap(() => StateDTO)
-  state : StateDTO
+  state? : StateDTO
 
   @ValidateNested()
   @Type(() => CityDTO)
   @AutoMap(() => CityDTO)
-  city : CityDTO
+  city? : CityDTO
 
   @ValidateNested()
   @Type(() => CountryDTO)
   @AutoMap(() => CountryDTO)
-  country : CountryDTO
+  country? : CountryDTO
 
   @IsString()
   @AutoMap()

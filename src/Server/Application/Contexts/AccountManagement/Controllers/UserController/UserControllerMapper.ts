@@ -1,8 +1,8 @@
 import {
-  afterMap, createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments,
+  afterMap, createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments
 } from '@automapper/core'
 import StaticImplements from '../../../../../Commons/Anotations/StaticImplements'
-import User from '../../../../../Domain/Entities/User'
+import User, { PartialUser } from '../../../../../Domain/Entities/User'
 import { IMapInstaller } from '../../../../../Setup/Interfaces/IMapInstaller'
 import CreateUserRequest from './Requests/CreateUserRequest'
 import UpdateUserRequest from './Requests/UpdateUserRequest'
@@ -17,10 +17,6 @@ export default class UserControllerMapper {
       forMember(
         (dst) => dst.cityId,
         mapFrom((src) => src.city.id),
-      ),
-      forMember(
-        (dst) => dst.phoneNumberId,
-        mapWithArguments((_s, { phoneNumberId }) => phoneNumberId),
       ),
       forMember(
         (dst) => dst.stateId,
@@ -58,30 +54,18 @@ export default class UserControllerMapper {
     createMap(
       mapper,
       UpdateUserRequest,
-      User,
+      PartialUser,
       forMember(
         (dst) => dst.cityId,
-        mapFrom((src) => src.city.id),
-      ),
-      forMember(
-        (dst) => dst.isActive,
-        mapFrom((_src) => true),
+        mapFrom((src) => src.city?.id),
       ),
       forMember(
         (dst) => dst.stateId,
-        mapFrom((src) => src.state.id),
+        mapFrom((src) => src.state?.id),
       ),
       forMember(
         (dst) => dst.countryId,
-        mapFrom((src) => src.country.id),
-      ),
-      forMember(
-        (dst) => dst.id,
-        ignore(),
-      ),
-      forMember(
-        (dst) => dst.password,
-        mapWithArguments((_s, { hashedPassword }) => hashedPassword),
+        mapFrom((src) => src.country?.id),
       ),
       afterMap(
         (src, dst) => {
