@@ -1,8 +1,12 @@
 1. Criar tabela pivot para permitir um bot ter varios numeros vinculados
 2. Confirmação email: criação de conta (nodemailer)
 3. Validação via class validator que as cidades pertencem ao estado e os estados aos paises
+4. "Allow user to partially update an step from a bot" ??  ou a atualização do bot tem que validar tudo de novo?
 
 
 TECNICAL Debts:
 Update User: unmapped fields betwenn update request payload and partial user, should create specific DTO?
 2: pensar em como validar se o stateId que veio nos payload de DTOS state tem o mesmo countryID do usuario que está no banco
+3:   "StepsValidation": [
+    "Validate if all nextStepIds send user to a valid step id"
+  ],

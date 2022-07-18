@@ -2,6 +2,7 @@
 import { faker } from '@faker-js/faker'
 import CreateUserRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/UserController/Requests/CreateUserRequest'
 import UpdateUserRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/UserController/Requests/UpdateUserRequest'
+import { Locations } from '../../../../../../../../Server/Domain/Aggregations/Locations'
 import CityMock from '../../../../../../../Shared/Mocks/CityMock'
 import CountryMock from '../../../../../../../Shared/Mocks/CountryMock'
 import PhoneNumberMock from '../../../../../../../Shared/Mocks/PhoneNumberMock'
@@ -236,7 +237,11 @@ export default class UserControllerStubs {
     ]
   }
 
-  public static GetValidUpdatePayload(theory : CreateUpdatePossibleValidScenarios, newPlanId : number) : UpdateUserRequest {
+  public static GetValidUpdatePayload(
+    theory : CreateUpdatePossibleValidScenarios,
+    newPlanId : number,
+    { country } : Locations,
+  ) : UpdateUserRequest {
     const {
       addressStreet,
       documentNumber,
@@ -248,7 +253,6 @@ export default class UserControllerStubs {
       addressComplement,
       addressNumber,
       postalCode,
-      countryId,
     } = UserMock.GetRandomPartialUser(1, 1, 1, 1)
 
     const payloadToSend : UpdateUserRequest = {
@@ -265,7 +269,7 @@ export default class UserControllerStubs {
       postalCode,
       city: theory === CreateUpdatePossibleValidScenarios.WithNewCity ? CityMock.GetDTO() : null,
       country: theory === CreateUpdatePossibleValidScenarios.WithNewCountry ? CountryMock.GetDTO() : null,
-      state: theory === CreateUpdatePossibleValidScenarios.WithNewState ? StateMock.GetDTO({ countryId }) : null,
+      state: theory === CreateUpdatePossibleValidScenarios.WithNewState ? StateMock.GetDTO({ countryId: country.id }) : null,
       phoneNumber: theory === CreateUpdatePossibleValidScenarios.WithNewPhoneNumber ? PhoneNumberMock.GetDTO() : null,
     }
 

@@ -44,11 +44,13 @@ describe('User controller update: Integrated Tests', () => {
     validScenarioTheories,
     async (theory) => {
     // Arrange
-      const { user } = await dbSetup.BasicUserBotSetupWithPlan()
+      const {
+        user, country, state, city,
+      } = await dbSetup.BasicUserBotSetupWithPlan()
       const { plan } = await dbSetup.DefaultPlanSetup()
       const token = JwtMocks.GetToken({ email: user.email, id: user.id })
 
-      const payload = UserControllerStubs.GetValidUpdatePayload(theory, plan.id)
+      const payload = UserControllerStubs.GetValidUpdatePayload(theory, plan.id, { country, state, city })
 
       // Act
       const response = await request(app)

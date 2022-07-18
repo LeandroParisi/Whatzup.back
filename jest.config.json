@@ -3,6 +3,7 @@
   "coverageDirectory": "./coverage",
   "resetMocks": true,
   "clearMocks": true,
+  "testTimeout": 10000,
   "globalSetup": "./src/Tests/IntegratedTests/Setup/global-setup.ts",
   "globalTeardown": "./src/Tests/IntegratedTests/Setup/global-teardown.ts",
   "testPathIgnorePatterns": ["/lib/", "/node_modules/", "/build/"],

@@ -29,9 +29,9 @@ export class BotServices extends BaseCrudServices<Bot> {
   }
 
   public async FindAll(query : Partial<Bot>) : Promise<Bot[]> {
-    const cleanedEntity = EntityCleaning.CleanEntity(query)
+    const cleanedQuery = EntityCleaning.CleanEntity(query)
 
-    const whereQuery = WhereQueryBuilder.BuildWhereStatement(cleanedEntity, ['botName'])
+    const whereQuery = WhereQueryBuilder.BuildWhereStatement(cleanedQuery, ['botName'])
 
     const queryString = sql.__dangerous__rawValue(`
       SELECT * FROM bots
