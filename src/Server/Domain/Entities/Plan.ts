@@ -1,6 +1,6 @@
-export default class Plan {
-  id : number
+import { BaseEntity } from './BaseClasses/BaseEntity'
 
+export default class Plan extends BaseEntity {
   isCustomPlan : boolean
 
   price : number

@@ -1,5 +1,5 @@
 import { sql } from '@databases/pg'
-import { KeysOf } from '../../Commons/Interfaces/SystemInterfaces/EnumTypes'
+import { KeysOf } from '../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import { Features } from '../../Infrastructure/PgTyped/Schemas/__generated__'
 import { FeatureNames } from '../Enums/FeatureNames'
 import { FeatureTypes } from '../Enums/FeatureTypes'

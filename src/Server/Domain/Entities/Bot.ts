@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { sql } from '@databases/pg'
-import { KeysOf } from '../../Commons/Interfaces/SystemInterfaces/EnumTypes'
+import { KeysOf } from '../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import { Bots } from '../../Infrastructure/PgTyped/Schemas/__generated__'
 import { BaseEntity } from './BaseClasses/BaseEntity'
 import { Step } from './Steps/Step'

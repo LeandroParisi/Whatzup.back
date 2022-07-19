@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import DateUtils from '../../../Server/Commons/Utils/DateUtils'
+import DateUtils from '../../../Commons/Utils/DateUtils'
 import Bot from '../../../Server/Domain/Entities/Bot'
 import StepMock from './StepMock'
 

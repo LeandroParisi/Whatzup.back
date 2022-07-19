@@ -2,7 +2,7 @@
 import { AutoMap } from '@automapper/classes'
 import { sql } from '@databases/pg'
 import { Service } from 'typedi'
-import { KeysOf } from '../../Commons/Interfaces/SystemInterfaces/EnumTypes'
+import { KeysOf } from '../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import { Users } from '../../Infrastructure/PgTyped/Schemas/__generated__'
 import { BaseEntity } from './BaseClasses/BaseEntity'
 

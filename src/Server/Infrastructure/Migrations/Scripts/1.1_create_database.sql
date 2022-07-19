@@ -88,19 +88,23 @@
   CREATE TABLE countries (
     id SERIAL PRIMARY KEY,
     name varchar NOT NULL,
-    iso2 char(2) NOT NULL
+    iso2 char(2) NOT NULL,
+    iso3 char(3) NOT NULL,
+    phone_code varchar(50),
+    currency varchar(10),
+    emoji varchar(10)
   );
 
   CREATE TABLE states (
     "id" SERIAL PRIMARY KEY,
     country_id int NOT NULL,
-    "name" varchar UNIQUE NOT NULL,
-    "state_code" varchar UNIQUE NOT NULL,
-    iso2 char(2) NOT NULL
+    "name" varchar NOT NULL,
+    "state_code" varchar(10) NOT NULL
   );
 
   CREATE TABLE cities (
     "id" SERIAL PRIMARY KEY,
+    state_id int NOT NULL,
     "name" varchar NOT NULL
   );
 
@@ -115,6 +119,8 @@
   ALTER TABLE "users" ADD FOREIGN KEY ("country_id") REFERENCES "countries" ("id");
 
   ALTER TABLE "states" ADD FOREIGN KEY ("country_id") REFERENCES "countries" ("id");
+
+  ALTER TABLE "cities" ADD FOREIGN KEY ("state_id") REFERENCES "states" ("id");
 
   ALTER TABLE "users" ADD FOREIGN KEY ("state_id") REFERENCES "states" ("id");
 

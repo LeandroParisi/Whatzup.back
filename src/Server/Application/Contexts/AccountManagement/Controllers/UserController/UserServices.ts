@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { Transaction } from '@databases/pg'
 import Container, { Service } from 'typedi'
-import { Logger } from '../../../../../Commons/Logger'
+import { Logger } from '../../../../../../Commons/Logger'
 import { CityDTO } from '../../../../../Domain/DTOs/Locations/CityDTO'
 import { CountryDTO } from '../../../../../Domain/DTOs/Locations/CountryDTO'
 import { StateDTO } from '../../../../../Domain/DTOs/Locations/StateDTO'

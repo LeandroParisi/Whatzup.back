@@ -6,7 +6,7 @@ import { OpenAPIObject } from 'openapi3-ts'
 import { getMetadataArgsStorage, RoutingControllersOptions } from 'routing-controllers'
 import { routingControllersToSpec } from 'routing-controllers-openapi'
 import * as swaggerUiExpress from 'swagger-ui-express'
-import CONSTANTS from '../Configuration/constants'
+import CONSTANTS from '../../Commons/Configuration/constants'
 
 const { defaultMetadataStorage } = require('class-transformer/cjs/storage')
 

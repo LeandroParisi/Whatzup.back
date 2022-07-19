@@ -9,8 +9,8 @@ import {
   JsonController, Post, Put, Req, UseBefore,
 } from 'routing-controllers'
 import Container, { Service } from 'typedi'
-import { Mapper } from '../../../../../Commons/Mapper/Mapper'
 import User, { PartialUser } from '../../../../../Domain/Entities/User'
+import { Mapper } from '../../../../../Setup/Mapper/Mapper'
 import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResponse'
 import { ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
 import { BaseRoutes } from '../../../../Shared/APIs/Enums/Routes'

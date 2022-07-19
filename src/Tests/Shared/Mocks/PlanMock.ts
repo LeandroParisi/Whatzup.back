@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import DateUtils from '../../../Server/Commons/Utils/DateUtils'
+import DateUtils from '../../../Commons/Utils/DateUtils'
 import Plan from '../../../Server/Domain/Entities/Plan'
 
 type MockOptionals = Partial<Plan>

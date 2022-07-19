@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import DateUtils from '../../../Server/Commons/Utils/DateUtils'
+import DateUtils from '../../../Commons/Utils/DateUtils'
 import { PhoneNumberDTO } from '../../../Server/Domain/DTOs/PhoneNumberDTO'
 import PhoneNumber from '../../../Server/Domain/Entities/PhoneNumber'
 

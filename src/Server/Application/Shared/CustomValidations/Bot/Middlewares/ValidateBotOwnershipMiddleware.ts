@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* istanbul ignore file */
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Response } from 'express'
 import { ExpressMiddlewareInterface } from 'routing-controllers'
 import { Service } from 'typedi'
 import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
 import { ErrorMessages } from '../../../APIs/Enums/Messages'
 import { StatusCode } from '../../../APIs/Enums/Status'
+import IAuthenticatedRequest from '../../../APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import ApiError from '../../../Errors/ApiError'
 
 @Service()
@@ -17,7 +18,7 @@ export default class ValidateBotOwnershipMiddleware implements ExpressMiddleware
     private botRepository : BotRepository,
   ) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(req: IAuthenticatedRequest, res: Response, next: NextFunction) {
     if (!req?.user?.id) {
       throw new ApiError(
         StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, new Error("'This route requires authentication'"),

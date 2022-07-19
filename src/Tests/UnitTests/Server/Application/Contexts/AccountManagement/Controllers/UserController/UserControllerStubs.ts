@@ -1,4 +1,4 @@
-import IDictionary from '../../../../../../../../Server/Commons/Interfaces/SystemInterfaces/IDictionary'
+import IDictionary from '../../../../../../../../Commons/Interfaces/SystemInterfaces/IDictionary'
 
 export default class UserControllerStubs {
   static GetSucessTheory() : Array<IDictionary<boolean>> {

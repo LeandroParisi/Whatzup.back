@@ -3,7 +3,7 @@
 import createConnectionPool, { ConnectionPool, sql } from '@databases/pg'
 import tables from '@databases/pg-typed'
 import { types } from 'pg'
-import StaticImplements from '../../../../../Server/Commons/Anotations/StaticImplements'
+import StaticImplements from '../../../../../Commons/Anotations/StaticImplements'
 import IDbConnection from '../../../../../Server/Infrastructure/DbConnections/Interfaces/IDbConnection'
 import DatabaseSchema from '../../../../../Server/Infrastructure/PgTyped/Schemas/__generated__'
 import databaseSchema from '../../../../../Server/Infrastructure/PgTyped/Schemas/__generated__/schema.json'

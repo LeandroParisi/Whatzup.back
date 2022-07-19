@@ -1,5 +1,5 @@
 import { Service } from 'typedi'
-import { EnumDictionary } from '../../../../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
+import { EnumDictionary } from '../../../../../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import { FeatureDTO } from '../../../../../../Domain/DTOs/FeatureDTO'
 import { FeatureNames } from '../../../../../../Domain/Enums/FeatureNames'
 import { StatusCode } from '../../../../../Shared/APIs/Enums/Status'

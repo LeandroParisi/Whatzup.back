@@ -1,4 +1,4 @@
-import StaticImplements from '../../../Server/Commons/Anotations/StaticImplements'
+import StaticImplements from '../../../Commons/Anotations/StaticImplements'
 
 @StaticImplements()
 export default class IntegratedTestsConfig {

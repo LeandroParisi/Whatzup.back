@@ -4,11 +4,11 @@ import {
   Body, Get, HttpCode, JsonController, Param, Patch, Post, Put, QueryParams, Req, UseBefore,
 } from 'routing-controllers'
 import Container, { Service } from 'typedi'
-import { Mapper } from '../../../../../Commons/Mapper/Mapper'
 import Bot, { PartialBot } from '../../../../../Domain/Entities/Bot'
 import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
 import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
 import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
+import { Mapper } from '../../../../../Setup/Mapper/Mapper'
 import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResponse'
 import { ErrorMessages, ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
 import { BaseRoutes } from '../../../../Shared/APIs/Enums/Routes'

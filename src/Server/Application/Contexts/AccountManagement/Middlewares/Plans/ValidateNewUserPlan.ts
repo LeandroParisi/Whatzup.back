@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { NextFunction, Response } from 'express'
 import Container, { Service } from 'typedi'
-import { EnumDictionary } from '../../../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
+import { EnumDictionary } from '../../../../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import DetailedPlanDTO from '../../../../../Domain/DTOs/DetailedPlanDTO'
 import { FeatureDTO } from '../../../../../Domain/DTOs/FeatureDTO'
 import { FeatureNames } from '../../../../../Domain/Enums/FeatureNames'

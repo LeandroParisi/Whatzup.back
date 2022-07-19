@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import DateUtils from '../../../Server/Commons/Utils/DateUtils'
+import DateUtils from '../../../Commons/Utils/DateUtils'
 import Feature from '../../../Server/Domain/Entities/Feature'
 import { FeatureNames } from '../../../Server/Domain/Enums/FeatureNames'
 import { FeatureTypes } from '../../../Server/Domain/Enums/FeatureTypes'

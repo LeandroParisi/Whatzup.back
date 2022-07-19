@@ -1,5 +1,5 @@
 import { sql } from '@databases/pg'
-import { KeysOf } from '../../Commons/Interfaces/SystemInterfaces/EnumTypes'
+import { KeysOf } from '../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import { PhoneNumbers } from '../../Infrastructure/PgTyped/Schemas/__generated__'
 import { BaseEntity } from './BaseClasses/BaseEntity'
 

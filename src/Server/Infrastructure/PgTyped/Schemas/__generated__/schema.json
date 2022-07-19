@@ -88,12 +88,33 @@
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
+      },
+      {
+        "name": "state_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
       }
     ]
   },
   {
     "name": "countries",
     "columns": [
+      {
+        "name": "currency",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "emoji",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
       {
         "name": "id",
         "isNullable": false,
@@ -109,8 +130,22 @@
         "typeName": "BPCHAR"
       },
       {
+        "name": "iso3",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1042,
+        "typeName": "BPCHAR"
+      },
+      {
         "name": "name",
         "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "phone_code",
+        "isNullable": true,
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
@@ -305,7 +340,7 @@
       },
       {
         "name": "whatsapp_id",
-        "isNullable": false,
+        "isNullable": true,
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"

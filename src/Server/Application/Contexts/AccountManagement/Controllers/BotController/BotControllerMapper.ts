@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
-  afterMap, createMap, forMember, mapFrom, Mapper, mapWithArguments
+  afterMap, createMap, forMember, mapFrom, Mapper, mapWithArguments,
 } from '@automapper/core'
-import StaticImplements from '../../../../../Commons/Anotations/StaticImplements'
+import StaticImplements from '../../../../../../Commons/Anotations/StaticImplements'
 import Bot, { PartialBot } from '../../../../../Domain/Entities/Bot'
 import { IMapInstaller } from '../../../../../Setup/Interfaces/IMapInstaller'
 import EntityCleaning from '../../../../Shared/Serializers/EntityCleaning'

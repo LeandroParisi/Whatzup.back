@@ -1,9 +1,11 @@
 import { Service } from 'typedi'
-import { BaseEntity } from './BaseClasses/BaseEntity'
+import { BaseUpdatableEntity } from './BaseClasses/BaseEntity'
 
 @Service()
-export default class City extends BaseEntity {
-  readonly id: number
+export default class City extends BaseUpdatableEntity {
+  id: number
 
-  readonly name : string
+  stateId : number
+
+  name : string
 }

@@ -1,7 +1,7 @@
 import {
-  afterMap, createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments
+  afterMap, createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments,
 } from '@automapper/core'
-import StaticImplements from '../../../../../Commons/Anotations/StaticImplements'
+import StaticImplements from '../../../../../../Commons/Anotations/StaticImplements'
 import User, { PartialUser } from '../../../../../Domain/Entities/User'
 import { IMapInstaller } from '../../../../../Setup/Interfaces/IMapInstaller'
 import CreateUserRequest from './Requests/CreateUserRequest'

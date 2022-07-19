@@ -8,7 +8,7 @@ import {
   ExpressErrorMiddlewareInterface, HttpError, Middleware,
 } from 'routing-controllers'
 import { Service } from 'typedi'
-import { Logger } from '../../../../Commons/Logger'
+import { Logger } from '../../../../../Commons/Logger'
 import { ErrorMessages } from '../../APIs/Enums/Messages'
 import { StatusCode } from '../../APIs/Enums/Status'
 import ApiError from '../../Errors/ApiError'
