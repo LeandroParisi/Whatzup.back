@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as PostgressConnectionStringParser from 'pg-connection-string'
 
 require('dotenv/config')
 
@@ -12,12 +13,20 @@ export enum Envs {
   PROD = 'prd',
 }
 
+const {
+  database, host, port, password, user,
+} = PostgressConnectionStringParser.parse(env.DATABASE_URL)
+
 export default class CONSTANTS {
   static ENV : Envs = env.NODE_ENV as Envs
 
   static PORT = Number(env.PORT)
 
   static CONNECTION_STRING : string = env.DATABASE_URL
+
+  static LOCAL_POSTGRESS_URL = `postgres://${user}:${password}@${host}:${port}`
+
+  static DATABASE_NAME : string = database
 
   static ROUTE_IGNORE_PATTERN = '__IGNORE__'
 

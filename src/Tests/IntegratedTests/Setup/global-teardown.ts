@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Client } from 'pg'
 import * as PostgressConnectionStringParser from 'pg-connection-string'
-import pgtools from 'pgtools'
+import DbReset from '../../../Server/Infrastructure/GeneralScripts/Classes/DbReset'
 import { dropDatabaseScript } from '../../../Server/Infrastructure/Migrations/1655918532171_create-database'
 import IntegratedTestsConfig from './IntegratedTestsConfig'
 
@@ -16,6 +16,8 @@ const client = new Client({
 })
 
 class GlobalTearDown {
+  private static dbReset = new DbReset(IntegratedTestsConfig.TEST_DATABASE_NAME, IntegratedTestsConfig.LOCAL_POSTGRESS_URL)
+
   static async Setup() {
     try {
       console.log('Trying to unseed DB\n')
@@ -28,23 +30,9 @@ class GlobalTearDown {
     } finally {
       await client.end()
       console.log('Trying to drop DB\n')
-      await this.DropDatabase()
+      await this.dbReset.DropDatabase()
       console.log('Successfully drop DB\n')
     }
-  }
-
-  static async DropDatabase() {
-    await pgtools.dropdb(
-      {
-        user,
-        password,
-        port,
-        host,
-      },
-      IntegratedTestsConfig.TEST_DATABASE_NAME,
-      (err, res) => {
-      },
-    )
   }
 }
 

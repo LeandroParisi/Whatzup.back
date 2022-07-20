@@ -7,16 +7,17 @@ import {
   IsString,
   Min,
   ValidateIf,
-  ValidateNested,
+  ValidateNested
 } from 'class-validator'
-import { CityDTO } from '../../../../../../Domain/DTOs/Locations/CityDTO'
-import { CountryDTO } from '../../../../../../Domain/DTOs/Locations/CountryDTO'
-import { StateDTO } from '../../../../../../Domain/DTOs/Locations/StateDTO'
 import { PhoneNumberDTO } from '../../../../../../Domain/DTOs/PhoneNumberDTO'
 import User from '../../../../../../Domain/Entities/User'
+import LocationRequest from '../../../../../Shared/APIs/Interfaces/Requests/LocationRequest'
+import { IsValidFullLocation } from '../../../../../Shared/CustomValidations/Locations/ClassValidators/IsValidFullLocation'
 import HasPlanId from '../../../../../Shared/CustomValidations/Plans/FunctionValidators/HasPlanId'
 
-export default class CreateUserRequest implements Partial<User> {
+export default class CreateUserRequest extends LocationRequest implements Partial<User> {
+  @IsValidFullLocation()
+
   @ValidateNested()
   @Type(() => PhoneNumberDTO)
   @AutoMap(() => PhoneNumberDTO)
@@ -31,22 +32,22 @@ export default class CreateUserRequest implements Partial<User> {
   @IsNotEmpty()
   @IsEmail()
   @AutoMap()
-  email?: string
+  email: string
 
   @IsNotEmpty()
   @IsString()
   @AutoMap()
-  password?: string
+  password: string
 
   @IsNotEmpty()
   @IsString()
   @AutoMap()
-  documentNumber?: string
+  documentNumber: string
 
   @IsNotEmpty()
   @IsString()
   @AutoMap()
-  firstName?: string
+  firstName: string
 
   @IsString()
   @AutoMap()
@@ -55,44 +56,39 @@ export default class CreateUserRequest implements Partial<User> {
   @IsNotEmpty()
   @IsString()
   @AutoMap()
-  lastName?: string
-
-  @ValidateNested()
-  @Type(() => StateDTO)
-  @AutoMap(() => StateDTO)
-  state : StateDTO
-
-  @ValidateNested()
-  @Type(() => CityDTO)
-  @AutoMap(() => CityDTO)
-  city : CityDTO
-
-  @ValidateNested()
-  @Type(() => CountryDTO)
-  @AutoMap(() => CountryDTO)
-  country : CountryDTO
+  lastName: string
 
   @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  stateId : number
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  cityId : number
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  countryId : number
+
   @IsString()
   @AutoMap()
   neighbourhood?: string
 
-  @IsNotEmpty()
   @IsString()
   @AutoMap()
   addressStreet?: string
 
-  @IsNotEmpty()
   @IsString()
   @AutoMap()
   addressNumber?: string
 
-  @IsNotEmpty()
   @IsString()
   @AutoMap()
   addressComplement?: string
 
-  @IsNotEmpty()
   @IsString()
   @AutoMap()
   postalCode?: string

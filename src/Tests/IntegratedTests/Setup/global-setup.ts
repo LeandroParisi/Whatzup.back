@@ -3,12 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Client } from 'pg'
 import * as PostgressConnectionStringParser from 'pg-connection-string'
+import DbReset from '../../../Server/Infrastructure/GeneralScripts/Classes/DbReset'
 import { createDatabaseScript } from '../../../Server/Infrastructure/Migrations/1655918532171_create-database'
 import IntegratedTestsConfig from './IntegratedTestsConfig'
-
-require('dotenv/config')
-
-const { env } = process
 
 const {
   host, user, password, port,
@@ -18,17 +15,19 @@ const client = new Client({
   host, user, password, port: Number(port), database: IntegratedTestsConfig.TEST_DATABASE_NAME,
 })
 
-const client2 = new Client({
-  host, user, password, port: Number(port), database: 'postgres',
-})
+// const client2 = new Client({
+//   host, user, password, port: Number(port), database: 'postgres',
+// })
 
 class GlobalSetup {
+  private static dbReset = new DbReset(IntegratedTestsConfig.TEST_DATABASE_NAME, IntegratedTestsConfig.LOCAL_POSTGRESS_URL)
+
   static async Setup() {
     await this.CreateDataBase()
   }
 
   private static async CreateDataBase() {
-    await this.TryCreateDb()
+    await this.dbReset.TryCreateDb()
     await this.TrySeedDb()
   }
 
@@ -55,26 +54,26 @@ class GlobalSetup {
     await client.end()
   }
 
-  private static async TryCreateDb() {
-    console.log('\nChecking if Db needs to be created\n')
+  // private static async TryCreateDb() {
+  //   console.log('\nChecking if Db needs to be created\n')
 
-    await client2.connect()
+  //   await client2.connect()
 
-    const { rowCount } = await client2.query(`
-    SELECT 'CREATE DATABASE ${IntegratedTestsConfig.TEST_DATABASE_NAME}'
-      WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${IntegratedTestsConfig.TEST_DATABASE_NAME}')
-    `)
+  //   const { rowCount } = await client2.query(`
+  //   SELECT 'CREATE DATABASE ${IntegratedTestsConfig.TEST_DATABASE_NAME}'
+  //     WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${IntegratedTestsConfig.TEST_DATABASE_NAME}')
+  //   `)
 
-    if (rowCount) {
-      console.log('\nCreating DB\n')
-      await client2.query(`CREATE DATABASE ${IntegratedTestsConfig.TEST_DATABASE_NAME}`)
-      console.log('\nDB successfully created\n')
-    } else {
-      console.log('\nNo need to create DB\n')
-    }
+  //   if (rowCount) {
+  //     console.log('\nCreating DB\n')
+  //     await client2.query(`CREATE DATABASE ${IntegratedTestsConfig.TEST_DATABASE_NAME}`)
+  //     console.log('\nDB successfully created\n')
+  //   } else {
+  //     console.log('\nNo need to create DB\n')
+  //   }
 
-    await client2.end()
-  }
+  //   await client2.end()
+  // }
 }
 
 module.exports = async () => {

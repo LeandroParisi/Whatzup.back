@@ -1,5 +1,5 @@
 import {
-  afterMap, createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments,
+  afterMap, createMap, forMember, ignore, mapFrom, Mapper, mapWithArguments
 } from '@automapper/core'
 import StaticImplements from '../../../../../../Commons/Anotations/StaticImplements'
 import User, { PartialUser } from '../../../../../Domain/Entities/User'
@@ -16,15 +16,15 @@ export default class UserControllerMapper {
       User,
       forMember(
         (dst) => dst.cityId,
-        mapFrom((src) => src.city.id),
+        mapFrom((src) => src.cityId),
       ),
       forMember(
         (dst) => dst.stateId,
-        mapFrom((src) => src.state.id),
+        mapFrom((src) => src.stateId),
       ),
       forMember(
         (dst) => dst.countryId,
-        mapFrom((src) => src.country.id),
+        mapFrom((src) => src.countryId),
       ),
       forMember(
         (dst) => dst.id,
@@ -57,15 +57,15 @@ export default class UserControllerMapper {
       PartialUser,
       forMember(
         (dst) => dst.cityId,
-        mapFrom((src) => src.city?.id),
+        mapFrom((src) => src.cityId),
       ),
       forMember(
         (dst) => dst.stateId,
-        mapFrom((src) => src.state?.id),
+        mapFrom((src) => src.stateId),
       ),
       forMember(
         (dst) => dst.countryId,
-        mapFrom((src) => src.country?.id),
+        mapFrom((src) => src.countryId),
       ),
       afterMap(
         (src, dst) => {

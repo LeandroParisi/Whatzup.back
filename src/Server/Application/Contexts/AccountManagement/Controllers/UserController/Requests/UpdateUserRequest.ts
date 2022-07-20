@@ -3,17 +3,15 @@ import { Type } from 'class-transformer'
 import {
   IsEmail, IsNumber,
   IsString,
-  Min, ValidateNested
+  Min, ValidateNested,
 } from 'class-validator'
-import { CityDTO } from '../../../../../../Domain/DTOs/Locations/CityDTO'
-import { CountryDTO } from '../../../../../../Domain/DTOs/Locations/CountryDTO'
-import { StateDTO } from '../../../../../../Domain/DTOs/Locations/StateDTO'
 import { PhoneNumberDTO } from '../../../../../../Domain/DTOs/PhoneNumberDTO'
 import User from '../../../../../../Domain/Entities/User'
+import LocationRequest from '../../../../../Shared/APIs/Interfaces/Requests/LocationRequest'
 
 export const UpdateUserPlanIdPath = 'body.planId' as string
 
-export default class UpdateUserRequest implements Partial<User> {
+export default class UpdateUserRequest extends LocationRequest implements Partial<User> {
   @ValidateNested()
   @Type(() => PhoneNumberDTO)
   @AutoMap(() => PhoneNumberDTO)
@@ -44,20 +42,17 @@ export default class UpdateUserRequest implements Partial<User> {
   @AutoMap()
   lastName?: string
 
-  @ValidateNested()
-  @Type(() => StateDTO)
-  @AutoMap(() => StateDTO)
-  state? : StateDTO
+  @IsNumber()
+  @Min(1)
+  stateId : number
 
-  @ValidateNested()
-  @Type(() => CityDTO)
-  @AutoMap(() => CityDTO)
-  city? : CityDTO
+  @IsNumber()
+  @Min(1)
+  cityId : number
 
-  @ValidateNested()
-  @Type(() => CountryDTO)
-  @AutoMap(() => CountryDTO)
-  country? : CountryDTO
+  @IsNumber()
+  @Min(1)
+  countryId : number
 
   @IsString()
   @AutoMap()

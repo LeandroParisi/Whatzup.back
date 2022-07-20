@@ -48,9 +48,9 @@ export default class CSCJsonStrategy implements IGenerateSeedStrategy {
     })).sort((a, b) => Number(a.id) - Number(b.id))
 
     const states : State[] = statesJson.map(({
-      name, countryId, id, iso2, stateCode,
+      name, countryId, id, stateCode,
     }) => ({
-      countryId, name: this.ReplaceNameSignals(name), stateCode, id, iso2,
+      countryId, name: this.ReplaceNameSignals(name), stateCode, id,
     })).sort((a, b) => Number(a.id) - Number(b.id))
 
     const cities : City[] = citiesJson.map(({

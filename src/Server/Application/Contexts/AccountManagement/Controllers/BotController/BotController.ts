@@ -26,7 +26,7 @@ import UpdateBotRequest from './Requests/UpdateBot/UpdateBotRequestBody'
 
 @Service()
 @JsonController(`/${BaseRoutes.AccountManagementBot}`)
-export default class BotController implements IBaseCrudController<Bot>, IBaseSoftDeleteController<Bot> {
+export default class BotController implements IBaseCrudController<Bot, BotServices>, IBaseSoftDeleteController<Bot> {
   /**
    *
    */

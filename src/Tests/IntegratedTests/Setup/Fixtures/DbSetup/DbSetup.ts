@@ -227,14 +227,14 @@ export default class DbSetup {
   }
 
   public async BasicLocationsSetup(params? : BasicLocationsSetupParams) : Promise<BasicLocationsSetupReturn> {
-    const cityToAdd = params?.city ?? CityMock.GetRandom()
-    const addedCity = await this.citySetup.Create(cityToAdd)
-
-    const countryToAdd = params?.country ?? CountryMock.GetRandom()
+    const countryToAdd = CountryMock.GetRandom(params?.country)
     const addedCountry = await this.countrySetup.Create(countryToAdd)
 
-    const stateToAdd = params?.state ?? StateMock.GetRandom({ countryId: addedCountry.id })
+    const stateToAdd = StateMock.GetRandom(addedCountry.id, {...params?.state })
     const addedState = await this.stateSetup.Create(stateToAdd)
+
+    const cityToAdd =  CityMock.GetRandom(addedState.id, {...params?.city})
+    const addedCity = await this.citySetup.Create(cityToAdd)
 
     return {
       state: addedState,

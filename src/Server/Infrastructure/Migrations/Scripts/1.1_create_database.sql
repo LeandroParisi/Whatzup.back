@@ -35,7 +35,7 @@
     "id" SERIAL PRIMARY KEY,
     "bot_name" varchar NOT NULL,
     "steps" json,
-    "is_active" bool,
+    "is_active" bool DEFAULT true,
     "user_id" int NOT NULL,
     "created_at" date NOT NULL DEFAULT 'now()',
     "updated_at" date NOT NULL DEFAULT 'now()'
@@ -66,7 +66,7 @@
     "id" SERIAL PRIMARY KEY,
     "type" varchar NOT NULL,
     "name" varchar NOT NULL,
-    "is_active" bool,
+    "is_active" bool DEFAULT true,
     "created_at" date NOT NULL DEFAULT 'now()',
     "updated_at" date NOT NULL DEFAULT 'now()'
   );
@@ -92,20 +92,29 @@
     iso3 char(3) NOT NULL,
     phone_code varchar(50),
     currency varchar(10),
-    emoji varchar(10)
+    emoji varchar(10),
+    "is_active" bool DEFAULT true,
+    "created_at" date NOT NULL DEFAULT 'now()',
+    "updated_at" date NOT NULL DEFAULT 'now()'
   );
 
   CREATE TABLE states (
     "id" SERIAL PRIMARY KEY,
     country_id int NOT NULL,
     "name" varchar NOT NULL,
-    "state_code" varchar(10) NOT NULL
+    "state_code" varchar(10) NOT NULL,
+    "is_active" bool DEFAULT true,
+    "created_at" date NOT NULL DEFAULT 'now()',
+    "updated_at" date NOT NULL DEFAULT 'now()'
   );
 
   CREATE TABLE cities (
     "id" SERIAL PRIMARY KEY,
     state_id int NOT NULL,
-    "name" varchar NOT NULL
+    "name" varchar NOT NULL,
+    "is_active" bool DEFAULT true,
+    "created_at" date NOT NULL DEFAULT 'now()',
+    "updated_at" date NOT NULL DEFAULT 'now()'
   );
 
   CREATE INDEX "whatsapp_number" ON "phone_numbers" ("whatsapp_number");

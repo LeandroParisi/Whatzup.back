@@ -26,7 +26,7 @@
       {
         "name": "is_active",
         "isNullable": true,
-        "hasDefault": false,
+        "hasDefault": true,
         "typeId": 16,
         "typeName": "BOOL"
       },
@@ -76,11 +76,25 @@
     "name": "cities",
     "columns": [
       {
+        "name": "created_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
         "name": "id",
         "isNullable": false,
         "hasDefault": true,
         "typeId": 23,
         "typeName": "INTEGER"
+      },
+      {
+        "name": "is_active",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
       },
       {
         "name": "name",
@@ -95,12 +109,26 @@
         "hasDefault": false,
         "typeId": 23,
         "typeName": "INTEGER"
+      },
+      {
+        "name": "updated_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
       }
     ]
   },
   {
     "name": "countries",
     "columns": [
+      {
+        "name": "created_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
       {
         "name": "currency",
         "isNullable": true,
@@ -121,6 +149,13 @@
         "hasDefault": true,
         "typeId": 23,
         "typeName": "INTEGER"
+      },
+      {
+        "name": "is_active",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
       },
       {
         "name": "iso2",
@@ -149,6 +184,13 @@
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
+      },
+      {
+        "name": "updated_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
       }
     ]
   },
@@ -172,7 +214,7 @@
       {
         "name": "is_active",
         "isNullable": true,
-        "hasDefault": false,
+        "hasDefault": true,
         "typeId": 16,
         "typeName": "BOOL"
       },
@@ -445,6 +487,13 @@
         "typeName": "INTEGER"
       },
       {
+        "name": "created_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
         "name": "id",
         "isNullable": false,
         "hasDefault": true,
@@ -452,11 +501,11 @@
         "typeName": "INTEGER"
       },
       {
-        "name": "iso2",
-        "isNullable": false,
-        "hasDefault": false,
-        "typeId": 1042,
-        "typeName": "BPCHAR"
+        "name": "is_active",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
       },
       {
         "name": "name",
@@ -471,6 +520,13 @@
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
+      },
+      {
+        "name": "updated_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
       }
     ]
   },

@@ -1,11 +1,11 @@
 import { Service } from 'typedi'
-import { BaseEntity } from '../../../../Domain/Entities/BaseClasses/BaseEntity'
+import { BaseUpdatableEntity } from '../../../../Domain/Entities/BaseClasses/BaseEntity'
 import { IBaseRepository } from '../../Database/Repositories/IRepository'
 import ApiError from '../../Errors/ApiError'
 import { StatusCode } from '../Enums/Status'
 
 @Service()
-export default class BaseCrudServices<Entity extends BaseEntity> {
+export default class BaseSoftDeleteController<Entity extends BaseUpdatableEntity> {
   public Repository : IBaseRepository<Entity>
 
   /**

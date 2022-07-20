@@ -32,9 +32,6 @@ describe('User controller update: Integrated Tests', () => {
   })
 
   const validScenarioTheories = [
-    CreateUpdatePossibleValidScenarios.WithNewCountry,
-    CreateUpdatePossibleValidScenarios.WithNewState,
-    CreateUpdatePossibleValidScenarios.WithNewCity,
     CreateUpdatePossibleValidScenarios.WithNewPhoneNumber,
     CreateUpdatePossibleValidScenarios.WithNewPlan,
   ]
@@ -96,27 +93,6 @@ describe('User controller update: Integrated Tests', () => {
     delete updatedUser.GetFullName
 
     switch (theory) {
-      case CreateUpdatePossibleValidScenarios.WithNewCountry:
-        delete expectedUser.country
-        const newCountry = await dbSetup.countrySetup.FindOne({ id: payload.country.id })
-        expect(newCountry).not.toBeNull()
-        assert.deepNestedInclude(newCountry, payload.country)
-        expectedUser.countryId = newCountry.id
-        break
-      case CreateUpdatePossibleValidScenarios.WithNewState:
-        delete expectedUser.state
-        const newState = await dbSetup.stateSetup.FindOne({ id: payload.state.id })
-        expect(newState).not.toBeNull()
-        assert.deepNestedInclude(newState, payload.state)
-        expectedUser.stateId = newState.id
-        break
-      case CreateUpdatePossibleValidScenarios.WithNewCity:
-        delete expectedUser.city
-        const newCity = await dbSetup.citySetup.FindOne({ id: payload.city.id })
-        expect(newCity).not.toBeNull()
-        assert.deepNestedInclude(newCity, payload.city)
-        expectedUser.cityId = newCity.id
-        break
       case CreateUpdatePossibleValidScenarios.WithNewPhoneNumber:
         delete expectedUser.phoneNumber
         const newPhone = await dbSetup.phoneNumberSetup.FindOne({ whatsappNumber: payload.phoneNumber.whatsappNumber })

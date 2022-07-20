@@ -10,6 +10,4 @@ export default class State extends BaseUpdatableEntity {
   readonly name : string
 
   readonly stateCode : string
-
-  readonly iso2 : string
 }

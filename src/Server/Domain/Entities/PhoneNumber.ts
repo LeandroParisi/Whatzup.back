@@ -1,9 +1,9 @@
 import { sql } from '@databases/pg'
 import { KeysOf } from '../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import { PhoneNumbers } from '../../Infrastructure/PgTyped/Schemas/__generated__'
-import { BaseEntity } from './BaseClasses/BaseEntity'
+import { BaseUpdatableEntity } from './BaseClasses/BaseEntity'
 
-export default class PhoneNumber extends BaseEntity {
+export default class PhoneNumber extends BaseUpdatableEntity {
   whatsappNumber : string
 
   whatsappId : string

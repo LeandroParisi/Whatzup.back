@@ -16,13 +16,15 @@
       "build": "ttsc",
       "start": "ts-node -C ttypescript src/index.ts",
       "lint": "ttsc && eslint",
-      "seed:generate:locations": "ts-node -C ttypescript src/Server/Infrastructure/Seeds/Generators/Locations/RunLocationsSeeds.ts",
+      "seed:generate:locations": "ts-node src/Server/Infrastructure/Seeds/Generators/Locations/RunLocationsSeeds.ts",
       "migrate": "ts-node -C ttypescript node_modules/.bin/node-pg-migrate -j ts",
       "migrate:up": "npm run migrate up",
       "migrate:down": "npm run migrate down",
       "generate-schema": "npx @databases/pg-schema-cli --database postgres://leandro_parisi:123deolivera4@localhost:5432/whatzup --directory src/Server/Infrastructure/PgTyped/Schemas/__generated__",
-      "db:reset": "npm run migrate:down && npm run migrate:up && npm run generate-schema",
-      "db:up": "npm run migrate:up && npm run generate-schema"
+      "db:reset": "npm run db:drop && npm run db:create && npm run migrate:up && npm run generate-schema",
+      "db:up": "npm run migrate:up && npm run generate-schema",
+      "db:create": "ts-node src/Server/Infrastructure/GeneralScripts/CreateDb.ts",
+      "db:drop": "ts-node src/Server/Infrastructure/GeneralScripts/DropDb.ts"
    },
    "repository": {
       "type": "git",

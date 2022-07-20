@@ -6,7 +6,6 @@ import request from 'supertest'
 import { BaseRoutes } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import { Server } from '../../../../../../../../Server/Server'
-import UserControllerStubsShared from '../../../../../../../Shared/Stubs/UserControllerStubs.shared'
 import DbSetup from '../../../../../../Setup/Fixtures/DbSetup/DbSetup'
 import UserControllerStubs from './UserControllerStubs'
 
@@ -25,13 +24,16 @@ describe('User controller: Integrated Tests', () => {
     dbSetup = new DbSetup()
   })
 
+  afterEach(async () => {
+    await dbSetup.CleanUp()
+  })
+
   it('1. Should properlly create user and related localities', async () => {
     // Arrange
-    const payload = UserControllerStubsShared.GetCorrectRequestPayload()
+    const {country, state, city} = await dbSetup.BasicLocationsSetup()
+    const payload = UserControllerStubs.GetCorrectRequestPayload({country, state, city})
+    
     const expectedUser = { ...payload }
-    delete expectedUser.city
-    delete expectedUser.country
-    delete expectedUser.state
     delete expectedUser.phoneNumber
 
     // Act
@@ -39,9 +41,6 @@ describe('User controller: Integrated Tests', () => {
 
     // Assert
     const insertedUser = await dbSetup.userSetup.FindOne({ email: payload.email })
-    const insertedState = await dbSetup.stateSetup.FindOne({ iso2: payload.state.iso2 })
-    const insertedCity = await dbSetup.citySetup.FindOne({ name: payload.city.name })
-    const insertedCountry = await dbSetup.countrySetup.FindOne({ iso2: payload.country.iso2 })
 
     assert.equal(response.status, StatusCode.CREATED)
     assert.deepEqual(
@@ -49,9 +48,6 @@ describe('User controller: Integrated Tests', () => {
       {
         ...expectedUser,
         id: insertedUser.id,
-        cityId: payload.city.id,
-        stateId: payload.state.id,
-        countryId: payload.country.id,
         phoneNumberId: insertedUser.phoneNumberId,
         createdAt: insertedUser.createdAt,
         updatedAt: insertedUser.updatedAt,
@@ -59,15 +55,14 @@ describe('User controller: Integrated Tests', () => {
         wasActivated: false,
       },
     )
-    assert.deepEqual(insertedState, payload.state)
-    assert.deepEqual(insertedCity, payload.city)
-    assert.deepEqual(insertedCountry, payload.country)
   })
 
   theoretically(
     '2. Should not accept request with invalid data',
-    UserControllerStubs.GetInvalidPayloads(),
+    UserControllerStubs.GetInvalidCreatePayloads(),
     async (theory) => {
+      await dbSetup.BasicLocationsSetup({city: {id: theory.cityId}, state: {id: theory.stateId}, country: {id: theory.countryId}})
+    
       // Act
       const response = await request(app).post(`/api/${BaseRoutes.AccountManagementUser}`).send(theory)
 

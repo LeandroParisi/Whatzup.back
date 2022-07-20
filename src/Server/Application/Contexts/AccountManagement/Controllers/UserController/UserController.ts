@@ -26,7 +26,7 @@ import { UserServices } from './UserServices'
 
 @Service()
 @JsonController(`/${BaseRoutes.AccountManagementUser}`)
-export default class UserController implements IBaseCrudController<User> {
+export default class UserController implements IBaseCrudController<User, UserServices> {
   /**
    *
    */
@@ -39,14 +39,14 @@ export default class UserController implements IBaseCrudController<User> {
   @Post()
   public async Create(@Body({ validate: true }) body : CreateUserRequest) : Promise<User> {
     const {
-      city, country, phoneNumber, state,
+      phoneNumber,
     } = body
     const hashedPassword = await PasswordHashing.HashPassword(body.password)
 
     const user = Mapper.map(body, CreateUserRequest, User, { extraArgs: () => ({ hashedPassword }) })
 
     const insertedUser = await this.Service.Create(user, {
-      city, country, phoneNumber, state,
+      phoneNumber,
     })
 
     return insertedUser
@@ -56,21 +56,20 @@ export default class UserController implements IBaseCrudController<User> {
   @Put('')
   @UseBefore(
     TokenAuthentication,
-    Container.get(ValidateNewUserPlan).BuildValidator(
-      { requestPlanIdPath: UpdateUserPlanIdPath, maySkipValidation: true },
-    ),
+    Container.get(ValidateNewUserPlan)
+      .BuildValidator({ requestPlanIdPath: UpdateUserPlanIdPath, maySkipValidation: true }),
   )
   public async Update(
     @Body({ validate: { skipMissingProperties: true } }) body: UpdateUserRequest,
     @Req() req: IAuthenticatedRequest,
   ): Promise<BaseResponse> {
     const {
-      city, country, phoneNumber, state,
+      phoneNumber,
     } = body
     const userUpdateInfo = Mapper.map(body, UpdateUserRequest, PartialUser)
 
     await this.Service.Update({ id: req.user.id }, userUpdateInfo, {
-      city, country, phoneNumber, state,
+      phoneNumber,
     })
 
     return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
