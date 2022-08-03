@@ -63,7 +63,7 @@ describe('User controller update: Integrated Tests', () => {
 
   // theoretically(
   //   '2. Should not accept request with invalid data',
-  //   UserControllerStubs.GetInvalidPayloads(),
+  //   UserControllerStubs.GetInvalidUpdatePayloads(),
   //   async (theory) => {
   //     // Act
   //     const response = await request(app).post(`/api/${BaseRoutes.AccountManagementUser}`).send(theory)

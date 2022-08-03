@@ -3,7 +3,7 @@ import { Type } from 'class-transformer'
 import {
   IsEmail, IsNumber,
   IsString,
-  Min, ValidateNested,
+  Min, ValidateNested
 } from 'class-validator'
 import { PhoneNumberDTO } from '../../../../../../Domain/DTOs/PhoneNumberDTO'
 import User from '../../../../../../Domain/Entities/User'

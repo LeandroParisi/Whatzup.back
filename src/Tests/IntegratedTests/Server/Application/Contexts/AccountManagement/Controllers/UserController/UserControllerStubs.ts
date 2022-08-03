@@ -146,4 +146,28 @@ export default class UserControllerStubs {
 
     return payloadToSend
   }
+  
+  static GetInvalidUpdatePayloads(
+    {country: {id: countryId}, state: {id: stateId}, city: {id: cityId}} : Locations
+    ) : CreateUserRequest {
+    const phoneNumberId = faker.datatype.number()
+
+    const user = UserMock.GetRandomUser(countryId, stateId, cityId, phoneNumberId)
+
+    const userPayload = { ...user }
+    
+    delete userPayload.id
+    delete userPayload.phoneNumberId
+    delete userPayload.isActive
+    delete userPayload.wasActivated
+
+    const payload : CreateUserRequest = {
+      phoneNumber: {
+        ...PhoneNumberMock.GetDTO(),
+      },
+      ...userPayload,
+    }
+
+    return payload
+  }
 }
