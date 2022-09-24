@@ -9,7 +9,7 @@ import DatabaseSchema from './Schemas/__generated__'
 import databaseSchema from './Schemas/__generated__/schema.json'
 
 import { types } from 'pg'
-import CONSTANTS, { Envs } from '../../../Commons/Configuration/constants'
+import CONSTANTS, { Envs } from '../../../Configuration/constants'
 import IntegratedTestsConfig from '../../../Tests/IntegratedTests/Setup/IntegratedTestsConfig'
 
 types.setTypeParser(types.builtins.INT8, (value: string) => parseInt(value, 10))

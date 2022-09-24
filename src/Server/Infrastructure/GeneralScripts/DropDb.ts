@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-import CONSTANTS from '../../../Commons/Configuration/constants'
+import CONSTANTS from '../../../Configuration/constants'
 import DbReset from './Classes/DbReset'
 
 new DbReset(CONSTANTS.DATABASE_NAME, CONSTANTS.LOCAL_POSTGRESS_URL)

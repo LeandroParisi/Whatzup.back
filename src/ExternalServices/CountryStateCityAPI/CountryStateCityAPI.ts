@@ -1,6 +1,6 @@
 import { Service } from 'typedi'
 import Api from '../../Commons/Api'
-import CONSTANTS from '../../Commons/Configuration/constants'
+import CONSTANTS from '../../Configuration/constants'
 import { GetAllCitiesResponse } from './Reponses/GetAllCitiesResponse'
 import { GetAllCountriesResponse } from './Reponses/GetAllCountriesResponse'
 

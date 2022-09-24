@@ -15,8 +15,8 @@ import { PostDefaultInterceptor } from './Application/Shared/APIs/Interceptors/P
 import BodyParser from './Application/Shared/Middlewares/BodyParser/BodyParser'
 import ErrorHandler from './Application/Shared/Middlewares/ErrorHandler/ErrorHandler'
 
-import constants from '../Commons/Configuration/constants'
 import { Logger } from '../Commons/Logger'
+import constants from '../Configuration/constants'
 import HealthCheck from './Application/Shared/Middlewares/HealthCheck/HealthCheck'
 import GenerateApiDocumentation from './Setup/GenerateApiDocumentation'
 

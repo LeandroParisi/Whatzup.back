@@ -1,5 +1,5 @@
 import { JwtPayload, sign, verify } from 'jsonwebtoken'
-import CONSTANTS from '../../../../../Commons/Configuration/constants'
+import CONSTANTS from '../../../../../Configuration/constants'
 import IUserToken from '../Interfaces/IUserToken'
 
 require('dotenv/config')

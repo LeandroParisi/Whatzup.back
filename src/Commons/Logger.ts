@@ -5,8 +5,8 @@
 /* istanbul ignore file */
 
 import * as logger from 'winston'
+import CONSTANTS, { Envs } from '../Configuration/constants'
 import ApiError from '../Server/Application/Shared/Errors/ApiError'
-import CONSTANTS, { Envs } from './Configuration/constants'
 
 const shouldLogOnFile = CONSTANTS.ENV === Envs.DSV || CONSTANTS.ENV === Envs.PROD
 const shouldLogOnConsole = CONSTANTS.ENV === Envs.LOCAL
