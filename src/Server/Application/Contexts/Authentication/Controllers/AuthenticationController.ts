@@ -9,7 +9,7 @@ import { StatusCode } from '../../../Shared/APIs/Enums/Status'
 import ApiError from '../../../Shared/Errors/ApiError'
 import JwtConfig from '../Hashing/JwtConfig'
 import PasswordHashing from '../Hashing/PasswordHashing'
-import { ILoginPayload } from './Requests/Login/ILoginPayload'
+import LoginPayload from './Requests/Login/LoginPayload'
 
 @Service()
 @JsonController('/authentication')
@@ -20,7 +20,7 @@ export class AuthenticationController {
   constructor(private userRepository : UserRepository) { }
 
   @Post('/login')
-  public async Login(@Body() loginReq : ILoginPayload) : Promise<string> {
+  public async Login(@Body() loginReq : LoginPayload) : Promise<string> {
     const { email, password } = loginReq
     const user = await this.userRepository.FindOne({ email })
 
