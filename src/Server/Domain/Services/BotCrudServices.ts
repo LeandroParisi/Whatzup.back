@@ -1,23 +1,23 @@
 /* eslint-disable no-underscore-dangle */
 import { sql } from '@databases/pg'
 import Container, { Service } from 'typedi'
-import { PhoneNumberDTO } from '../../../../../Domain/DTOs/PhoneNumberDTO'
-import Bot from '../../../../../Domain/Entities/Bot'
-import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
-import WhereQueryBuilder from '../../../../../Infrastructure/PgTyped/QueryBuilders/WhereQueryBuilder'
-import { BotPhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotPhoneNumberRepository'
-import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
-import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
-import { Bots } from '../../../../../Infrastructure/PgTyped/Schemas/__generated__'
-import BaseCrudServices from '../../../../Shared/APIs/BaseClasses/BaseCrudServices'
-import { ErrorMessages } from '../../../../Shared/APIs/Enums/Messages'
-import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
-import ApiError from '../../../../Shared/Errors/ApiError'
-import { CaseSerializer } from '../../../../Shared/Serializers/CaseSerializer'
-import EntityCleaning from '../../../../Shared/Serializers/EntityCleaning'
+import BaseCrudServices from '../../Application/Shared/APIs/BaseClasses/BaseCrudServices'
+import { ErrorMessages } from '../../Application/Shared/APIs/Enums/Messages'
+import { StatusCode } from '../../Application/Shared/APIs/Enums/Status'
+import { CaseSerializer } from '../../Application/Shared/Serializers/CaseSerializer'
+import EntityCleaning from '../../Application/Shared/Serializers/EntityCleaning'
+import { PgTypedDbConnection } from '../../Infrastructure/PgTyped/PostgresTypedDbConnection'
+import WhereQueryBuilder from '../../Infrastructure/PgTyped/QueryBuilders/WhereQueryBuilder'
+import { BotPhoneNumberRepository } from '../../Infrastructure/PgTyped/Repositories/BotPhoneNumberRepository'
+import { BotRepository } from '../../Infrastructure/PgTyped/Repositories/BotRepository'
+import { PhoneNumberRepository } from '../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
+import { Bots } from '../../Infrastructure/PgTyped/Schemas/__generated__'
+import { PhoneNumberDTO } from '../DTOs/PhoneNumberDTO'
+import Bot from '../Entities/Bot'
+import ApiError from '../Errors/ApiError'
 
 @Service()
-export class BotServices extends BaseCrudServices<Bot> {
+export class BotCrudServices extends BaseCrudServices<Bot> {
 /**
  *
  */

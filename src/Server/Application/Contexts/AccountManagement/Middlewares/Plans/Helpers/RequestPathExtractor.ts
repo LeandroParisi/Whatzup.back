@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Request } from 'express'
-import ParsingError from '../../../../../Shared/Errors/SpecificErrors/ParsingError'
+import ParsingError from '../../../../../../Domain/Errors/SpecificErrors/ParsingError'
 
 export default class RequestPathExtractor {
   public static GetInfoFromPath<T>(request : Request, infoPath : string) : T {

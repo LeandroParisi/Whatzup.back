@@ -1,18 +1,18 @@
 /* eslint-disable no-underscore-dangle */
 import Container, { Service } from 'typedi'
-import { PhoneNumberDTO } from '../../../../../Domain/DTOs/PhoneNumberDTO'
-import User from '../../../../../Domain/Entities/User'
-import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
-import { UserRepository } from '../../../../../Infrastructure/PgTyped/Repositories/UserRepository'
-import BaseCrudServices from '../../../../Shared/APIs/BaseClasses/BaseCrudServices'
-import EntityCleaning from '../../../../Shared/Serializers/EntityCleaning'
+import BaseCrudServices from '../../Application/Shared/APIs/BaseClasses/BaseCrudServices'
+import EntityCleaning from '../../Application/Shared/Serializers/EntityCleaning'
+import { PhoneNumberRepository } from '../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
+import { UserRepository } from '../../Infrastructure/PgTyped/Repositories/UserRepository'
+import { PhoneNumberDTO } from '../DTOs/PhoneNumberDTO'
+import User from '../Entities/User'
 
 export interface UserDependencies {
   phoneNumber? : PhoneNumberDTO
 }
 
 @Service()
-export class UserServices extends BaseCrudServices<User> {
+export class UserCrudServices extends BaseCrudServices<User> {
 /**
  *
  */

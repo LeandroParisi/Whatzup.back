@@ -33,4 +33,6 @@ export default class CONSTANTS {
   static SALT_SECRET = env.MY_SECRET
 
   static COUNTRY_STATE_CITY_API_KEY = env.COUNTRY_STATE_CITY_API_KEY
+
+  static PAYMENT_TOLERANCE_IN_DAYS = 5
 }

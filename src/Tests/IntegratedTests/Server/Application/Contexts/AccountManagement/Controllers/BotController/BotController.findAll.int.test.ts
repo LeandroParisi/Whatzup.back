@@ -66,9 +66,9 @@ describe('Bot controller: FindAll - Integrated Tests', () => {
 
       // Assert
       expect(response.status).toBe(StatusCode.OK)
-      expect(response.body).not.toBeNull()
+      expect(response.body.data).not.toBeNull()
 
-      await VerifyResult(bots, response.body, includeBotNameOnQuery)
+      await VerifyResult(bots, response.body.data, includeBotNameOnQuery)
     },
   )
 
@@ -88,8 +88,8 @@ describe('Bot controller: FindAll - Integrated Tests', () => {
 
     // Assert
     expect(response.status).toBe(StatusCode.OK)
-    expect(response.body).not.toBeNull()
-    expect(response.body.length).toBe(0)
+    expect(response.body.data).not.toBeNull()
+    expect(response.body.data.length).toBe(0)
   })
 
   it('3. Should not get bots if user does not exist', async () => {

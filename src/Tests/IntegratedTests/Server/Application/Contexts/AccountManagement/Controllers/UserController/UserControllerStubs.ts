@@ -19,7 +19,7 @@ export default class UserControllerStubs {
     const stateId = faker.datatype.number(10000)
     const countryId = faker.datatype.number(10000)
     const cityId = faker.datatype.number(10000)
-    
+
     const phoneNumberId = faker.datatype.number(10000)
 
     const phoneNumber = PhoneNumberMock.GetDTO()
@@ -33,70 +33,70 @@ export default class UserControllerStubs {
       {
         ...user,
         phoneNumber: {
-          whatsappNumber: null
-        }
+          whatsappNumber: null,
+        },
       },
       {
         ...user,
         phoneNumber,
-        planId: 0
+        planId: 0,
       },
       {
         ...user,
         phoneNumber,
-        email: null
+        email: null,
       },
       {
         ...user,
         phoneNumber,
-        password: null
+        password: null,
       },
       {
         ...user,
         phoneNumber,
-        documentNumber: null
+        documentNumber: null,
       },
       {
         ...user,
         phoneNumber,
-        firstName: null
+        firstName: null,
       },
       {
         ...user,
         phoneNumber,
-        lastName: null
+        lastName: null,
       },
       {
         ...user,
         phoneNumber,
-        stateId: null
+        stateId: null,
       },
       {
         ...user,
         phoneNumber,
-        cityId: null
+        cityId: null,
       },
       {
         ...user,
         phoneNumber,
-        countryId: null
-      }
+        countryId: null,
+      },
     ]
   }
 
   static GetCorrectRequestPayload(
-    {country: {id: countryId}, state: {id: stateId}, city: {id: cityId}} : Locations
-    ) : CreateUserRequest {
+    { country: { id: countryId }, state: { id: stateId }, city: { id: cityId } } : Locations,
+  ) : CreateUserRequest {
     const phoneNumberId = faker.datatype.number()
 
     const user = UserMock.GetRandomUser(countryId, stateId, cityId, phoneNumberId)
 
     const userPayload = { ...user }
-    
+
     delete userPayload.id
     delete userPayload.phoneNumberId
     delete userPayload.isActive
-    delete userPayload.wasActivated
+    delete userPayload.isVerified
 
     const payload : CreateUserRequest = {
       phoneNumber: {
@@ -146,20 +146,20 @@ export default class UserControllerStubs {
 
     return payloadToSend
   }
-  
+
   static GetInvalidUpdatePayloads(
-    {country: {id: countryId}, state: {id: stateId}, city: {id: cityId}} : Locations
-    ) : CreateUserRequest {
+    { country: { id: countryId }, state: { id: stateId }, city: { id: cityId } } : Locations,
+  ) : CreateUserRequest {
     const phoneNumberId = faker.datatype.number()
 
     const user = UserMock.GetRandomUser(countryId, stateId, cityId, phoneNumberId)
 
     const userPayload = { ...user }
-    
+
     delete userPayload.id
     delete userPayload.phoneNumberId
     delete userPayload.isActive
-    delete userPayload.wasActivated
+    delete userPayload.isVerified
 
     const payload : CreateUserRequest = {
       phoneNumber: {

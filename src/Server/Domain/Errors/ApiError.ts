@@ -1,4 +1,4 @@
-import { StatusCode } from '../APIs/Enums/Status'
+import { StatusCode } from '../../Application/Shared/APIs/Enums/Status'
 
 export default class ApiError extends Error {
   statusCode : StatusCode

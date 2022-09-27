@@ -1,7 +1,7 @@
 import { Service } from 'typedi'
 import { BaseUpdatableEntity } from '../../../../Domain/Entities/BaseClasses/BaseEntity'
+import ApiError from '../../../../Domain/Errors/ApiError'
 import { IBaseRepository } from '../../Database/Repositories/IRepository'
-import ApiError from '../../Errors/ApiError'
 import { StatusCode } from '../Enums/Status'
 
 @Service()

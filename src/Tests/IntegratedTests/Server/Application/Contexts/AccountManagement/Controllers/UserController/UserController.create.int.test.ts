@@ -30,9 +30,9 @@ describe('User controller: Integrated Tests', () => {
 
   it('1. Should properlly create user and related localities', async () => {
     // Arrange
-    const {country, state, city} = await dbSetup.BasicLocationsSetup()
-    const payload = UserControllerStubs.GetCorrectRequestPayload({country, state, city})
-    
+    const { country, state, city } = await dbSetup.BasicLocationsSetup()
+    const payload = UserControllerStubs.GetCorrectRequestPayload({ country, state, city })
+
     const expectedUser = { ...payload }
     delete expectedUser.phoneNumber
 
@@ -52,7 +52,7 @@ describe('User controller: Integrated Tests', () => {
         createdAt: insertedUser.createdAt,
         updatedAt: insertedUser.updatedAt,
         isActive: true,
-        wasActivated: false,
+        isVerified: false,
       },
     )
   })
@@ -61,8 +61,8 @@ describe('User controller: Integrated Tests', () => {
     '2. Should not accept request with invalid data',
     UserControllerStubs.GetInvalidCreatePayloads(),
     async (theory) => {
-      await dbSetup.BasicLocationsSetup({city: {id: theory.cityId}, state: {id: theory.stateId}, country: {id: theory.countryId}})
-    
+      await dbSetup.BasicLocationsSetup({ city: { id: theory.cityId }, state: { id: theory.stateId }, country: { id: theory.countryId } })
+
       // Act
       const response = await request(app).post(`/api/${BaseRoutes.AccountManagementUser}`).send(theory)
 

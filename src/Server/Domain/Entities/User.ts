@@ -51,7 +51,7 @@ export default class User extends BaseEntity {
   @AutoMap()
   postalCode?: string
 
-  wasActivated?: boolean
+  isVerified?: boolean
 
   isActive?: boolean
 
@@ -88,7 +88,7 @@ export const UsersColumns : KeysOf<Users> = {
   postal_code: sql.ident('postal_code'),
   state_id: sql.ident('state_id'),
   updated_at: sql.ident('updated_at'),
-  was_activated: sql.ident('was_activated'),
+  is_verified: sql.ident('is_verified'),
 }
 
 export class PartialUser implements Partial<User> {
@@ -141,7 +141,7 @@ export class PartialUser implements Partial<User> {
   postalCode?: string
 
   @AutoMap()
-  wasActivated?: boolean
+  isVerified?: boolean
 
   @AutoMap()
   isActive?: boolean

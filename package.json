@@ -21,7 +21,7 @@
       "migrate:up": "npm run migrate up",
       "migrate:down": "npm run migrate down",
       "generate-schema": "npx @databases/pg-schema-cli --database postgres://leandro_parisi:123deolivera4@localhost:5432/whatzup --directory src/Server/Infrastructure/PgTyped/Schemas/__generated__",
-      "db:hard-reset": "npm run db:drop && npm run db:create && npm run migrate:up && npm run generate-schema",
+      "db:reset-schema": "npm run db:drop && npm run db:create && npm run migrate:up && npm run generate-schema",
       "db:reset": "npm run db:drop && npm run db:create && npm run migrate:up",
       "db:up": "npm run migrate:up && npm run generate-schema",
       "db:create": "ts-node src/Server/Infrastructure/GeneralScripts/CreateDb.ts",

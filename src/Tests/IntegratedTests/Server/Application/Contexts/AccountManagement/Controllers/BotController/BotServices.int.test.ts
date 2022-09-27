@@ -4,14 +4,14 @@ import { assert } from 'chai'
 import theoretically from 'jest-theories'
 import 'reflect-metadata'
 import Container from 'typedi'
-import { BotServices } from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/BotController/BotServices'
 import Bot from '../../../../../../../../Server/Domain/Entities/Bot'
+import { BotCrudServices } from '../../../../../../../../Server/Domain/Services/BotCrudServices'
 import BotMock from '../../../../../../../Shared/Mocks/BotMock'
 import DbSetup from '../../../../../../Setup/Fixtures/DbSetup/DbSetup'
 
 describe('Bot services integrated tests', () => {
   let dbSetup : DbSetup
-  const botServices = Container.get(BotServices)
+  const botServices = Container.get(BotCrudServices)
 
   beforeEach(() => {
     dbSetup = new DbSetup()
@@ -79,7 +79,7 @@ describe('Bot services integrated tests', () => {
 
         if (sameName.length && botsWithSameNameInserted < withSameName) {
           newBot = BotMock.GetRandom(
-            { userId: user.id, botName: `${faker.name.findName()} ${sameName} ${faker.name.findName()}` },
+            { userId: user.id, botName: `${faker.name.fullName()} ${sameName} ${faker.name.fullName()}` },
           )
           botsWithSameNameInserted += 1
         } else {

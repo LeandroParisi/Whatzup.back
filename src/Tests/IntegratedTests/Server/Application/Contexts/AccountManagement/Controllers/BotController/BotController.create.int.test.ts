@@ -89,7 +89,7 @@ describe('Bot controller: Create - Integrated Tests', () => {
       const token = JwtMocks.GetToken({ email, id })
       const body = {
         ...theory,
-        botName: theory.botName !== null ? faker.name.findName() : null,
+        botName: theory.botName !== null ? faker.name.fullName() : null,
       }
 
       // Act

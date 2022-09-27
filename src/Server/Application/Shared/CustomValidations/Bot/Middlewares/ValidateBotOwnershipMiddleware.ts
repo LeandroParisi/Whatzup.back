@@ -3,11 +3,11 @@
 import { NextFunction, Response } from 'express'
 import { ExpressMiddlewareInterface } from 'routing-controllers'
 import { Service } from 'typedi'
+import ApiError from '../../../../../Domain/Errors/ApiError'
 import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
 import { ErrorMessages } from '../../../APIs/Enums/Messages'
 import { StatusCode } from '../../../APIs/Enums/Status'
 import IAuthenticatedRequest from '../../../APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
-import ApiError from '../../../Errors/ApiError'
 
 @Service()
 export default class ValidateBotOwnershipMiddleware implements ExpressMiddlewareInterface {

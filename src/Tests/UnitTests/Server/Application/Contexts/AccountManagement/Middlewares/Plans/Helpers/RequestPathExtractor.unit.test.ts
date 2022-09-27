@@ -1,7 +1,7 @@
 import { getMockReq } from '@jest-mock/express'
 import theoretically from 'jest-theories'
 import RequestPathExtractor from '../../../../../../../../../Server/Application/Contexts/AccountManagement/Middlewares/Plans/Helpers/RequestPathExtractor'
-import ParsingError from '../../../../../../../../../Server/Application/Shared/Errors/SpecificErrors/ParsingError'
+import ParsingError from '../../../../../../../../../Server/Domain/Errors/SpecificErrors/ParsingError'
 
 describe('Request path extract unit tests', () => {
   const errorTheories = [

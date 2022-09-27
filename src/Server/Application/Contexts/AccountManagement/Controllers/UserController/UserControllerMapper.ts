@@ -35,7 +35,7 @@ export default class UserControllerMapper {
         ignore(),
       ),
       forMember(
-        (dst) => dst.wasActivated,
+        (dst) => dst.isVerified,
         ignore(),
       ),
       forMember(

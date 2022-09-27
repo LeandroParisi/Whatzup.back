@@ -186,7 +186,7 @@ export default class BotControllerStubs {
   public static GetValidUpdateTheory() : Array<Partial<UpdateBotRequest>> {
     return [
       {
-        botName: `NOVO_NOME: ${faker.name.findName()}`,
+        botName: `NOVO_NOME: ${faker.name.fullName()}`,
       },
       {
         steps: StepMock.GenerateXSteps(FeatureSetup.MAX_STEPS_FEATURE.limit),
@@ -195,7 +195,7 @@ export default class BotControllerStubs {
         phoneNumbers: PhoneNumberMock.GetXDTOs(FeatureSetup.PHONES_PER_BOT.limit),
       },
       {
-        botName: `NOVO_NOME: ${faker.name.findName()}`,
+        botName: `NOVO_NOME: ${faker.name.fullName()}`,
         steps: StepMock.GenerateXSteps(FeatureSetup.MAX_STEPS_FEATURE.limit),
         phoneNumbers: PhoneNumberMock.GetXDTOs(FeatureSetup.PHONES_PER_BOT.limit),
       },

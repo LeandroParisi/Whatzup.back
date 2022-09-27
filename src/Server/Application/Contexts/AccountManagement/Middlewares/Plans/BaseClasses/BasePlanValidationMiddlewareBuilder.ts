@@ -1,11 +1,11 @@
 import Container from 'typedi'
+import ApiError from '../../../../../../Domain/Errors/ApiError'
+import { InexistentUserError } from '../../../../../../Domain/Errors/SpecificErrors/InexistentUserError'
 import { ErrorMessages } from '../../../../../Shared/APIs/Enums/Messages'
 import { StatusCode } from '../../../../../Shared/APIs/Enums/Status'
 import IAuthenticatedRequest from '../../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import { MiddlewareFn } from '../../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/MiddlewareFn'
 import { IsExistentUserConstraint } from '../../../../../Shared/CustomValidations/User/ClassValidators/IsExistentUser'
-import ApiError from '../../../../../Shared/Errors/ApiError'
-import { InexistentUserError } from '../../../../../Shared/Errors/SpecificErrors/InexistentUserError'
 
 export default abstract class BasePlanValidationMiddlewareBuilder<Rules> {
   public abstract BuildValidator (rules : Rules) : MiddlewareFn

@@ -11,7 +11,6 @@ import Container from 'typedi'
 import BotController from './Application/Contexts/AccountManagement/Controllers/BotController/BotController'
 import UserController from './Application/Contexts/AccountManagement/Controllers/UserController/UserController'
 import { AuthenticationController } from './Application/Contexts/Authentication/Controllers/AuthenticationController'
-import { PostDefaultInterceptor } from './Application/Shared/APIs/Interceptors/PostDefaultInterceptor'
 import BodyParser from './Application/Shared/Middlewares/BodyParser/BodyParser'
 import ErrorHandler from './Application/Shared/Middlewares/ErrorHandler/ErrorHandler'
 
@@ -28,7 +27,6 @@ export class Server {
   static readonly RoutingControllersOptions = {
     controllers: [HealthCheck, UserController, BotController, AuthenticationController],
     middlewares: [BodyParser, ErrorHandler],
-    interceptors: [PostDefaultInterceptor],
     routePrefix: '/api',
     classTransformer: true,
     defaultErrorHandler: false,

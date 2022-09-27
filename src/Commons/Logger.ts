@@ -6,7 +6,7 @@
 
 import * as logger from 'winston'
 import CONSTANTS, { Envs } from '../Configuration/constants'
-import ApiError from '../Server/Application/Shared/Errors/ApiError'
+import ApiError from '../Server/Domain/Errors/ApiError'
 
 const shouldLogOnFile = CONSTANTS.ENV === Envs.DSV || CONSTANTS.ENV === Envs.PROD
 const shouldLogOnConsole = CONSTANTS.ENV === Envs.LOCAL

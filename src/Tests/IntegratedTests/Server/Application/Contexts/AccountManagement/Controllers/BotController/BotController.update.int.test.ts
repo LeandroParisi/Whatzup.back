@@ -104,7 +104,7 @@ describe('Bot controller: Update - Integrated Tests', () => {
     const token = JwtMocks.GetToken({ email: faker.internet.email(), id: user.id + faker.datatype.number() })
 
     const body : UpdateBotRequest = {
-      botName: `NOVO_NOME: ${faker.name.findName()}`,
+      botName: `NOVO_NOME: ${faker.name.fullName()}`,
       steps: StepMock.GenerateXSteps(FeatureSetup.MAX_STEPS_FEATURE.limit - 1),
     }
 
@@ -125,7 +125,7 @@ describe('Bot controller: Update - Integrated Tests', () => {
     const { token: anotherUserToken } = await Setup()
 
     const body : UpdateBotRequest = {
-      botName: `NOVO_NOME: ${faker.name.findName()}`,
+      botName: `NOVO_NOME: ${faker.name.fullName()}`,
       steps: StepMock.GenerateXSteps(FeatureSetup.MAX_STEPS_FEATURE.limit - 1),
     }
 

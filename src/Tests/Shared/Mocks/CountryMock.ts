@@ -7,7 +7,7 @@ export default class CountryMock {
   static GetRandom(optionals? : MockOptionals) : Country {
     const country : Country = {
       id: optionals?.id || null,
-      name: optionals?.name || faker.name.findName(),
+      name: optionals?.name || faker.name.fullName(),
       iso2: optionals?.iso2 || faker.datatype.string(2),
       currency: optionals?.currency || faker.datatype.string(2),
       emoji: optionals?.emoji || faker.datatype.string(2),
@@ -20,7 +20,7 @@ export default class CountryMock {
 
   // static GetDTO(optionals? : MockOptionals) : CountryDTO {
   //   let country : CountryDTO = {
-  //     name: faker.name.findName(),
+  //     name: faker.name.fullName(),
   //     iso2: optionals?.iso2 || faker.datatype.string(2),
   //     id: faker.datatype.number(1000),
   //   }

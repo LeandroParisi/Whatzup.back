@@ -16,8 +16,8 @@ import IUserToken from '../../../../../../../Server/Application/Contexts/Authent
 import TokenAuthentication from '../../../../../../../Server/Application/Contexts/Authentication/Middlewares/TokenAuthentication'
 import { StatusCode } from '../../../../../../../Server/Application/Shared/APIs/Enums/Status'
 import IAuthenticatedRequest from '../../../../../../../Server/Application/Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
-import ApiError from '../../../../../../../Server/Application/Shared/Errors/ApiError'
-import { InexistentUserError } from '../../../../../../../Server/Application/Shared/Errors/SpecificErrors/InexistentUserError'
+import ApiError from '../../../../../../../Server/Domain/Errors/ApiError'
+import { InexistentUserError } from '../../../../../../../Server/Domain/Errors/SpecificErrors/InexistentUserError'
 import { UserRepository } from '../../../../../../../Server/Infrastructure/PgTyped/Repositories/UserRepository'
 import UserMock from '../../../../../../Shared/Mocks/UserMock'
 

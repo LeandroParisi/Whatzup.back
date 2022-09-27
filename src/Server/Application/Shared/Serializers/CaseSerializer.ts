@@ -5,8 +5,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import StaticImplements from '../../../../Commons/Anotations/StaticImplements'
 import TypeUtils from '../../../../Commons/Utils/TypeUtils'
+import ApiError from '../../../Domain/Errors/ApiError'
 import { StatusCode } from '../APIs/Enums/Status'
-import ApiError from '../Errors/ApiError'
 
 @StaticImplements()
 export class CaseSerializer {

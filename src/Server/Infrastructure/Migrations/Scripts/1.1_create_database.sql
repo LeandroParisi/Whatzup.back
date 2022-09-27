@@ -1,3 +1,5 @@
+  CREATE TYPE payment_type AS ENUM ('monthly_payment', 'acquisition');
+
   CREATE TABLE phone_numbers (
     "id" SERIAL PRIMARY KEY,
     "whatsapp_number" varchar NOT NULL,
@@ -25,7 +27,7 @@
     "address_number" varchar,
     "address_complement" varchar,
     "postal_code" varchar,
-    "was_activated" bool DEFAULT false,
+    "is_verified" bool DEFAULT false,
     "is_active" bool DEFAULT true,
     "created_at" date NOT NULL DEFAULT 'now()',
     "updated_at" date NOT NULL DEFAULT 'now()'
@@ -73,14 +75,16 @@
 
   CREATE TABLE payments (
     "id" SERIAL PRIMARY KEY,
-    "plan_id" int,
-    "user_id" int,
+    "plan_id" int NOT NULL,
+    "user_id" int NOT NULL,
+    "type" payment_type NOT NULL,
     "reference_year" int NOT NULL,
     "reference_month" int NOT NULL,
     "was_sent" bool,
     "send_date" date,
     "was_paid" bool,
     "payment_date" date,
+    "due_date" date NOT NULL,
     "created_at" date NOT NULL DEFAULT 'now()',
     "updated_at" date NOT NULL DEFAULT 'now()'
   );

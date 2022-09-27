@@ -5,6 +5,8 @@ import {
 } from 'routing-controllers'
 import Container, { Service } from 'typedi'
 import Bot, { PartialBot } from '../../../../../Domain/Entities/Bot'
+import ApiError from '../../../../../Domain/Errors/ApiError'
+import { BotCrudServices } from '../../../../../Domain/Services/BotCrudServices'
 import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
 import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
 import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
@@ -16,22 +18,20 @@ import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
 import { IBaseCrudController, IBaseSoftDeleteController } from '../../../../Shared/APIs/Interfaces/Crud/IBaseCrudController'
 import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
 import ValidateBotOwnershipMiddleware from '../../../../Shared/CustomValidations/Bot/Middlewares/ValidateBotOwnershipMiddleware'
-import ApiError from '../../../../Shared/Errors/ApiError'
 import TokenAuthentication from '../../../Authentication/Middlewares/TokenAuthentication'
 import ValidateUserPlanByBot from '../../Middlewares/Plans/ValidateUserPlanByBot'
-import { BotServices } from './BotServices'
 import CreateBotRequest, { CreateBotStepPath } from './Requests/CreateBot/CreateBotRequest'
 import GetAllBotsRequestQuery from './Requests/GetAllRequest/GetAllBotsRequestQuery'
 import UpdateBotRequest from './Requests/UpdateBot/UpdateBotRequestBody'
 
 @Service()
 @JsonController(`/${BaseRoutes.AccountManagementBot}`)
-export default class BotController implements IBaseCrudController<Bot, BotServices>, IBaseSoftDeleteController<Bot> {
+export default class BotController implements IBaseCrudController<Bot, BotCrudServices>, IBaseSoftDeleteController<Bot> {
   /**
    *
    */
   constructor(
-      public Service : BotServices,
+      public Service : BotCrudServices,
       public Repository : BotRepository,
       public PhoneNumbersRepository : PhoneNumberRepository,
   ) {
@@ -43,12 +43,12 @@ export default class BotController implements IBaseCrudController<Bot, BotServic
   public async Get(
     @QueryParams({ validate: { skipMissingProperties: true } }) query: GetAllBotsRequestQuery,
     @Req() req: IAuthenticatedRequest,
-  ): Promise<Bot[]> {
+  ): Promise<BaseResponse<Bot[]>> {
     const fullQuery = Mapper.map(query, GetAllBotsRequestQuery, Bot, { extraArgs: () => ({ userId: req.user.id }) })
 
     const bots = await this.Service.FindAll(fullQuery)
 
-    return bots
+    return new BaseResponse('Success', bots)
   }
 
   // TODO: Refactor to use service
@@ -61,7 +61,7 @@ export default class BotController implements IBaseCrudController<Bot, BotServic
   public async Create(
     @Body({ validate: { skipMissingProperties: true } }) body : CreateBotRequest,
     @Req() req : IAuthenticatedRequest,
-  ) : Promise<Bot> {
+  ) : Promise<BaseResponse<Bot>> {
     const bot = Mapper.map(body, CreateBotRequest, Bot, { extraArgs: () => ({ userId: req.user.id }) })
 
     let insertedBot : Bot
@@ -79,7 +79,7 @@ export default class BotController implements IBaseCrudController<Bot, BotServic
 
     try {
       await transaction()
-      return insertedBot
+      return new BaseResponse(ResponseMessages.CreatedSuccessfully, insertedBot)
     } catch (e) {
       throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, e)
     }

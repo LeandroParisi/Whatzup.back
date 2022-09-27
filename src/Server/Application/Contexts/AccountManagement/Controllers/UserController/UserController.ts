@@ -10,6 +10,7 @@ import {
 } from 'routing-controllers'
 import Container, { Service } from 'typedi'
 import User, { PartialUser } from '../../../../../Domain/Entities/User'
+import { UserCrudServices } from '../../../../../Domain/Services/UserCrudServices'
 import { Mapper } from '../../../../../Setup/Mapper/Mapper'
 import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResponse'
 import { ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
@@ -22,22 +23,21 @@ import TokenAuthentication from '../../../Authentication/Middlewares/TokenAuthen
 import ValidateNewUserPlan from '../../Middlewares/Plans/ValidateNewUserPlan'
 import CreateUserRequest from './Requests/CreateUserRequest'
 import UpdateUserRequest, { UpdateUserPlanIdPath } from './Requests/UpdateUserRequest'
-import { UserServices } from './UserServices'
 
 @Service()
 @JsonController(`/${BaseRoutes.AccountManagementUser}`)
-export default class UserController implements IBaseCrudController<User, UserServices> {
+export default class UserController implements IBaseCrudController<User, UserCrudServices> {
   /**
    *
    */
   constructor(
-    public Service : UserServices,
+    public Service : UserCrudServices,
   ) {
   }
 
   @HttpCode(StatusCode.CREATED)
   @Post()
-  public async Create(@Body({ validate: true }) body : CreateUserRequest) : Promise<User> {
+  public async Create(@Body({ validate: true }) body : CreateUserRequest) : Promise<BaseResponse<User>> {
     const {
       phoneNumber,
     } = body
@@ -49,7 +49,7 @@ export default class UserController implements IBaseCrudController<User, UserSer
       phoneNumber,
     })
 
-    return insertedUser
+    return new BaseResponse(ResponseMessages.CreatedSuccessfully, insertedUser)
   }
 
   @HttpCode(StatusCode.OK)
@@ -75,7 +75,7 @@ export default class UserController implements IBaseCrudController<User, UserSer
     return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
   }
 
-  Get(_query: any, _req: IAuthenticatedRequest): Promise<User[]> {
+  Get(_query: any, _req: IAuthenticatedRequest): Promise<BaseResponse<User[]>> {
     throw new Error('Method not implemented.')
   }
 }

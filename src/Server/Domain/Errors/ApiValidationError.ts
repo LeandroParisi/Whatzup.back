@@ -1,5 +1,5 @@
-import { ErrorMessages } from '../APIs/Enums/Messages'
-import { StatusCode } from '../APIs/Enums/Status'
+import { ErrorMessages } from '../../Application/Shared/APIs/Enums/Messages'
+import { StatusCode } from '../../Application/Shared/APIs/Enums/Status'
 import ApiError from './ApiError'
 
 export interface IValidationError {

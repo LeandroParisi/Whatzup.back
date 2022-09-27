@@ -252,6 +252,13 @@
         "typeName": "DATE"
       },
       {
+        "name": "due_date",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
         "name": "id",
         "isNullable": false,
         "hasDefault": true,
@@ -267,7 +274,7 @@
       },
       {
         "name": "plan_id",
-        "isNullable": true,
+        "isNullable": false,
         "hasDefault": false,
         "typeId": 23,
         "typeName": "INTEGER"
@@ -294,6 +301,13 @@
         "typeName": "DATE"
       },
       {
+        "name": "type",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 258495,
+        "typeName": "PAYMENT_TYPE"
+      },
+      {
         "name": "updated_at",
         "isNullable": false,
         "hasDefault": true,
@@ -302,7 +316,7 @@
       },
       {
         "name": "user_id",
-        "isNullable": true,
+        "isNullable": false,
         "hasDefault": false,
         "typeId": 23,
         "typeName": "INTEGER"
@@ -611,6 +625,13 @@
         "typeName": "BOOL"
       },
       {
+        "name": "is_verified",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
+      },
+      {
         "name": "last_name",
         "isNullable": false,
         "hasDefault": false,
@@ -672,13 +693,6 @@
         "hasDefault": true,
         "typeId": 1082,
         "typeName": "DATE"
-      },
-      {
-        "name": "was_activated",
-        "isNullable": true,
-        "hasDefault": true,
-        "typeId": 16,
-        "typeName": "BOOL"
       }
     ]
   }

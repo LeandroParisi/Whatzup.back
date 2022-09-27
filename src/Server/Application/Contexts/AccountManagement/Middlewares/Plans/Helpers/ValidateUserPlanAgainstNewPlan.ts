@@ -2,9 +2,9 @@ import { Service } from 'typedi'
 import { EnumDictionary } from '../../../../../../../Commons/Interfaces/SystemInterfaces/EnumTypes'
 import { FeatureDTO } from '../../../../../../Domain/DTOs/FeatureDTO'
 import { FeatureNames } from '../../../../../../Domain/Enums/FeatureNames'
+import ApiError from '../../../../../../Domain/Errors/ApiError'
+import SwitchStatementeError from '../../../../../../Domain/Errors/GenericErrors/SwitchStatementError'
 import { StatusCode } from '../../../../../Shared/APIs/Enums/Status'
-import ApiError from '../../../../../Shared/Errors/ApiError'
-import SwitchStatementeError from '../../../../../Shared/Errors/GenericErrors/SwitchStatementError'
 
 @Service()
 export class ValidateUserPlanAgainstNewPlan {

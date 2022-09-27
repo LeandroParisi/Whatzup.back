@@ -8,7 +8,7 @@ export default class PlanMock {
   static GetRandom(optionals? : MockOptionals) : Plan {
     const plan : Plan = {
       id: optionals?.id || null,
-      name: optionals?.name || faker.name.findName(),
+      name: optionals?.name || faker.name.fullName(),
       isCustomPlan: optionals?.isCustomPlan || false,
       price: optionals?.price || Number(faker.finance.amount()),
       createdAt: DateUtils.DateNow(),

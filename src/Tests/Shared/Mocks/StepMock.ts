@@ -12,7 +12,7 @@ export default class StepMock {
     const step : StepInfo = {
       id: optionals?.id || faker.datatype.number(),
       introMessage: optionals?.introMessage || [faker.datatype.string(10000)],
-      name: optionals?.name || faker.name.findName(),
+      name: optionals?.name || faker.name.fullName(),
       type: optionals?.type || StepTypes.Simple,
     }
 
@@ -33,17 +33,17 @@ export default class StepMock {
     const step : OptionsStepInfo = {
       id: optionals?.id || faker.datatype.number(),
       introMessage: optionals?.introMessage || [faker.datatype.string(10000)],
-      name: optionals?.name || faker.name.findName(),
+      name: optionals?.name || faker.name.fullName(),
       type: optionals?.type || StepTypes.Options,
       options: optionals?.options || [
         {
-          name: faker.name.findName(),
+          name: faker.name.fullName(),
           nextStepId: faker.datatype.number({ min: 1, max: 10 }),
           outboundMessages: [faker.datatype.string(10000)],
           selectionKey: 1,
         },
         {
-          name: faker.name.findName(),
+          name: faker.name.fullName(),
           nextStepId: faker.datatype.number({ min: 1, max: 10 }),
           outboundMessages: [faker.datatype.string(10000)],
           selectionKey: 2,

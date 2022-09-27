@@ -7,7 +7,7 @@ export default class CityMock {
   static GetRandom(stateId : number, optionals? : MockOptionals) : City {
     const city : City = {
       id: optionals?.id || null,
-      name: optionals?.name || faker.name.findName(),
+      name: optionals?.name || faker.name.fullName(),
       stateId,
     }
 
@@ -16,7 +16,7 @@ export default class CityMock {
 
   // static GetDTO(optionals? : MockOptionals) : CityDTO {
   //   let city : CityDTO = {
-  //     name: faker.name.findName(),
+  //     name: faker.name.fullName(),
   //     id: faker.datatype.number(1000),
   //   }
 

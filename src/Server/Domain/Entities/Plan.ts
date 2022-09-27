@@ -5,7 +5,7 @@ export default class Plan extends BaseEntity {
 
   price : number
 
-  name? : string
+  name : string
 
   isActive : boolean
 

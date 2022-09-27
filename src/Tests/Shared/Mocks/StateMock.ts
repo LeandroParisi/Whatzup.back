@@ -7,7 +7,7 @@ export default class StateMock {
   static GetRandom(countryId : number, optionals? : MockOptionals) : State {
     const state : State = {
       id: optionals?.id || null,
-      name: optionals?.name || faker.name.findName(),
+      name: optionals?.name || faker.name.fullName(),
       countryId,
       stateCode: optionals?.stateCode || faker.datatype.string(2),
     }
@@ -17,7 +17,7 @@ export default class StateMock {
 
   // static GetDTO(optionals? : MockOptionals) : StateDTO {
   //   let state : StateDTO = {
-  //     name: faker.name.findName(),
+  //     name: faker.name.fullName(),
   //     countryId: optionals?.countryId || faker.datatype.number(),
   //     iso2: optionals?.iso2 || faker.datatype.string(2),
   //     stateCode: faker.datatype.string(2),

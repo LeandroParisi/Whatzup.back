@@ -20,12 +20,12 @@ export default class UserMock {
     user.stateId = stateId || optionals?.stateId
     user.cityId = cityId || optionals?.cityId
     user.middleName = optionals?.middleName || faker.name.middleName()
-    user.neighbourhood = optionals?.neighbourhood || faker.name.findName()
-    user.addressStreet = optionals?.addressStreet || faker.name.findName()
+    user.neighbourhood = optionals?.neighbourhood || faker.name.fullName()
+    user.addressStreet = optionals?.addressStreet || faker.name.fullName()
     user.addressNumber = optionals?.addressNumber || faker.random.numeric(5)
     user.addressComplement = optionals?.addressComplement || faker.random.numeric(3)
     user.postalCode = optionals?.postalCode || faker.address.zipCode()
-    user.wasActivated = optionals?.wasActivated || faker.datatype.boolean()
+    user.isVerified = optionals?.isVerified || faker.datatype.boolean()
     user.isActive = optionals?.isActive || faker.datatype.boolean()
     user.planId = optionals?.planId || null
 

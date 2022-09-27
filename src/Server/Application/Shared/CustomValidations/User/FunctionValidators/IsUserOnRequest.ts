@@ -1,7 +1,7 @@
+import ApiError from '../../../../../Domain/Errors/ApiError'
 import { ErrorMessages } from '../../../APIs/Enums/Messages'
 import { StatusCode } from '../../../APIs/Enums/Status'
 import IAuthenticatedRequest from '../../../APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
-import ApiError from '../../../Errors/ApiError'
 
 export default function IsUserOnRequest(request: IAuthenticatedRequest) {
   if (!request?.user?.id) {

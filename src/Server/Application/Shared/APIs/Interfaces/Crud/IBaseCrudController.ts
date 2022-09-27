@@ -6,8 +6,8 @@ import BaseResponse from '../../BaseClasses/Responses/BaseResponse'
 
 export interface IBaseCrudController<Entity extends BaseUpdatableEntity, Service> {
   Service : Service
-  Get(query : any, req : Request) : Promise<Entity[]>
-  Create(body : any, req : Request) : Promise<Entity>
+  Get(query : any, req : Request) : Promise<BaseResponse<Entity[]>>
+  Create(body : any, req : Request) : Promise<BaseResponse<Entity>>
   Update(body : any, req : Request, id? : number) : Promise<BaseResponse>
 }
 

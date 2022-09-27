@@ -12,6 +12,14 @@ export default class DaysUtils {
     return timestampDate
   }
 
+  static ExtractYearMonthDayFromDate(date : Date) {
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const day = date.getDay()
+
+    return { year, month, day }
+  }
+
   static GetDateFromDbString(dbDate : string) : Date {
     return DaysUtils.GetDateFromTimestamp(new Date(dbDate).getTime() / 1000)
   }
