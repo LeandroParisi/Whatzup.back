@@ -3,7 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Client } from 'pg'
 import * as PostgressConnectionStringParser from 'pg-connection-string'
-import pgtools from 'pgtools'
+import DbReset from '../../../Server/Infrastructure/GeneralScripts/Classes/DbReset'
+import { dropDatabaseScript } from '../../../Server/Infrastructure/Migrations/1655918532171_create-database'
 import IntegratedTestsConfig from './IntegratedTestsConfig'
 
 const {
@@ -15,27 +16,23 @@ const client = new Client({
 })
 
 class GlobalTearDown {
-  static async Setup() {
-    await this.DropDatabase()
-  }
+  private static dbReset = new DbReset(IntegratedTestsConfig.TEST_DATABASE_NAME, IntegratedTestsConfig.LOCAL_POSTGRESS_URL)
 
-  static async DropDatabase() {
-    await pgtools.dropdb(
-      {
-        user,
-        password,
-        port,
-        host,
-      },
-      IntegratedTestsConfig.TEST_DATABASE_NAME,
-      (err, res) => {
-        if (err) {
-          console.error(err)
-          process.exit(-1)
-        }
-        console.log(res)
-      },
-    )
+  static async Setup() {
+    try {
+      console.log('Trying to unseed DB\n')
+      await client.connect()
+      await client.query(dropDatabaseScript)
+      console.log('Successfully unseed DB\n')
+    } catch (e) {
+      console.log('Error trying to unseed Db.\n')
+      console.log(e)
+    } finally {
+      await client.end()
+      console.log('Trying to drop DB\n')
+      await this.dbReset.DropDatabase()
+      console.log('Successfully drop DB\n')
+    }
   }
 }
 

@@ -8,11 +8,11 @@ import {
   ExpressErrorMiddlewareInterface, HttpError, Middleware,
 } from 'routing-controllers'
 import { Service } from 'typedi'
-import { Logger } from '../../../../Commons/Logger'
+import { Logger } from '../../../../../Commons/Logger'
+import ApiError from '../../../../Domain/Errors/ApiError'
+import { ApiValidationError, IValidationError } from '../../../../Domain/Errors/ApiValidationError'
 import { ErrorMessages } from '../../APIs/Enums/Messages'
 import { StatusCode } from '../../APIs/Enums/Status'
-import ApiError from '../../Errors/ApiError'
-import { ApiValidationError, IValidationError } from '../../Errors/ApiValidationError'
 
 @Service()
 @Middleware({ type: 'after' })

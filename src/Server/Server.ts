@@ -2,18 +2,21 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import bodyParser from 'body-parser'
+/* istanbul ignore file */
+
 import express from 'express'
 import morgan from 'morgan'
 import { createExpressServer, useContainer } from 'routing-controllers'
 import Container from 'typedi'
 import BotController from './Application/Contexts/AccountManagement/Controllers/BotController/BotController'
 import UserController from './Application/Contexts/AccountManagement/Controllers/UserController/UserController'
-import { PostDefaultInterceptor } from './Application/Shared/APIs/Interceptors/PostDefaultInterceptor'
+import { AuthenticationController } from './Application/Contexts/Authentication/Controllers/AuthenticationController'
+import BodyParser from './Application/Shared/Middlewares/BodyParser/BodyParser'
 import ErrorHandler from './Application/Shared/Middlewares/ErrorHandler/ErrorHandler'
+
+import { Logger } from '../Commons/Logger'
+import constants from '../Configuration/constants'
 import HealthCheck from './Application/Shared/Middlewares/HealthCheck/HealthCheck'
-import { Logger } from './Commons/Logger'
-import constants from './Configuration/constants'
 import GenerateApiDocumentation from './Setup/GenerateApiDocumentation'
 
 export class Server {
@@ -22,9 +25,8 @@ export class Server {
   private readonly Port: number = constants.PORT;
 
   static readonly RoutingControllersOptions = {
-    controllers: [HealthCheck, UserController, BotController],
-    middlewares: [ErrorHandler],
-    interceptors: [PostDefaultInterceptor],
+    controllers: [HealthCheck, UserController, BotController, AuthenticationController],
+    middlewares: [BodyParser, ErrorHandler],
     routePrefix: '/api',
     classTransformer: true,
     defaultErrorHandler: false,
@@ -34,6 +36,7 @@ export class Server {
   public Start() {
     this.App = createExpressServer(Server.RoutingControllersOptions)
 
+    this.InstallServices()
     this.SetupDI()
 
     this.ConfigureGlobalMiddlewares()
@@ -49,13 +52,14 @@ export class Server {
     return listen
   }
 
+  private InstallServices() {
+  }
+
   private SetupDI() {
     useContainer(Container)
   }
 
   private ConfigureGlobalMiddlewares() {
-    this.App.use(bodyParser.urlencoded({ extended: true }))
-    this.App.use(bodyParser.json())
     this.App.use(morgan(constants.ENV, { skip: () => !Logger.logFile }))
   }
 }

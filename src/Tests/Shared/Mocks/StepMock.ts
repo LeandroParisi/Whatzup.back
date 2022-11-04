@@ -9,50 +9,46 @@ type MockOptionalsSimple = Partial<StepInfo>
 
 export default class StepMock {
   public static GetRandomSimpleStep(optionals? : MockOptionalsSimple) : StepInfo {
-    let step : StepInfo = {
-      id: faker.datatype.number({ min: 1, max: 1000000 }),
-      introMessage: [faker.datatype.string(10000)],
-      name: faker.name.findName(),
-      type: StepTypes.Simple,
-    }
-
-    if (optionals) {
-      step = {
-        ...step,
-        ...optionals,
-      }
+    const step : StepInfo = {
+      id: optionals?.id || faker.datatype.number(),
+      introMessage: optionals?.introMessage || [faker.datatype.string(10000)],
+      name: optionals?.name || faker.name.fullName(),
+      type: optionals?.type || StepTypes.Simple,
     }
 
     return step
   }
 
+  public static GenerateXSteps(quantity : number) : StepInfo[] {
+    const steps : StepInfo[] = []
+
+    for (let i = 1; i <= quantity; i += 1) {
+      steps.push(this.GetRandomSimpleStep())
+    }
+
+    return steps
+  }
+
   public static GetRandomOptionsStep(optionals? : MockOptionalsOptions) : OptionsStepInfo {
-    let step : OptionsStepInfo = {
-      id: faker.datatype.number(100000),
-      introMessage: [faker.datatype.string(10000)],
-      name: faker.name.findName(),
-      type: StepTypes.Options,
-      options: [
+    const step : OptionsStepInfo = {
+      id: optionals?.id || faker.datatype.number(),
+      introMessage: optionals?.introMessage || [faker.datatype.string(10000)],
+      name: optionals?.name || faker.name.fullName(),
+      type: optionals?.type || StepTypes.Options,
+      options: optionals?.options || [
         {
-          name: faker.name.findName(),
-          nextStep: faker.datatype.number({ min: 1, max: 10 }),
+          name: faker.name.fullName(),
+          nextStepId: faker.datatype.number({ min: 1, max: 10 }),
           outboundMessages: [faker.datatype.string(10000)],
           selectionKey: 1,
         },
         {
-          name: faker.name.findName(),
-          nextStep: faker.datatype.number({ min: 1, max: 10 }),
+          name: faker.name.fullName(),
+          nextStepId: faker.datatype.number({ min: 1, max: 10 }),
           outboundMessages: [faker.datatype.string(10000)],
           selectionKey: 2,
         },
       ],
-    }
-
-    if (optionals) {
-      step = {
-        ...step,
-        ...optionals,
-      }
     }
 
     return step

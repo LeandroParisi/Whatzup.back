@@ -1,104 +1,173 @@
+/* eslint-disable no-shadow */
 import { faker } from '@faker-js/faker'
 import CreateUserRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/UserController/Requests/CreateUserRequest'
-import CityMock from '../../../../../../../Shared/Mocks/CityMock'
-import CountryMock from '../../../../../../../Shared/Mocks/CountryMock'
-import StateMock from '../../../../../../../Shared/Mocks/StateMock'
+import UpdateUserRequest from '../../../../../../../../Server/Application/Contexts/AccountManagement/Controllers/UserController/Requests/UpdateUserRequest'
+import { Locations } from '../../../../../../../../Server/Domain/Aggregations/Locations'
+import PhoneNumberMock from '../../../../../../../Shared/Mocks/PhoneNumberMock'
 import UserMock from '../../../../../../../Shared/Mocks/UserMock'
 
+export enum CreateUpdatePossibleValidScenarios {
+  WithNewCountry,
+  WithNewState,
+  WithNewCity,
+  WithNewPhoneNumber,
+  WithNewPlan
+}
+
 export default class UserControllerStubs {
-  public static GetInvalidPayloads() : Array<CreateUserRequest> {
+  public static GetInvalidCreatePayloads() : Array<CreateUserRequest> {
     const stateId = faker.datatype.number(10000)
     const countryId = faker.datatype.number(10000)
     const cityId = faker.datatype.number(10000)
 
-    const state = StateMock.GetDTO({ id: stateId })
-    const country = CountryMock.GetDTO({ id: countryId })
-    const city = CityMock.GetDTO({ id: cityId })
+    const phoneNumberId = faker.datatype.number(10000)
 
-    const user = UserMock.GetRandomUser(countryId, stateId, cityId)
-    const userObj = { ...user }
-    delete userObj.stateId
-    delete userObj.countryId
-    delete userObj.cityId
+    const phoneNumber = PhoneNumberMock.GetDTO()
+
+    const user = UserMock.GetRandomUser(countryId, stateId, cityId, phoneNumberId)
+
+    delete user.phoneNumberId
+    delete user.id
 
     return [
       {
-        state,
-        country,
-        city,
-        ...userObj,
-        whatsappNumber: null,
+        ...user,
+        phoneNumber: {
+          whatsappNumber: null,
+        },
       },
       {
-        state,
-        country,
-        city,
-        ...userObj,
-        whatsappId: null,
+        ...user,
+        phoneNumber,
+        planId: 0,
       },
       {
-        state,
-        country,
-        city,
-        ...userObj,
+        ...user,
+        phoneNumber,
         email: null,
       },
       {
-        state,
-        country,
-        city,
-        ...userObj,
+        ...user,
+        phoneNumber,
+        password: null,
+      },
+      {
+        ...user,
+        phoneNumber,
         documentNumber: null,
       },
       {
-        state,
-        country,
-        city,
-        ...userObj,
+        ...user,
+        phoneNumber,
         firstName: null,
       },
       {
-        state,
-        country,
-        city,
-        ...userObj,
+        ...user,
+        phoneNumber,
         lastName: null,
       },
       {
-        state,
-        country,
-        city,
-        ...userObj,
-        neighbourhood: null,
+        ...user,
+        phoneNumber,
+        stateId: null,
       },
       {
-        state,
-        country,
-        city,
-        ...userObj,
-        addressStreet: null,
+        ...user,
+        phoneNumber,
+        cityId: null,
       },
       {
-        state,
-        country,
-        city,
-        ...userObj,
-        addressNumber: null,
-      },
-      {
-        state,
-        country,
-        city,
-        ...userObj,
-        addressComplement: null,
-      },
-      {
-        state,
-        country,
-        city,
-        ...userObj,
-        postalCode: null,
+        ...user,
+        phoneNumber,
+        countryId: null,
       },
     ]
+  }
+
+  static GetCorrectRequestPayload(
+    { country: { id: countryId }, state: { id: stateId }, city: { id: cityId } } : Locations,
+  ) : CreateUserRequest {
+    const phoneNumberId = faker.datatype.number()
+
+    const user = UserMock.GetRandomUser(countryId, stateId, cityId, phoneNumberId)
+
+    const userPayload = { ...user }
+
+    delete userPayload.id
+    delete userPayload.phoneNumberId
+    delete userPayload.isActive
+    delete userPayload.isVerified
+
+    const payload : CreateUserRequest = {
+      phoneNumber: {
+        ...PhoneNumberMock.GetDTO(),
+      },
+      ...userPayload,
+    }
+
+    return payload
+  }
+
+  public static GetValidUpdatePayload(
+    theory : CreateUpdatePossibleValidScenarios,
+    newPlanId : number,
+    { country, state, city } : Locations,
+  ) : UpdateUserRequest {
+    const {
+      addressStreet,
+      documentNumber,
+      email,
+      firstName,
+      lastName,
+      middleName,
+      neighbourhood,
+      addressComplement,
+      addressNumber,
+      postalCode,
+    } = UserMock.GetRandomPartialUser(1, 1, 1, 1)
+
+    const payloadToSend : UpdateUserRequest = {
+      addressComplement,
+      addressNumber,
+      addressStreet,
+      documentNumber,
+      email,
+      firstName,
+      lastName,
+      middleName,
+      neighbourhood,
+      planId: theory === CreateUpdatePossibleValidScenarios.WithNewPlan ? newPlanId : null,
+      postalCode,
+      countryId: country.id,
+      stateId: state.id,
+      cityId: city.id,
+      phoneNumber: theory === CreateUpdatePossibleValidScenarios.WithNewPhoneNumber ? PhoneNumberMock.GetDTO() : null,
+    }
+
+    return payloadToSend
+  }
+
+  static GetInvalidUpdatePayloads(
+    { country: { id: countryId }, state: { id: stateId }, city: { id: cityId } } : Locations,
+  ) : CreateUserRequest {
+    const phoneNumberId = faker.datatype.number()
+
+    const user = UserMock.GetRandomUser(countryId, stateId, cityId, phoneNumberId)
+
+    const userPayload = { ...user }
+
+    delete userPayload.id
+    delete userPayload.phoneNumberId
+    delete userPayload.isActive
+    delete userPayload.isVerified
+
+    const payload : CreateUserRequest = {
+      phoneNumber: {
+        ...PhoneNumberMock.GetDTO(),
+      },
+      ...userPayload,
+    }
+
+    return payload
   }
 }

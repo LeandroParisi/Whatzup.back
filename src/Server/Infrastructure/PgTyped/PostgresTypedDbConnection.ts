@@ -2,15 +2,15 @@
 
 import createConnectionPool, { ConnectionPool, sql } from '@databases/pg'
 import tables from '@databases/pg-typed'
-import StaticImplements from '../../Commons/Anotations/StaticImplements'
-import { Logger } from '../../Commons/Logger'
+import StaticImplements from '../../../Commons/Anotations/StaticImplements'
+import { Logger } from '../../../Commons/Logger'
 import IDbConnection from '../DbConnections/Interfaces/IDbConnection'
 import DatabaseSchema from './Schemas/__generated__'
 import databaseSchema from './Schemas/__generated__/schema.json'
 
 import { types } from 'pg'
+import CONSTANTS, { Envs } from '../../../Configuration/constants'
 import IntegratedTestsConfig from '../../../Tests/IntegratedTests/Setup/IntegratedTestsConfig'
-import CONSTANTS, { Envs } from '../../Configuration/constants'
 
 types.setTypeParser(types.builtins.INT8, (value: string) => parseInt(value, 10))
 
@@ -27,7 +27,7 @@ export class PgTypedDbConnection {
       Logger.info(
         `${new Date().toISOString()} START QUERY\n${text} - ${JSON.stringify(
           values,
-        )}`,
+        )}\n`,
       )
     },
     onQueryResults: (_query, { text }, results) => {

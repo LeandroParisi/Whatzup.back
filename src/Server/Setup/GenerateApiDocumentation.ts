@@ -6,7 +6,7 @@ import { OpenAPIObject } from 'openapi3-ts'
 import { getMetadataArgsStorage, RoutingControllersOptions } from 'routing-controllers'
 import { routingControllersToSpec } from 'routing-controllers-openapi'
 import * as swaggerUiExpress from 'swagger-ui-express'
-import CONSTANTS from '../Configuration/constants'
+import CONSTANTS from '../../Configuration/constants'
 
 const { defaultMetadataStorage } = require('class-transformer/cjs/storage')
 
@@ -30,9 +30,22 @@ export default class GenerateApiDocumentation {
       },
     })
 
+    const swaggerOpts : swaggerUiExpress.SwaggerUiOptions = {
+      swaggerOptions: {
+        basicAuth: {
+          name: 'Authorization',
+          schema: {
+            type: 'basic',
+            in: 'header',
+          },
+          value: '<JWT>',
+        },
+      },
+    }
+
     const newSpec = this.ParseSpec(spec)
 
-    app.use('/swagger', swaggerUiExpress.serve, swaggerUiExpress.setup(newSpec))
+    app.use('/swagger', swaggerUiExpress.serve, swaggerUiExpress.setup(newSpec, swaggerOpts))
 
     app.get('/swagger/docs', (_req, res) => {
       res.json(newSpec)

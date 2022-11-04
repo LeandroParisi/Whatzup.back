@@ -1,22 +1,23 @@
 /* eslint-disable max-classes-per-file */
 import { Type } from 'class-transformer'
 import {
-  IsArray, IsDefined, IsEnum, IsNotEmpty, IsNumber, IsString, Min, ValidateNested,
+  IsArray, IsDefined, IsEnum, IsNotEmpty, IsNumber, IsString, Min, ValidateIf, ValidateNested,
 } from 'class-validator'
+import { PhoneNumberDTO } from '../../../../../../../Domain/DTOs/PhoneNumberDTO'
 import Bot from '../../../../../../../Domain/Entities/Bot'
 import StepTypes from '../../../../../../../Domain/Entities/Steps/Enums/StepTypes'
 import { IStepOption } from '../../../../../../../Domain/Entities/Steps/OptionsStep/OptionsStepInfo'
 import { Step } from '../../../../../../../Domain/Entities/Steps/Step'
-import { IsExistentUser } from '../../../../../../Shared/CustomValidations/IsExistentUser'
-import { IsValidStep } from '../../../../../../Shared/CustomValidations/StepsValidation'
-import { BotDTO } from '../../../../UseCases/CreateBot/DTOs/BotDTO'
+import { IsValidOptionsType, IsValidStepType } from '../../../../../../Shared/CustomValidations/Bot/ClassValidators/StepsValidation'
 
-export class StepOptionRequest implements Partial<IStepOption> {
+export const CreateBotStepPath = 'body.steps' as string
+
+export class StepOptionRequest implements IStepOption {
   @IsNumber()
   @IsDefined()
   @IsNotEmpty()
   @Min(1)
-  nextStep: number;
+  nextStepId: number;
 
   @IsNumber()
   @IsNotEmpty()
@@ -33,8 +34,10 @@ export class StepOptionRequest implements Partial<IStepOption> {
   outboundMessages: string[];
 }
 
-export class StepRequest implements Partial<Step> {
-  // TODO: Ignorar esta propriedade, está aqui para permitir a herança
+export class StepRequest implements Step {
+  @IsNumber()
+  @IsDefined()
+  @Min(1)
   id : number
 
   @IsString()
@@ -53,30 +56,27 @@ export class StepRequest implements Partial<Step> {
   introMessage: string[];
 
   @Type(() => StepOptionRequest)
-  @IsValidStep({ message: `Options are only valid for steps of type ${StepTypes.Options}` })
+  @IsValidStepType()
+  @IsValidOptionsType()
   @IsArray()
   @ValidateNested({ each: true })
-  options?: IStepOption[];
+  options?: StepOptionRequest[];
 }
 
 export default class CreateBotRequest implements Partial<Bot> {
-  @IsNumber()
-  @IsNotEmpty()
-  @IsDefined()
-  @IsExistentUser()
-   userId : number
-
   @IsString()
   @IsNotEmpty()
   @IsDefined()
-   botName : string
+  botName : string
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => StepRequest)
-   steps : StepRequest[]
+  steps : StepRequest[]
 
-  public MapToDTO() : BotDTO {
-    return new BotDTO(this.botName, this.steps)
-  }
+  @ValidateIf((o : CreateBotRequest) => !!o?.phoneNumbers?.length)
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PhoneNumberDTO)
+  phoneNumbers : PhoneNumberDTO[]
 }

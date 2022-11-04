@@ -1,4 +1,4 @@
-import { hash, compare } from 'bcrypt'
+import { compare, hash } from 'bcrypt'
 
 export default class PasswordHashing {
   static async HashPassword(password : string) {

@@ -1,56 +1,151 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-return-await */
-import { sql } from '@databases/pg'
 import {
-  Body, HttpCode, JsonController, Post,
+  Body, Get, HttpCode, JsonController, Param, Patch, Post, Put, QueryParams, Req, UseBefore,
 } from 'routing-controllers'
-import { Service } from 'typedi'
-import Bot from '../../../../../Domain/Entities/Bot'
+import Container, { Service } from 'typedi'
+import Bot, { PartialBot } from '../../../../../Domain/Entities/Bot'
+import ApiError from '../../../../../Domain/Errors/ApiError'
+import { BotCrudServices } from '../../../../../Domain/Services/BotCrudServices'
 import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
 import { BotRepository } from '../../../../../Infrastructure/PgTyped/Repositories/BotRepository'
-import BaseCrudController from '../../../../Shared/APIs/BaseClasses/BaseCrudController'
+import { PhoneNumberRepository } from '../../../../../Infrastructure/PgTyped/Repositories/PhoneNumberRepository'
+import { Mapper } from '../../../../../Setup/Mapper/Mapper'
+import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResponse'
+import { ErrorMessages, ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
+import { BaseRoutes } from '../../../../Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
-import ApiError from '../../../../Shared/Errors/ApiError'
-import CreateBotRequest from './Requests/CreateBot/CreateBotRequest'
+import { IBaseCrudController, IBaseSoftDeleteController } from '../../../../Shared/APIs/Interfaces/Crud/IBaseCrudController'
+import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
+import ValidateBotOwnershipMiddleware from '../../../../Shared/CustomValidations/Bot/Middlewares/ValidateBotOwnershipMiddleware'
+import TokenAuthentication from '../../../Authentication/Middlewares/TokenAuthentication'
+import ValidateUserPlanByBot from '../../Middlewares/Plans/ValidateUserPlanByBot'
+import CreateBotRequest, { CreateBotStepPath } from './Requests/CreateBot/CreateBotRequest'
+import GetAllBotsRequestQuery from './Requests/GetAllRequest/GetAllBotsRequestQuery'
+import UpdateBotRequest from './Requests/UpdateBot/UpdateBotRequestBody'
 
 @Service()
-@JsonController('/account-management/bot')
-export default class BotController extends BaseCrudController<Bot> {
+@JsonController(`/${BaseRoutes.AccountManagementBot}`)
+export default class BotController implements IBaseCrudController<Bot, BotCrudServices>, IBaseSoftDeleteController<Bot> {
   /**
    *
    */
   constructor(
-      private repository : BotRepository,
+      public Service : BotCrudServices,
+      public Repository : BotRepository,
+      public PhoneNumbersRepository : PhoneNumberRepository,
   ) {
-    super(repository)
   }
 
-  @HttpCode(201)
+  @HttpCode(StatusCode.OK)
+  @Get('')
+  @UseBefore(TokenAuthentication)
+  public async Get(
+    @QueryParams({ validate: { skipMissingProperties: true } }) query: GetAllBotsRequestQuery,
+    @Req() req: IAuthenticatedRequest,
+  ): Promise<BaseResponse<Bot[]>> {
+    const fullQuery = Mapper.map(query, GetAllBotsRequestQuery, Bot, { extraArgs: () => ({ userId: req.user.id }) })
+
+    const bots = await this.Service.FindAll(fullQuery)
+
+    return new BaseResponse('Success', bots)
+  }
+
+  // TODO: Refactor to use service
+  @HttpCode(StatusCode.CREATED)
   @Post('')
-  public async Create(@Body({ validate: { skipMissingProperties: true } }) body : CreateBotRequest) : Promise<Bot> {
-    const created = await this.TryCreateBot(body)
+  @UseBefore(
+    TokenAuthentication,
+    Container.get(ValidateUserPlanByBot).BuildValidator({ newBot: true, requestStepsPath: CreateBotStepPath }),
+  )
+  public async Create(
+    @Body({ validate: { skipMissingProperties: true } }) body : CreateBotRequest,
+    @Req() req : IAuthenticatedRequest,
+  ) : Promise<BaseResponse<Bot>> {
+    const bot = Mapper.map(body, CreateBotRequest, Bot, { extraArgs: () => ({ userId: req.user.id }) })
 
-    return created
-  }
-
-  private async TryCreateBot(body: CreateBotRequest) : Promise<Bot> {
+    let insertedBot : Bot
     const self = this
 
-    async function transaction() : Promise<Promise<Bot>> {
-      return await PgTypedDbConnection.db.tx(async (db) => {
-        const insertedBot = await self.repository.Create(body.MapToDTO(), db)
+    async function transaction() {
+      await PgTypedDbConnection.db.tx(async (db) => {
+        insertedBot = await self.Repository.Create(bot, db)
 
-        await db.query(sql`
-          INSERT INTO users_bots VALUES (${body.userId}, ${insertedBot.id})
-        `)
-
-        return insertedBot
+        if (body?.phoneNumbers?.length) {
+          await self.PhoneNumbersRepository.TryCreateBotPhoneNumbers(body.phoneNumbers, insertedBot.id, db)
+        }
       })
     }
 
     try {
-      return await transaction()
+      await transaction()
+      return new BaseResponse(ResponseMessages.CreatedSuccessfully, insertedBot)
     } catch (e) {
-      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, 'Unable to create bot.', e)
+      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, e)
     }
+  }
+
+  @HttpCode(StatusCode.OK)
+  @Put('/:id')
+  @UseBefore(
+    TokenAuthentication,
+    Container.get(ValidateUserPlanByBot)
+      .BuildValidator({ newBot: false, requestStepsPath: CreateBotStepPath, canIgnoreSteps: true }),
+    ValidateBotOwnershipMiddleware,
+  )
+  public async Update(
+    @Body({ validate: { skipMissingProperties: true } }) body : UpdateBotRequest,
+    @Req() req : IAuthenticatedRequest,
+    @Param('id') botId : number,
+  ) : Promise<BaseResponse> {
+    const { user: { id: userId } } = req
+    const botInfoToUpdate = Mapper.map(body, UpdateBotRequest, PartialBot)
+
+    await this.Service.Update({ id: botId, userId }, botInfoToUpdate, body?.phoneNumbers)
+
+    return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
+  }
+
+  @HttpCode(StatusCode.OK)
+  @Patch('/deactivate/:id')
+  @UseBefore(
+    TokenAuthentication,
+    ValidateBotOwnershipMiddleware,
+  )
+  public async Deactivate(
+    @Req() req : IAuthenticatedRequest,
+    @Param('id') botId : number,
+  ) : Promise<BaseResponse> {
+    const { user: { id: userId } } = req
+
+    const isUpdated = await this.Service.Deactivate(botId, { userId })
+
+    if (isUpdated) {
+      return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
+    }
+
+    return new BaseResponse(`Bot ${botId} already deactivated`)
+  }
+
+  @HttpCode(StatusCode.OK)
+  @Patch('/activate/:id')
+  @UseBefore(
+    TokenAuthentication,
+    ValidateBotOwnershipMiddleware,
+    Container.get(ValidateUserPlanByBot).BuildValidator({ newBot: true, canIgnoreSteps: true }),
+  )
+  public async Activate(
+    @Req() req : IAuthenticatedRequest,
+    @Param('id') botId : number,
+  ) : Promise<BaseResponse> {
+    const { user: { id: userId } } = req
+
+    const isUpdated = await this.Service.Activate(botId, { userId })
+
+    if (isUpdated) {
+      return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
+    }
+
+    return new BaseResponse(`Bot ${botId} already activated`)
   }
 }

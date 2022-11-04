@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { TableHelper, WhereCondition } from '@databases/pg-typed'
 import { Service } from 'typedi'
-import { Connections, IBaseRepository } from '../../../Application/Shared/Repositories/IRepository'
-import { CaseSerializer } from '../../../Commons/Globals/Serializers/CaseSerializer'
-import { Logger } from '../../../Commons/Logger'
+import DateUtils from '../../../../Commons/Utils/DateUtils'
+import { Connections, IBaseRepository } from '../../../Application/Shared/Database/Repositories/IRepository'
+import { CaseSerializer } from '../../../Application/Shared/Serializers/CaseSerializer'
+import EntityCleaning from '../../../Application/Shared/Serializers/EntityCleaning'
+import { BaseEntity } from '../../../Domain/Entities/BaseClasses/BaseEntity'
 import { PgTypedDbConnection } from '../PostgresTypedDbConnection'
 
 @Service()
 export abstract class BaseRepository<
-    Entity,
+    Entity extends BaseEntity,
     DbEntity,
     DbInsertableEntity
   > implements IBaseRepository<Entity> {
@@ -17,9 +19,9 @@ export abstract class BaseRepository<
   async Create(model: Partial<Entity>, connection?: Connections): Promise<Entity> {
     const dbConnection = connection || PgTypedDbConnection.db
 
-    const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, DbInsertableEntity>(model)
+    const cleanedEntity = EntityCleaning.CleanEntity(model)
 
-    Logger.info(`Executing query: Create with the following parameters\n${serializedEntity}`)
+    const serializedEntity = CaseSerializer.CastToSnake<Partial<Entity>, DbInsertableEntity>(cleanedEntity)
 
     const [inserted] = await this.table(dbConnection).insert(serializedEntity)
 
@@ -33,11 +35,29 @@ export abstract class BaseRepository<
 
     const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(query)
 
-    Logger.info(`Executing query: FindOne with the following parameters\n${serializedQuery}`)
-
     const entity = await this.table(dbConnection).findOne(serializedQuery)
 
     return CaseSerializer.CastToCamel<DbEntity, Entity>(entity)
+  }
+
+  async FindAll(query: Partial<Entity>, connection?: Connections): Promise<Entity[]> {
+    const dbConnection = connection || PgTypedDbConnection.db
+
+    const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(query)
+
+    const entities = await this.table(dbConnection).find(serializedQuery).all()
+
+    return CaseSerializer.CastArrayToCamel<DbEntity, Entity>(entities)
+  }
+
+  async Count(query: Partial<Entity>, connection?: Connections) : Promise<number> {
+    const dbConnection = connection || PgTypedDbConnection.db
+
+    const serializedQuery = CaseSerializer.CastToSnake<Partial<Entity>, WhereCondition<DbEntity>>(query)
+
+    const count = await this.table(dbConnection).count(serializedQuery)
+
+    return count
   }
 
   async UpdateOne(
@@ -51,7 +71,7 @@ export abstract class BaseRepository<
 
     const [updatedEntities] = await this.table(dbConnection).update(
       serializedQuery,
-      serializedEntity,
+      { ...serializedEntity, updated_at: DateUtils.DateNow() },
     )
 
     return !!updatedEntities
@@ -61,13 +81,5 @@ export abstract class BaseRepository<
   //   const dbConnection = connection || PgTypedDbConnection.db
 
   //   const del = await this.table(dbConnection).delete(query)
-  // }
-
-  // async FindAll(query: WhereCondition<DbEntity>, connection?: Connections): Promise<DbEntity[]> {
-  //   const dbConnection = connection || PgTypedDbConnection.db
-
-  //   const entities = await this.table(dbConnection).find(query).all()
-
-  //   return entities
   // }
 }

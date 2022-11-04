@@ -1,0 +1,10 @@
+2. Confirmação email: criação de conta (nodemailer)
+4. "Allow user to partially update an step from a bot" ??  ou a atualização do bot tem que validar tudo de novo?
+
+
+TECNICAL Debts:
+Update User: unmapped fields betwenn update request payload and partial user, should create specific DTO?
+3:   "StepsValidation": [
+    "Validate if all nextStepIds send user to a valid step id"
+  ],
+4: validar ids das locations no update user

@@ -1,7 +1,7 @@
 import { StepInfo } from '../Step'
 
 export interface IStepOption {
-  readonly nextStep : number
+  readonly nextStepId : number
   readonly selectionKey : number
   readonly name : string
   readonly outboundMessages : string[]

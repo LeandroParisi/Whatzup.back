@@ -26,7 +26,7 @@
       {
         "name": "is_active",
         "isNullable": true,
-        "hasDefault": false,
+        "hasDefault": true,
         "typeId": 16,
         "typeName": "BOOL"
       },
@@ -43,6 +43,32 @@
         "hasDefault": true,
         "typeId": 1082,
         "typeName": "DATE"
+      },
+      {
+        "name": "user_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      }
+    ]
+  },
+  {
+    "name": "bots_phone_numbers",
+    "columns": [
+      {
+        "name": "bot_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "phone_number_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
       }
     ]
   },
@@ -50,11 +76,25 @@
     "name": "cities",
     "columns": [
       {
+        "name": "created_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
         "name": "id",
         "isNullable": false,
         "hasDefault": true,
         "typeId": 23,
         "typeName": "INTEGER"
+      },
+      {
+        "name": "is_active",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
       },
       {
         "name": "name",
@@ -62,12 +102,47 @@
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
+      },
+      {
+        "name": "state_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "updated_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
       }
     ]
   },
   {
     "name": "countries",
     "columns": [
+      {
+        "name": "created_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
+        "name": "currency",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "emoji",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
       {
         "name": "id",
         "isNullable": false,
@@ -76,7 +151,21 @@
         "typeName": "INTEGER"
       },
       {
+        "name": "is_active",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
+      },
+      {
         "name": "iso2",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1042,
+        "typeName": "BPCHAR"
+      },
+      {
+        "name": "iso3",
         "isNullable": false,
         "hasDefault": false,
         "typeId": 1042,
@@ -88,159 +177,20 @@
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
-      }
-    ]
-  },
-  {
-    "name": "custom_plan_feature",
-    "columns": [
-      {
-        "name": "created_at",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 1082,
-        "typeName": "DATE"
       },
       {
-        "name": "custom_plan_id",
+        "name": "phone_code",
         "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "feature_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "is_active",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 16,
-        "typeName": "BOOL"
-      },
-      {
-        "name": "max_limit",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "type_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "updated_at",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 1082,
-        "typeName": "DATE"
-      }
-    ]
-  },
-  {
-    "name": "custom_plans",
-    "columns": [
-      {
-        "name": "id",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "price",
-        "isNullable": false,
-        "hasDefault": false,
-        "typeId": 1700,
-        "typeName": "NUMERIC"
-      }
-    ]
-  },
-  {
-    "name": "default_plan_feature",
-    "columns": [
-      {
-        "name": "created_at",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 1082,
-        "typeName": "DATE"
-      },
-      {
-        "name": "default_plan_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "feature_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "is_active",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 16,
-        "typeName": "BOOL"
-      },
-      {
-        "name": "max_limit",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "type_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "updated_at",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 1082,
-        "typeName": "DATE"
-      }
-    ]
-  },
-  {
-    "name": "default_plans",
-    "columns": [
-      {
-        "name": "id",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "name",
-        "isNullable": false,
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
       },
       {
-        "name": "price",
+        "name": "updated_at",
         "isNullable": false,
-        "hasDefault": false,
-        "typeId": 1700,
-        "typeName": "NUMERIC"
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
       }
     ]
   },
@@ -264,12 +214,19 @@
       {
         "name": "is_active",
         "isNullable": true,
-        "hasDefault": false,
+        "hasDefault": true,
         "typeId": 16,
         "typeName": "BOOL"
       },
       {
         "name": "name",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "type",
         "isNullable": false,
         "hasDefault": false,
         "typeId": 1043,
@@ -295,6 +252,13 @@
         "typeName": "DATE"
       },
       {
+        "name": "due_date",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
         "name": "id",
         "isNullable": false,
         "hasDefault": true,
@@ -307,6 +271,13 @@
         "hasDefault": false,
         "typeId": 1082,
         "typeName": "DATE"
+      },
+      {
+        "name": "plan_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
       },
       {
         "name": "reference_month",
@@ -330,6 +301,13 @@
         "typeName": "DATE"
       },
       {
+        "name": "type",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 258495,
+        "typeName": "PAYMENT_TYPE"
+      },
+      {
         "name": "updated_at",
         "isNullable": false,
         "hasDefault": true,
@@ -337,8 +315,8 @@
         "typeName": "DATE"
       },
       {
-        "name": "user_plan_id",
-        "isNullable": true,
+        "name": "user_id",
+        "isNullable": false,
         "hasDefault": false,
         "typeId": 23,
         "typeName": "INTEGER"
@@ -386,8 +364,15 @@
     ]
   },
   {
-    "name": "plan_feature_type",
+    "name": "phone_numbers",
     "columns": [
+      {
+        "name": "created_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
       {
         "name": "id",
         "isNullable": false,
@@ -396,11 +381,112 @@
         "typeName": "INTEGER"
       },
       {
-        "name": "name",
+        "name": "is_active",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
+      },
+      {
+        "name": "updated_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
+        "name": "whatsapp_id",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "whatsapp_number",
         "isNullable": false,
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
+      }
+    ]
+  },
+  {
+    "name": "plans",
+    "columns": [
+      {
+        "name": "created_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
+        "name": "id",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "is_active",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
+      },
+      {
+        "name": "is_custom_plan",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 16,
+        "typeName": "BOOL"
+      },
+      {
+        "name": "name",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "price",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1700,
+        "typeName": "NUMERIC"
+      },
+      {
+        "name": "updated_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      }
+    ]
+  },
+  {
+    "name": "plans_features",
+    "columns": [
+      {
+        "name": "feature_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "max_limit",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "plan_id",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
       }
     ]
   },
@@ -415,6 +501,13 @@
         "typeName": "INTEGER"
       },
       {
+        "name": "created_at",
+        "isNullable": false,
+        "hasDefault": true,
+        "typeId": 1082,
+        "typeName": "DATE"
+      },
+      {
         "name": "id",
         "isNullable": false,
         "hasDefault": true,
@@ -422,11 +515,11 @@
         "typeName": "INTEGER"
       },
       {
-        "name": "iso2",
-        "isNullable": false,
-        "hasDefault": false,
-        "typeId": 1042,
-        "typeName": "BPCHAR"
+        "name": "is_active",
+        "isNullable": true,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
       },
       {
         "name": "name",
@@ -441,53 +534,6 @@
         "hasDefault": false,
         "typeId": 1043,
         "typeName": "VARCHAR"
-      }
-    ]
-  },
-  {
-    "name": "user_plan",
-    "columns": [
-      {
-        "name": "created_at",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 1082,
-        "typeName": "DATE"
-      },
-      {
-        "name": "custom_plan_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "default_plan_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "id",
-        "isNullable": false,
-        "hasDefault": true,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "is_active",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 16,
-        "typeName": "BOOL"
-      },
-      {
-        "name": "is_custom_plan",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 16,
-        "typeName": "BOOL"
       },
       {
         "name": "updated_at",
@@ -495,13 +541,6 @@
         "hasDefault": true,
         "typeId": 1082,
         "typeName": "DATE"
-      },
-      {
-        "name": "user_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
       }
     ]
   },
@@ -581,7 +620,14 @@
       {
         "name": "is_active",
         "isNullable": true,
-        "hasDefault": false,
+        "hasDefault": true,
+        "typeId": 16,
+        "typeName": "BOOL"
+      },
+      {
+        "name": "is_verified",
+        "isNullable": true,
+        "hasDefault": true,
         "typeId": 16,
         "typeName": "BOOL"
       },
@@ -607,6 +653,27 @@
         "typeName": "VARCHAR"
       },
       {
+        "name": "password",
+        "isNullable": false,
+        "hasDefault": false,
+        "typeId": 1043,
+        "typeName": "VARCHAR"
+      },
+      {
+        "name": "phone_number_id",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
+        "name": "plan_id",
+        "isNullable": true,
+        "hasDefault": false,
+        "typeId": 23,
+        "typeName": "INTEGER"
+      },
+      {
         "name": "postal_code",
         "isNullable": true,
         "hasDefault": false,
@@ -626,46 +693,6 @@
         "hasDefault": true,
         "typeId": 1082,
         "typeName": "DATE"
-      },
-      {
-        "name": "was_activated",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 16,
-        "typeName": "BOOL"
-      },
-      {
-        "name": "whatsapp_id",
-        "isNullable": false,
-        "hasDefault": false,
-        "typeId": 1043,
-        "typeName": "VARCHAR"
-      },
-      {
-        "name": "whatsapp_number",
-        "isNullable": false,
-        "hasDefault": false,
-        "typeId": 1043,
-        "typeName": "VARCHAR"
-      }
-    ]
-  },
-  {
-    "name": "users_bots",
-    "columns": [
-      {
-        "name": "bot_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
-      },
-      {
-        "name": "user_id",
-        "isNullable": true,
-        "hasDefault": false,
-        "typeId": 23,
-        "typeName": "INTEGER"
       }
     ]
   }

@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable camelcase */
 /* eslint-disable max-classes-per-file */
@@ -5,82 +6,76 @@
 import {
   Body,
   HttpCode,
-  JsonController,
-  Post
+  JsonController, Post, Put, Req, UseBefore,
 } from 'routing-controllers'
-import { Service } from 'typedi'
-import { Logger } from '../../../../../Commons/Logger'
-import User from '../../../../../Domain/Entities/User'
-import { PgTypedDbConnection } from '../../../../../Infrastructure/PgTyped/PostgresTypedDbConnection'
-import { CityRepository } from '../../../../../Infrastructure/PgTyped/Repositories/CityRepository'
-import { CountryRepository } from '../../../../../Infrastructure/PgTyped/Repositories/CountryRepository'
-import { StateRepository } from '../../../../../Infrastructure/PgTyped/Repositories/StateRepository'
-import { UserRepository } from '../../../../../Infrastructure/PgTyped/Repositories/UserRepository'
-import BaseCrudController from '../../../../Shared/APIs/BaseClasses/BaseCrudController'
-import { ErrorMessages } from '../../../../Shared/APIs/Enums/Messages'
+import Container, { Service } from 'typedi'
+import User, { PartialUser } from '../../../../../Domain/Entities/User'
+import { UserCrudServices } from '../../../../../Domain/Services/UserCrudServices'
+import { Mapper } from '../../../../../Setup/Mapper/Mapper'
+import BaseResponse from '../../../../Shared/APIs/BaseClasses/Responses/BaseResponse'
+import { ResponseMessages } from '../../../../Shared/APIs/Enums/Messages'
+import { BaseRoutes } from '../../../../Shared/APIs/Enums/Routes'
 import { StatusCode } from '../../../../Shared/APIs/Enums/Status'
-import { CityDTO } from '../../../../Shared/DTOs/Locations/CityDTO'
-import { CountryDTO } from '../../../../Shared/DTOs/Locations/CountryDTO'
-import { StateDTO } from '../../../../Shared/DTOs/Locations/StateDTO'
-import ApiError from '../../../../Shared/Errors/ApiError'
-import { CreateUserDTO } from '../../UseCases/CreateUser/DTOs/CreateUserDTO'
+import { IBaseCrudController } from '../../../../Shared/APIs/Interfaces/Crud/IBaseCrudController'
+import IAuthenticatedRequest from '../../../../Shared/APIs/Interfaces/ExpressInterfaces/CustomRequests/IAuthenticatedRequest'
+import PasswordHashing from '../../../Authentication/Hashing/PasswordHashing'
+import TokenAuthentication from '../../../Authentication/Middlewares/TokenAuthentication'
+import ValidateNewUserPlan from '../../Middlewares/Plans/ValidateNewUserPlan'
 import CreateUserRequest from './Requests/CreateUserRequest'
+import UpdateUserRequest, { UpdateUserPlanIdPath } from './Requests/UpdateUserRequest'
 
 @Service()
-@JsonController('/account-management/user')
-export default class UserController extends BaseCrudController<User> {
+@JsonController(`/${BaseRoutes.AccountManagementUser}`)
+export default class UserController implements IBaseCrudController<User, UserCrudServices> {
   /**
    *
    */
   constructor(
-    private repository : UserRepository,
-    private countryRepository : CountryRepository,
-    private stateRepository : StateRepository,
-    private cityRepository : CityRepository,
+    public Service : UserCrudServices,
   ) {
-    super(repository)
   }
 
   @HttpCode(StatusCode.CREATED)
   @Post()
-  public async Create(@Body() body : CreateUserRequest) : Promise<User> {
-    const { country, state, city } = body
+  public async Create(@Body({ validate: true }) body : CreateUserRequest) : Promise<BaseResponse<User>> {
+    const {
+      phoneNumber,
+    } = body
+    const hashedPassword = await PasswordHashing.HashPassword(body.password)
 
-    await this.CheckLocalities(country, state, city)
+    const user = Mapper.map(body, CreateUserRequest, User, { extraArgs: () => ({ hashedPassword }) })
 
-    const userDto = CreateUserDTO.MapFromCreateRequest(body)
+    const insertedUser = await this.Service.Create(user, {
+      phoneNumber,
+    })
 
-    return await super.Create(userDto)
+    return new BaseResponse(ResponseMessages.CreatedSuccessfully, insertedUser)
   }
 
-  private async CheckLocalities(country: CountryDTO, state: StateDTO, city: CityDTO) {
-    const self = this
+  @HttpCode(StatusCode.OK)
+  @Put('')
+  @UseBefore(
+    TokenAuthentication,
+    Container.get(ValidateNewUserPlan)
+      .BuildValidator({ requestPlanIdPath: UpdateUserPlanIdPath, maySkipValidation: true }),
+  )
+  public async Update(
+    @Body({ validate: { skipMissingProperties: true } }) body: UpdateUserRequest,
+    @Req() req: IAuthenticatedRequest,
+  ): Promise<BaseResponse> {
+    const {
+      phoneNumber,
+    } = body
+    const userUpdateInfo = Mapper.map(body, UpdateUserRequest, PartialUser)
 
-    async function transaction() {
-      await PgTypedDbConnection.db.tx(async (db) => {
-        const isCountryInserted = await self.countryRepository.FindOne({ id: country.id, iso2: country.iso2 }, db)
-        const isStateInserted = await self.stateRepository.FindOne({ id: state.id, iso2: state.iso2 }, db)
-        const isCityInserted = await self.cityRepository.FindOne({ id: city.id }, db)
+    await this.Service.Update({ id: req.user.id }, userUpdateInfo, {
+      phoneNumber,
+    })
 
-        if (!isCountryInserted) {
-          Logger.info(`Creating country ${country.name}, with ID ${country.id}`)
-          await self.countryRepository.Create(country, db)
-        }
-        if (!isStateInserted) {
-          Logger.info(`Creating state ${state.name}, with ID ${state.id}`)
-          await self.stateRepository.Create(state, db)
-        }
-        if (!isCityInserted) {
-          Logger.info(`Creating city ${city.name}, with ID ${city.id}`)
-          await self.cityRepository.Create(city, db)
-        }
-      })
-    }
+    return new BaseResponse(ResponseMessages.UpdatedSuccessfully)
+  }
 
-    try {
-      await transaction()
-    } catch (e) {
-      throw new ApiError(StatusCode.INTERNAL_SERVER_ERROR, ErrorMessages.InternalError, e)
-    }
+  Get(_query: any, _req: IAuthenticatedRequest): Promise<BaseResponse<User[]>> {
+    throw new Error('Method not implemented.')
   }
 }

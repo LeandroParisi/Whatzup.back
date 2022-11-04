@@ -1,0 +1,213 @@
+Delivered-To: lepcbelisario@gmail.com
+Received: by 2002:a5d:526d:0:0:0:0:0 with SMTP id l13csp1228521wrc;
+        Mon, 27 Jun 2022 04:40:32 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vribzb6X4KFOJQBKeGmWOLAOeIr4seR/lpUqlvgjkIti/m9yVvTc8kMPu0czsSuFCDJ2/B
+X-Received: by 2002:a05:6638:190f:b0:339:bc9b:4d90 with SMTP id p15-20020a056638190f00b00339bc9b4d90mr7571924jal.153.1656330032291;
+        Mon, 27 Jun 2022 04:40:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1656330032; cv=none;
+        d=google.com; s=arc-20160816;
+        b=VDzbbEarz5zHi8cnmrD8IHacAmu6ZnIgZihiGP6HhguKCAgC1EO5UPNUtSFtSxvhMX
+         pZPbHH/ERfDu9esZX99ZC0hYn2TM+YlTsHRcry9NniE0tnAFP7aMXmErN0nFLUvZAQEf
+         BYao04l2tnQEn66oojDp2OzPUKE4iy3EvbG+oQyQgOSB27lZRzla9SCpPD+MDVr5XWn5
+         NY80sfgcgyYqh25tc9YvtfXZn6A2Bbd2NMkSuZlZK8OEhDZLC7z6yrfql15nzgUXZfoH
+         QMx14ZAoQlh63CXibocPaBvFnhkKLMVfgGfwc+sLlXi9bKCghG12C2ezea3tiuR/xOGh
+         kP5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-transfer-encoding:to:reply-to:mime-version:from:subject
+         :date:message-id:dkim-signature:dkim-signature;
+        bh=Sv/q8iva44NU/GmNfMH1oyPsmlH3VqNbKDAlmpLzXfg=;
+        b=XeQEpbwNgQlAhIK7Km34mVcKH08N8pmNasjU7MB6TnHIOH1PPUwjtFiddLTh+JLA2f
+         9OVrwC9EOgQ0w6iXR7Tm/fFwA9vH6OXi7fMDsPJ/VJu7z3vMPgv2sIwyleazbV7KdCCg
+         q3CMx55vQgVXczMgaW/3gYGCb7Ke85c3a+4g1oC9P4Wse1Sf15X+eU9elEtxzkpC1Euf
+         Zv0Jj6F7BAeZCqbzD9vDG47FdaeKimKKqe8wNUa3P+ahM2o9GbU/x4/cUh9dzUtZUweV
+         q//SXSmz8OGYb/rcDLNkhKiR+20t4lLcn2cB+dUHE4j5iv0+I8rms69h7hoVK2oRxN9n
+         N6zQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@countrystatecity.in header.s=s1 header.b=JBlDocNE;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=Bx+3oEHF;
+       spf=pass (google.com: domain of bounces+19167252-e82b-lepcbelisario=gmail.com@em428.countrystatecity.in designates 50.31.63.46 as permitted sender) smtp.mailfrom="bounces+19167252-e82b-lepcbelisario=gmail.com@em428.countrystatecity.in"
+Return-Path: <bounces+19167252-e82b-lepcbelisario=gmail.com@em428.countrystatecity.in>
+Received: from pnkfpfnz.outbound-mail.sendgrid.net (pnkfpfnz.outbound-mail.sendgrid.net. [50.31.63.46])
+        by mx.google.com with ESMTPS id f7-20020a05660215c700b006693da00beasi20496189iow.18.2022.06.27.04.40.31
+        for <lepcbelisario@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jun 2022 04:40:32 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounces+19167252-e82b-lepcbelisario=gmail.com@em428.countrystatecity.in designates 50.31.63.46 as permitted sender) client-ip=50.31.63.46;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@countrystatecity.in header.s=s1 header.b=JBlDocNE;
+       dkim=pass header.i=@sendgrid.info header.s=smtpapi header.b=Bx+3oEHF;
+       spf=pass (google.com: domain of bounces+19167252-e82b-lepcbelisario=gmail.com@em428.countrystatecity.in designates 50.31.63.46 as permitted sender) smtp.mailfrom="bounces+19167252-e82b-lepcbelisario=gmail.com@em428.countrystatecity.in"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=countrystatecity.in;
+	h=subject:from:mime-version:reply-to:x-feedback-id:to:content-type:
+	content-transfer-encoding;
+	s=s1; bh=Sv/q8iva44NU/GmNfMH1oyPsmlH3VqNbKDAlmpLzXfg=;
+	b=JBlDocNEjphQVX8wSNISDPP4ksDo7QKK1jP25Sa3RAHLbhKOlErJ2N2UGgXw8K3eJUVY
+	yHm5jKWtiBkmfwTJBeXGoBi0N9dMNO51phe+zfY6WNFDDQYhSsZr+Qr4uZwu15bBU2AcJD
+	hMmQJ0GWwo5/P10Uc6bkSxCnA7PwW1lt5A83qPXp8hzVaCYusL6MjJRR4huF7iy5laU69/
+	4H1eQsoGsAc7YkqIi7Cc/dQwS4TCNvLyNTgv865XpaRu1w73WV0uAMzGYooQD5HFCw4UDT
+	bmDB+KPBxyPOp3kolZcPGkdSYQiENZLJ2DF7FrYYFIY7EKL/uO7PkzDpzZ6JU7Ew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.info;
+	h=subject:from:mime-version:reply-to:x-feedback-id:to:content-type:
+	content-transfer-encoding;
+	s=smtpapi; bh=Sv/q8iva44NU/GmNfMH1oyPsmlH3VqNbKDAlmpLzXfg=;
+	b=Bx+3oEHFHZHHJEHXsH7gvmOmQbG4KhuVn7uLj/8pgUAC0FzfJaUgX0/e04sHqjb8wqvm
+	eMvP6PRMk/6n7i4JMnrNVgxVSO9+0+XzilYDTHytS+/0e7ALUREgGI0dFmXmrAEg3BylT9
+	o26CWXKEF6IsxqEXfbF/QX5TOQEXQxkQc=
+Received: by filterdrecv-canary-fcc5c4d88-d7dlw with SMTP id filterdrecv-canary-fcc5c4d88-d7dlw-1-62B9972F-18
+        2022-06-27 11:40:31.404158242 +0000 UTC m=+1621448.544372793
+Received: from api.countrystatecity.in (unknown)
+	by geopod-ismtpd-5-0 (SG)
+	with ESMTP id Yw0qRi53RRmUBRTsI9e8ow
+	for <lepcbelisario@gmail.com>;
+	Mon, 27 Jun 2022 11:40:30.955 +0000 (UTC)
+Message-ID: <aa1a32e69da460e0c213bc385001ca44@api.countrystatecity.in>
+Date: Mon, 27 Jun 2022 11:40:31 +0000 (UTC)
+Subject: API Key | Country State City API | #mObSsk
+From: Darshan Gada <api@countrystatecity.in>
+MIME-Version: 1.0
+Reply-To: Darshan Gada <gadadarshan@gmail.com>
+X-Feedback-ID: 19167252:SG
+X-SG-EID: 
+ =?us-ascii?Q?CnXdNncJa3nP68zG6cYXm=2FRzMcqoqcLP6aDl9fPxKMZ5duSXX88VN37Uvn3AIr?=
+ =?us-ascii?Q?haIgC1zCBu+8xqvcT0+af6NlVzWKepLLDwhLBlr?=
+ =?us-ascii?Q?DkGq7wSfTtbYtGLUtX9bQ+kg8eGLDRGQGWtNmy3?=
+ =?us-ascii?Q?vXn3DsulFY0oeO=2FqpEyBBbxxmGQLOW73ZCsVYNZ?=
+ =?us-ascii?Q?Z0s0KRpAGcr=2FhlSTiqrfMTnoUQYo8fquEgOlqQr?=
+ =?us-ascii?Q?GdqBCzZ5JcOGGQ8PLGzrK2yvr76f=2Fk5bDzY=2FB4H?=
+ =?us-ascii?Q?OfTnL++ufVEgIBwy+VQhg=3D=3D?=
+To: lepcbelisario@gmail.com
+X-Entity-ID: mq++7mTHuTCh8BB/I5oJlQ==
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html lang=3D"en">
+
+<head>
+    <meta charset=3D"UTF-8">
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=
+=3D1.0">
+    <title>API Key Email</title>
+</head>
+
+<body>
+    <div style=3D"font-family:verdana,sans-serif;color:#444444;font: small =
+1em/1.5 verdana,Helvetica,sans-serif;">
+        Hello there,
+        <br>
+        <br>
+        We've received your request for an API key. Thank you for your requ=
+est. <img goomoji=3D"1f389" data-goomoji=3D"1f389" style=3D"margin:0 0.2ex;=
+vertical-align:middle;max-height:24px" alt=3D"=F0=9F=8E=89" src=3D"https://=
+mail.google.com/mail/e/1f389" >
+        <br>
+        <br>
+        We are happy that you found this API and Data useful.
+        <br>
+        <br>
+        <b>Here you go, Your API Key</b> <img goomoji=3D"1f680" data-goomoj=
+i=3D"1f680" style=3D"margin:0 0.2ex;vertical-align:middle;max-height:24px" =
+alt=3D"=F0=9F=9A=80" src=3D"https://mail.google.com/mail/e/1f680" ><br>
+        cnRTdEdsV2duWkEyM0Rhb1lQdnk3eDk4S0U2WERnQW5QMGFlQjNMUw=3D=3D
+        <br>
+        <br>
+        <b>API Documentation</b> <img goomoji=3D"1f4c4" data-goomoji=3D"1f4=
+c4" style=3D"margin:0 0.2ex;vertical-align:middle;max-height:24px" alt=3D"=
+=F0=9F=93=84" src=3D"https://mail.google.com/mail/e/1f4c4"><br>
+        <a href=3D"https://u19167252.ct.sendgrid.net/ls/click?upn=3D2bDkV9N=
+n6QqpIgELZ-2F9Hwa-2FDicjNmDrWrFN-2F-2BVUkHLa1r0aDjVulLTUzhXX4QGeD6GZp_ViMne=
+5vvLsdH13EmbLxTb6KAtlSZh-2Bs0CAM7D0jVgPsBTwBHKuAa0QHENnL-2Fuq7TQjBXRF7BTtwd=
+FzgDyI9eRtbr1avQHSQpdI7GdIaYUOMIVRrerMTmV7-2FhMrMhCUPRCYeB1giOLI9T6nFq8W4c1=
+EamoAwrxDubjZdQV9pi7DUnupHbd2YO-2Fj-2FyXIMX1to-2FLdRldGbr8jsJM8b-2BQyYvN8f-=
+2BlhN8qFxpoVnPDLlhIFE-3D" target=3D"_blank">https://countrystatecity.in/doc=
+s</a>
+        <br>
+        <br>
+        If you want to take a glance at the Database, Don't forget to "Star=
+" it. <img goomoji=3D"1f31f" data-goomoji=3D"1f31f" style=3D"margin:0 0.2ex=
+;vertical-align:middle;max-height:24px" alt=3D"=F0=9F=8C=9F" src=3D"https:/=
+/mail.google.com/mail/e/1f31f" ><br>
+        <a href=3D"https://u19167252.ct.sendgrid.net/ls/click?upn=3D2bDkV9N=
+n6QqpIgELZ-2F9HwavQg7XPAibX7iLNWBoWSfi-2BGhtRUKzhVeJNCniA6q9XrkGe-2FX5AvxpM=
+wr-2BeMnL8Hy-2BWB18DSD0ZaeIsGSbSw5w-3DntTh_ViMne5vvLsdH13EmbLxTb6KAtlSZh-2B=
+s0CAM7D0jVgPsBTwBHKuAa0QHENnL-2Fuq7TQjBXRF7BTtwdFzgDyI9eRu-2FuYldDxugeINaN9=
+gGBSYwQoKfHoN1LWOy6zdY2bquns2JSJ6NJdrNagPD8-2BwCuGWYw2jUItZ0HT-2BoofxnSEOzv=
+UB5p9v-2B6l-2BvRGZjQcny6MixiN-2F01h-2FPus0dpYcGegysvFzBvuolNnv383a9T3SQ-3D"=
+ target=3D"_blank">https://github.com/dr5hn/countries-states-cities-databas=
+e</a>
+        <br>
+        <br>
+        If you have any questions, Please read <b>FAQs</b> <img goomoji=3D"=
+2753" data-goomoji=3D"2753" style=3D"margin:0 0.2ex;vertical-align:middle;m=
+ax-height:24px" alt=3D"=E2=9D=93" src=3D"https://mail.google.com/mail/e/275=
+3" ><br>
+        <a href=3D"https://u19167252.ct.sendgrid.net/ls/click?upn=3D2bDkV9N=
+n6QqpIgELZ-2F9Hwa-2FDicjNmDrWrFN-2F-2BVUkHLZ8iRVIbSG8wC338rvLWfBX-5KK_ViMne=
+5vvLsdH13EmbLxTb6KAtlSZh-2Bs0CAM7D0jVgPsBTwBHKuAa0QHENnL-2Fuq7TQjBXRF7BTtwd=
+FzgDyI9eRvXsc-2F7-2FU-2FsKEt3iK5AaWmc7qwwigaoSLm6eNLgVulFSu-2FOzOzTSJf8osQ4=
+Y2pCK9xTUWLXpWJazNwqf78fl12I1-2BL7ZTJmmTqU6mCH5wiBJbrqNoZbPifnrkn3vnuBLkbe-=
+2FqJ4o9YB1nRdjnDbh3ew-3D" target=3D"_blank">https://countrystatecity.in/faq=
+/</a>
+        <br>
+        <br>
+        Follow me on Twitter to get regular updates of API & Database. <img=
+ goomoji=3D"1f426" data-goomoji=3D"1f426" style=3D"margin:0 0.2ex;vertical-=
+align:middle;max-height:24px" alt=3D"=F0=9F=90=A6" src=3D"https://mail.goog=
+le.com/mail/e/1f426"><br>
+        <a href=3D"https://u19167252.ct.sendgrid.net/ls/click?upn=3D2bDkV9N=
+n6QqpIgELZ-2F9Hwb2Dtkum5Y62YREvtGbGUqUPEA5SbXX6cSVjW37fBGHht_0d_ViMne5vvLsd=
+H13EmbLxTb6KAtlSZh-2Bs0CAM7D0jVgPsBTwBHKuAa0QHENnL-2Fuq7TQjBXRF7BTtwdFzgDyI=
+9eRnAa5WZ81JePkQ9PPJiH478-2F747dxyLyoWNORJLk0U37XVJJHY9M4S7rXG9I1-2FeUjbW5-=
+2BjYq9jCYvBoZFdIX4BDmfrR53MKtbmVoYytOsNl5pXxdoCZ6XfW7sYpc1O3-2F0FRwuEQ8Ui6e=
+aAdsRrtZemU-3D" target=3D"_blank">https://twitter.com/dr5hn</a> & <a href=
+=3D"https://u19167252.ct.sendgrid.net/ls/click?upn=3D2bDkV9Nn6QqpIgELZ-2F9H=
+wesm-2F4bctfMqF-2FYo38cvYIcRApM8aKqHOXSQAV1wp8z3nfkIT-2FYUz9GCmym3WFwDyFwMN=
+Bq-2FdP6R-2BVn53Wu9KDRN93gMloVGtFX1Ij050iFFo8q9SfI-2BncdehX6m8apSSYwU7snan-=
+2B55m-2B1QS7jqOTGCQp3gnCuT78LD6O4xuFIkHKwzdR1NJ6CMk0A7ruOCr5vE30lssWvgItCav=
+UXXPk8r0VYAceWSeBHfmDkuYHlnzdw4OhxyCVHoiebF1DGJ2ZfjhjRtEJdcfYPxTKlb5bSkdhRX=
+PRHVNNzil1i8mwJuvMTr844ZfVXIp6017fZbOg7PufsOK-2BGIx53teDAqMzrLFTxrZR1ZDYJQg=
+-2B2zWXKbTvMCAOOXxktRXR45I5O8ePzuNlU17-2FYy79DZ87X1Cu4-3DPlIZ_ViMne5vvLsdH1=
+3EmbLxTb6KAtlSZh-2Bs0CAM7D0jVgPsBTwBHKuAa0QHENnL-2Fuq7TQjBXRF7BTtwdFzgDyI9e=
+RqxzsPMPKJhDp7yG2oUT4QkwXu90NCKbQI2q3FUuhmhyOlu-2BWNGoJm6kZYxeWLVcYHwOFp4Xs=
+1McIT4Usub8XzAkJy-2BeGLNNDtSnAG-2FTLF-2FqVfAZk3WYBeZI7uGwo-2FpLe3vKQI9Xsf6k=
+bpY8shAFYK4-3D" target=3D"_blank">Spread the words</a>
+        <br>
+        <br>
+        <b>Donate</b> <img goomoji=3D"1f64f" data-goomoji=3D"1f64f" style=
+=3D"margin:0 0.2ex;vertical-align:middle;max-height:24px" alt=3D"=F0=9F=99=
+=8F" src=3D"https://mail.google.com/mail/e/1f64f" ><br>
+        <a href=3D"https://u19167252.ct.sendgrid.net/ls/click?upn=3D2bDkV9N=
+n6QqpIgELZ-2F9Hwa-2FDicjNmDrWrFN-2F-2BVUkHLZjD4CT5SmmYDoi8HVxKLgRAMNL_ViMne=
+5vvLsdH13EmbLxTb6KAtlSZh-2Bs0CAM7D0jVgPsBTwBHKuAa0QHENnL-2Fuq7TQjBXRF7BTtwd=
+FzgDyI9eRvswfNRj-2F9Lp69pdCSITbgQ4zjIs-2BvsYThnE2tqSP1Y0yMCzkpKsv-2BWSxzpie=
+X4e6RPO7n-2B-2BopEPXost9YcdQDsipPVJ18iAGNJtM1E7xdPebOdBxBsAn5BRDy5hWWWXgtmp=
+kQPaYvLe6gwsKxzjmkc-3D" target=3D"_blank">https://countrystatecity.in/donat=
+e</a>
+        <br>
+        <br>
+        Feel free to DM me if you have any questions.
+        <br>
+        <br>
+        Made with <img goomoji=3D"1f49a" data-goomoji=3D"1f49a" style=3D"ma=
+rgin:0 0.2ex;vertical-align:middle;max-height:24px" alt=3D"=F0=9F=92=9A" sr=
+c=3D"https://mail.google.com/mail/e/1f49a"> in India=F0=9F=87=AE=F0=9F=87=
+=B3
+        <br>
+        <br>
+        Kind Regards,<br>
+        <b>Darshan Gada</b><br>
+        <a href=3D"tel:+919029208698" target=3D"_blank"><b>+91 9029208698</=
+b></a>
+    </div>
+<img src=3D"https://u19167252.ct.sendgrid.net/wf/open?upn=3DStvqukud31rYPsu=
+RufYRs0ofG3K-2B1yvmO5BXdoTQICF1-2FNim3IK69FVsPzLVkFPAqLgdzS3wlwTue-2FAJ3N5k=
+FT9KuDbCBbpQCO5DPWaJSrX1DF4xAUtPfTojr23ZxAnZ0jQr7MQaeUcBbIM2TaUGLbi5ZUt2UX-=
+2F0ImsFoZ-2FMVvAZF-2FPiDbvTz6Lzek3CiN-2BDH4b4ezjqtqRqK-2BjuG3s3vYdw-2Bo9yBV=
+G4KCqGOTASvfw-3D" alt=3D"" width=3D"1" height=3D"1" border=3D"0" style=3D"h=
+eight:1px !important;width:1px !important;border-width:0 !important;margin-=
+top:0 !important;margin-bottom:0 !important;margin-right:0 !important;margi=
+n-left:0 !important;padding-top:0 !important;padding-bottom:0 !important;pa=
+dding-right:0 !important;padding-left:0 !important;"/></body>
+
+</html>
+

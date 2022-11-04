@@ -1,72 +1,95 @@
+/* eslint-disable no-use-before-define */
+import { AutoMap } from '@automapper/classes'
 import { Type } from 'class-transformer'
 import {
   IsEmail,
-  IsNotEmpty,
+  IsNotEmpty, IsNumber,
   IsString,
-  ValidateNested,
+  Min,
+  ValidateIf,
+  ValidateNested
 } from 'class-validator'
+import { PhoneNumberDTO } from '../../../../../../Domain/DTOs/PhoneNumberDTO'
 import User from '../../../../../../Domain/Entities/User'
-import { CityDTO } from '../../../../../Shared/DTOs/Locations/CityDTO'
-import { CountryDTO } from '../../../../../Shared/DTOs/Locations/CountryDTO'
-import { StateDTO } from '../../../../../Shared/DTOs/Locations/StateDTO'
+import LocationRequest from '../../../../../Shared/APIs/Interfaces/Requests/LocationRequest'
+import { IsValidFullLocation } from '../../../../../Shared/CustomValidations/Locations/ClassValidators/IsValidFullLocation'
+import HasPlanId from '../../../../../Shared/CustomValidations/Plans/FunctionValidators/HasPlanId'
 
-export default class CreateUserRequest implements Partial<User> {
-  @IsNotEmpty()
-  @IsString()
-  whatsappNumber?: string
+export default class CreateUserRequest extends LocationRequest implements Partial<User> {
+  @IsValidFullLocation()
 
-  @IsNotEmpty()
-  @IsString()
-  whatsappId?: string
+  @ValidateNested()
+  @Type(() => PhoneNumberDTO)
+  @AutoMap(() => PhoneNumberDTO)
+  phoneNumber : PhoneNumberDTO
+
+  @ValidateIf((o : CreateUserRequest) => HasPlanId(o.planId))
+  @IsNumber()
+  @Min(1)
+  @AutoMap()
+  planId?: number
 
   @IsNotEmpty()
   @IsEmail()
-  email?: string
+  @AutoMap()
+  email: string
 
   @IsNotEmpty()
   @IsString()
-  documentNumber?: string
+  @AutoMap()
+  password: string
 
   @IsNotEmpty()
   @IsString()
-  firstName?: string
+  @AutoMap()
+  documentNumber: string
+
+  @IsNotEmpty()
+  @IsString()
+  @AutoMap()
+  firstName: string
 
   @IsString()
+  @AutoMap()
   middleName?: string
 
   @IsNotEmpty()
   @IsString()
-  lastName?: string
-
-  @ValidateNested()
-  @Type(() => StateDTO)
-  state : StateDTO
-
-  @ValidateNested()
-  @Type(() => CityDTO)
-  city : CityDTO
-
-  @ValidateNested()
-  @Type(() => CountryDTO)
-  country : CountryDTO
+  @AutoMap()
+  lastName: string
 
   @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  stateId : number
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  cityId : number
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  countryId : number
+
   @IsString()
+  @AutoMap()
   neighbourhood?: string
 
-  @IsNotEmpty()
   @IsString()
+  @AutoMap()
   addressStreet?: string
 
-  @IsNotEmpty()
   @IsString()
+  @AutoMap()
   addressNumber?: string
 
-  @IsNotEmpty()
   @IsString()
+  @AutoMap()
   addressComplement?: string
 
-  @IsNotEmpty()
   @IsString()
+  @AutoMap()
   postalCode?: string
 }
