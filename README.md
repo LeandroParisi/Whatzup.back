@@ -2,9 +2,22 @@
 
 Steps to run this project:
 
-1. Run `npm i` command
-2. Setup database settings inside `data-source.ts` file
-3. Run `npm start` command
+1. Install postgress
+2. Run npm install
+3. Run npm db:create
+4. Run npm db:up
+5. Run npm run dev
+6. Go into localhost:3030/swagger
+___
+
+.env that you need:
+# Necessary in development and Prod
+PORT=<port_to_run>
+NODE_ENV=local
+
+# local
+DATABASE_URL=<postgress_connection_string_to_local_db>
+
 ___
 
 
